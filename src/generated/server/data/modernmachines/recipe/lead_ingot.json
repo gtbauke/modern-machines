@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:lead_nugget",
+    "modernmachines:lead_nugget",
+    "modernmachines:lead_nugget",
+    "modernmachines:lead_nugget",
+    "modernmachines:lead_nugget",
+    "modernmachines:lead_nugget",
+    "modernmachines:lead_nugget",
+    "modernmachines:lead_nugget",
+    "modernmachines:lead_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:lead_ingot"
+  }
+}

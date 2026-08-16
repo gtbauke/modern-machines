@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:diamond",
+    "P": "modernmachines:diamond_plate"
+  },
+  "pattern": [
+    " P ",
+    "PIP",
+    " P "
+  ],
+  "result": {
+    "id": "modernmachines:diamond_gear"
+  }
+}

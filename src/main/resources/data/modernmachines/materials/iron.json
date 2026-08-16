@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:iron",
+  "color": "#D8D8D8",
+  "head": {
+    "durability": 250,
+    "mining_speed": 6.0,
+    "attack_damage": 2.0,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 1.05,
+    "mining_speed_multiplier": 1.0,
+    "attack_speed_bonus": 0.0
+  },
+  "binding": {
+    "bonus_durability": 80
+  },
+  "attachment": {
+    "bonus_durability": 100,
+    "attack_damage_bonus": 0.8
+  },
+  "traits": [
+    {
+      "id": "modernmachines:magnetic",
+      "level": 1
+    }
+  ]
+}

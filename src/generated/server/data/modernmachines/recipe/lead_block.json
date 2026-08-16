@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:lead_ingot",
+    "modernmachines:lead_ingot",
+    "modernmachines:lead_ingot",
+    "modernmachines:lead_ingot",
+    "modernmachines:lead_ingot",
+    "modernmachines:lead_ingot",
+    "modernmachines:lead_ingot",
+    "modernmachines:lead_ingot",
+    "modernmachines:lead_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:lead_block"
+  }
+}

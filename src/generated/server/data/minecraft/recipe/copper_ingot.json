@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:copper_nugget",
+    "modernmachines:copper_nugget",
+    "modernmachines:copper_nugget",
+    "modernmachines:copper_nugget",
+    "modernmachines:copper_nugget",
+    "modernmachines:copper_nugget",
+    "modernmachines:copper_nugget",
+    "modernmachines:copper_nugget",
+    "modernmachines:copper_nugget"
+  ],
+  "result": {
+    "id": "minecraft:copper_ingot"
+  }
+}

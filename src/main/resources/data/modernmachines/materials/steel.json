@@ -1,0 +1,29 @@
+{
+  "material": "modernmachines:steel",
+  "color": "#636B78",
+  "head": {
+    "durability": 800,
+    "mining_speed": 7.5,
+    "attack_damage": 3.0,
+    "harvest_tier": "diamond"
+  },
+  "handle": {
+    "durability_multiplier": 1.25,
+    "mining_speed_multiplier": 1.1,
+    "attack_speed_bonus": 0.0
+  },
+  "binding": {
+    "bonus_durability": 200
+  },
+  "attachment": {
+    "bonus_durability": 250,
+    "attack_damage_bonus": 1.2,
+    "tier_override": "diamond"
+  },
+  "traits": [
+    {
+      "id": "modernmachines:sharp",
+      "level": 1
+    }
+  ]
+}

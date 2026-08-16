@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "modernmachines:titanium_ingot",
+    "P": "modernmachines:titanium_plate"
+  },
+  "pattern": [
+    " P ",
+    "PIP",
+    " P "
+  ],
+  "result": {
+    "id": "modernmachines:titanium_gear"
+  }
+}

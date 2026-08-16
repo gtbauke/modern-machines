@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "F": "minecraft:furnace",
+    "I": "minecraft:iron_ingot"
+  },
+  "pattern": [
+    "ICI",
+    "CFC",
+    "ICI"
+  ],
+  "result": {
+    "id": "modernmachines:basic_alloy_smelter_heater"
+  }
+}

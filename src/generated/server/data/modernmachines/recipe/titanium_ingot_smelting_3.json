@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 1.5,
+  "ingredient": "modernmachines:raw_titanium",
+  "result": {
+    "id": "modernmachines:titanium_ingot"
+  }
+}

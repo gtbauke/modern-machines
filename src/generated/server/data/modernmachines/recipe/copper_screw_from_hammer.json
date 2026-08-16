@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:engineers_hammer",
+    "modernmachines:copper_rod"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modernmachines:copper_screw"
+  }
+}

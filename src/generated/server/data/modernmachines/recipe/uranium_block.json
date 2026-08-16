@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:uranium_ingot",
+    "modernmachines:uranium_ingot",
+    "modernmachines:uranium_ingot",
+    "modernmachines:uranium_ingot",
+    "modernmachines:uranium_ingot",
+    "modernmachines:uranium_ingot",
+    "modernmachines:uranium_ingot",
+    "modernmachines:uranium_ingot",
+    "modernmachines:uranium_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:uranium_block"
+  }
+}

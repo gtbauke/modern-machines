@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:silver_nugget",
+    "modernmachines:silver_nugget",
+    "modernmachines:silver_nugget",
+    "modernmachines:silver_nugget",
+    "modernmachines:silver_nugget",
+    "modernmachines:silver_nugget",
+    "modernmachines:silver_nugget",
+    "modernmachines:silver_nugget",
+    "modernmachines:silver_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:silver_ingot"
+  }
+}

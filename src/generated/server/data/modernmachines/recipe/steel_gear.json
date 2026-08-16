@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "modernmachines:steel_ingot",
+    "P": "modernmachines:steel_plate"
+  },
+  "pattern": [
+    " P ",
+    "PIP",
+    " P "
+  ],
+  "result": {
+    "id": "modernmachines:steel_gear"
+  }
+}

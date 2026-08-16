@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:engineers_hammer",
+    "modernmachines:titanium_rod"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modernmachines:titanium_screw"
+  }
+}

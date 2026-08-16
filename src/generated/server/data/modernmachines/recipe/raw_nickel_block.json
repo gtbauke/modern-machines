@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:raw_nickel",
+    "modernmachines:raw_nickel",
+    "modernmachines:raw_nickel",
+    "modernmachines:raw_nickel",
+    "modernmachines:raw_nickel",
+    "modernmachines:raw_nickel",
+    "modernmachines:raw_nickel",
+    "modernmachines:raw_nickel",
+    "modernmachines:raw_nickel"
+  ],
+  "result": {
+    "id": "modernmachines:raw_nickel_block"
+  }
+}

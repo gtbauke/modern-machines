@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "modernmachines:item/template/dust",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -11778997
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:raw_titanium",
+    "modernmachines:raw_titanium",
+    "modernmachines:raw_titanium",
+    "modernmachines:raw_titanium",
+    "modernmachines:raw_titanium",
+    "modernmachines:raw_titanium",
+    "modernmachines:raw_titanium",
+    "modernmachines:raw_titanium",
+    "modernmachines:raw_titanium"
+  ],
+  "result": {
+    "id": "modernmachines:raw_titanium_block"
+  }
+}

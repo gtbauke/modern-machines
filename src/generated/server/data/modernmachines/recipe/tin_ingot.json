@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:tin_nugget",
+    "modernmachines:tin_nugget",
+    "modernmachines:tin_nugget",
+    "modernmachines:tin_nugget",
+    "modernmachines:tin_nugget",
+    "modernmachines:tin_nugget",
+    "modernmachines:tin_nugget",
+    "modernmachines:tin_nugget",
+    "modernmachines:tin_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:tin_ingot"
+  }
+}

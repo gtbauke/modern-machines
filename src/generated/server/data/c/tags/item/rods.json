@@ -1,0 +1,23 @@
+{
+  "values": [
+    "#c:rods/iron",
+    "#c:rods/gold",
+    "#c:rods/copper",
+    "#c:rods/diamond",
+    "#c:rods/netherite",
+    "#c:rods/tin",
+    "#c:rods/lead",
+    "#c:rods/silver",
+    "#c:rods/nickel",
+    "#c:rods/aluminum",
+    "#c:rods/uranium",
+    "#c:rods/titanium",
+    "#c:rods/bronze",
+    "#c:rods/steel",
+    "#c:rods/invar",
+    "#c:rods/electrum",
+    "#c:rods/constantan",
+    "#c:rods/wood",
+    "#c:rods/bone"
+  ]
+}

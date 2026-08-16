@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:flint",
+  "color": "#393939",
+  "head": {
+    "durability": 150,
+    "mining_speed": 5.0,
+    "attack_damage": 2.0,
+    "harvest_tier": "stone"
+  },
+  "handle": {
+    "durability_multiplier": 0.9,
+    "mining_speed_multiplier": 1.0,
+    "attack_speed_bonus": 0.0
+  },
+  "binding": {
+    "bonus_durability": 50
+  },
+  "attachment": {
+    "bonus_durability": 60,
+    "attack_damage_bonus": 0.6
+  },
+  "traits": [
+    {
+      "id": "modernmachines:jagged",
+      "level": 1
+    }
+  ]
+}

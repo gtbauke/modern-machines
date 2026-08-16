@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#c:screws/iron",
+    "#c:screws/gold",
+    "#c:screws/copper",
+    "#c:screws/tin",
+    "#c:screws/titanium",
+    "#c:screws/steel"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "modernmachines:nickel_ingot"
+  },
+  "pattern": [
+    "I",
+    "I"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modernmachines:nickel_rod"
+  }
+}

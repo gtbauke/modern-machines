@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_silver_plate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:silver_plate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modernmachines:silver_gear"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_silver_plate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modernmachines:silver_gear"
+    ]
+  }
+}

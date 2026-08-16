@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "minecraft:iron_block",
+    "P": "modernmachines:part_builder",
+    "S": "minecraft:smooth_stone"
+  },
+  "pattern": [
+    "SS",
+    "PB"
+  ],
+  "result": {
+    "id": "modernmachines:tinkering_table"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:lead",
+  "color": "#4D566B",
+  "head": {
+    "durability": 220,
+    "mining_speed": 4.5,
+    "attack_damage": 2.0,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 1.1,
+    "mining_speed_multiplier": 0.9,
+    "attack_speed_bonus": -0.1
+  },
+  "binding": {
+    "bonus_durability": 90
+  },
+  "attachment": {
+    "bonus_durability": 110,
+    "attack_damage_bonus": 1.0
+  },
+  "traits": [
+    {
+      "id": "modernmachines:heavy",
+      "level": 1
+    }
+  ]
+}

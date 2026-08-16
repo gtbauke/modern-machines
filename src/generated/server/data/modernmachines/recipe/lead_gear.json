@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "modernmachines:lead_ingot",
+    "P": "modernmachines:lead_plate"
+  },
+  "pattern": [
+    " P ",
+    "PIP",
+    " P "
+  ],
+  "result": {
+    "id": "modernmachines:lead_gear"
+  }
+}

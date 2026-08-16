@@ -1,0 +1,19 @@
+{
+  "type": "modernmachines:alloy_smelting",
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": "#c:ingots/gold"
+    },
+    {
+      "count": 1,
+      "ingredient": "#c:ingots/silver"
+    }
+  ],
+  "energy": 3000,
+  "cooking_time": 180,
+  "result": {
+    "count": 2,
+    "id": "modernmachines:electrum_ingot"
+  }
+}

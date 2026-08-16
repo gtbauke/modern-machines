@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "modernmachines:bronze_gear",
+    "P": "modernmachines:copper_plate",
+    "R": "minecraft:redstone",
+    "W": "modernmachines:gold_wire"
+  },
+  "pattern": [
+    "PRP",
+    "WGW",
+    "PRP"
+  ],
+  "result": {
+    "id": "modernmachines:speed_upgrade"
+  }
+}

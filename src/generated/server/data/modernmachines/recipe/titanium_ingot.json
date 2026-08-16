@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:titanium_nugget",
+    "modernmachines:titanium_nugget",
+    "modernmachines:titanium_nugget",
+    "modernmachines:titanium_nugget",
+    "modernmachines:titanium_nugget",
+    "modernmachines:titanium_nugget",
+    "modernmachines:titanium_nugget",
+    "modernmachines:titanium_nugget",
+    "modernmachines:titanium_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:titanium_ingot"
+  }
+}

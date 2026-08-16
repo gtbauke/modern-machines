@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:silver",
+  "color": "#DAE3EC",
+  "head": {
+    "durability": 190,
+    "mining_speed": 7.0,
+    "attack_damage": 2.0,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 1.0,
+    "mining_speed_multiplier": 1.1,
+    "attack_speed_bonus": 0.1
+  },
+  "binding": {
+    "bonus_durability": 75
+  },
+  "attachment": {
+    "bonus_durability": 90,
+    "attack_damage_bonus": 0.8
+  },
+  "traits": [
+    {
+      "id": "modernmachines:purifying",
+      "level": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:copper_ingot",
+    "P": "modernmachines:copper_plate"
+  },
+  "pattern": [
+    " P ",
+    "PIP",
+    " P "
+  ],
+  "result": {
+    "id": "modernmachines:copper_gear"
+  }
+}

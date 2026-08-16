@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:engineers_hammer",
+    "modernmachines:electrum_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:electrum_plate"
+  }
+}

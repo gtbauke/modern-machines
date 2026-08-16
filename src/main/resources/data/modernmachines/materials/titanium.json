@@ -1,0 +1,29 @@
+{
+  "material": "modernmachines:titanium",
+  "color": "#7D8394",
+  "head": {
+    "durability": 1800,
+    "mining_speed": 8.5,
+    "attack_damage": 3.5,
+    "harvest_tier": "diamond"
+  },
+  "handle": {
+    "durability_multiplier": 1.35,
+    "mining_speed_multiplier": 1.1,
+    "attack_speed_bonus": 0.0
+  },
+  "binding": {
+    "bonus_durability": 350
+  },
+  "attachment": {
+    "bonus_durability": 400,
+    "attack_damage_bonus": 1.4,
+    "tier_override": "diamond"
+  },
+  "traits": [
+    {
+      "id": "modernmachines:reinforced",
+      "level": 1
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modernmachines:uranium_ingot_smelting_3"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_uranium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:raw_uranium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_uranium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modernmachines:uranium_ingot_smelting_3"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:engineers_hammer",
+    "modernmachines:gold_rod"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modernmachines:gold_screw"
+  }
+}

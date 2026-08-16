@@ -1,0 +1,34 @@
+{
+  "material": "minecraft:copper",
+  "display_name": "Copper",
+  "color": "#E0734C",
+  "ingredient": {
+    "item": "minecraft:copper_ingot"
+  },
+  "head": {
+    "durability": 180,
+    "mining_speed": 5.0,
+    "attack_damage": 1.5,
+    "harvest_tier": "stone"
+  },
+  "handle": {
+    "durability_multiplier": 0.9,
+    "mining_speed_multiplier": 1.1,
+    "attack_speed_bonus": 0.1
+  },
+  "binding": {
+    "bonus_durability": 40
+  },
+  "attachment": {
+    "bonus_durability": 20,
+    "attack_damage_bonus": 0.3,
+    "speed_bonus": 0.2
+  },
+  "traits": [
+    {
+      "id": "modernmachines:conductive",
+      "level": 1,
+      "description": "Channels electrical charge"
+    }
+  ]
+}

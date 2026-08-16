@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:electrum",
+  "color": "#ECE072",
+  "head": {
+    "durability": 120,
+    "mining_speed": 10.0,
+    "attack_damage": 1.5,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 0.8,
+    "mining_speed_multiplier": 1.3,
+    "attack_speed_bonus": 0.2
+  },
+  "binding": {
+    "bonus_durability": 50
+  },
+  "attachment": {
+    "bonus_durability": 60,
+    "attack_damage_bonus": 0.5
+  },
+  "traits": [
+    {
+      "id": "modernmachines:energized",
+      "level": 1
+    }
+  ]
+}

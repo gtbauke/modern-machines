@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:titanium_ingot",
+    "modernmachines:titanium_ingot",
+    "modernmachines:titanium_ingot",
+    "modernmachines:titanium_ingot",
+    "modernmachines:titanium_ingot",
+    "modernmachines:titanium_ingot",
+    "modernmachines:titanium_ingot",
+    "modernmachines:titanium_ingot",
+    "modernmachines:titanium_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:titanium_block"
+  }
+}

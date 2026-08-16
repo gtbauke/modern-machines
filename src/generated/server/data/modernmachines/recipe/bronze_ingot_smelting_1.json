@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.7,
+  "ingredient": "modernmachines:bronze_dust",
+  "result": {
+    "id": "modernmachines:bronze_ingot"
+  }
+}

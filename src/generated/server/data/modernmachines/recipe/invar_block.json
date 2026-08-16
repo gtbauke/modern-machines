@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:invar_ingot",
+    "modernmachines:invar_ingot",
+    "modernmachines:invar_ingot",
+    "modernmachines:invar_ingot",
+    "modernmachines:invar_ingot",
+    "modernmachines:invar_ingot",
+    "modernmachines:invar_ingot",
+    "modernmachines:invar_ingot",
+    "modernmachines:invar_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:invar_block"
+  }
+}

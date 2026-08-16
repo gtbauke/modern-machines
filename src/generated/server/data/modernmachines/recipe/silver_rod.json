@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "modernmachines:silver_ingot"
+  },
+  "pattern": [
+    "I",
+    "I"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modernmachines:silver_rod"
+  }
+}

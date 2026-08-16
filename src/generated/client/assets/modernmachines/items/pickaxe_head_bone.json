@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "modernmachines:item/template/part/pickaxe_head",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1974589
+      }
+    ]
+  }
+}

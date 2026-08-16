@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:silver_ingot",
+    "modernmachines:silver_ingot",
+    "modernmachines:silver_ingot",
+    "modernmachines:silver_ingot",
+    "modernmachines:silver_ingot",
+    "modernmachines:silver_ingot",
+    "modernmachines:silver_ingot",
+    "modernmachines:silver_ingot",
+    "modernmachines:silver_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:silver_block"
+  }
+}

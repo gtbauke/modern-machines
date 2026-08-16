@@ -1,0 +1,34 @@
+{
+  "material": "minecraft:amethyst",
+  "display_name": "Amethyst",
+  "color": "#A663CC",
+  "ingredient": {
+    "item": "minecraft:amethyst_shard"
+  },
+  "head": {
+    "durability": 320,
+    "mining_speed": 7.0,
+    "attack_damage": 2.5,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 0.8,
+    "mining_speed_multiplier": 1.3,
+    "attack_speed_bonus": 0.25
+  },
+  "binding": {
+    "bonus_durability": 60
+  },
+  "attachment": {
+    "bonus_durability": 30,
+    "attack_damage_bonus": 1.0,
+    "speed_bonus": 0.5
+  },
+  "traits": [
+    {
+      "id": "modernmachines:resonating",
+      "level": 1,
+      "description": "Emits crystalline chime when mining"
+    }
+  ]
+}

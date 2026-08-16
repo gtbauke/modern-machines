@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:electrum_nugget",
+    "modernmachines:electrum_nugget",
+    "modernmachines:electrum_nugget",
+    "modernmachines:electrum_nugget",
+    "modernmachines:electrum_nugget",
+    "modernmachines:electrum_nugget",
+    "modernmachines:electrum_nugget",
+    "modernmachines:electrum_nugget",
+    "modernmachines:electrum_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:electrum_ingot"
+  }
+}

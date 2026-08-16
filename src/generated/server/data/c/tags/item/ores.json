@@ -1,0 +1,26 @@
+{
+  "values": [
+    "#c:ores/iron",
+    "#c:ores/iron",
+    "#c:ores/gold",
+    "#c:ores/gold",
+    "#c:ores/copper",
+    "#c:ores/copper",
+    "#c:ores/diamond",
+    "#c:ores/diamond",
+    "#c:ores/tin",
+    "#c:ores/tin",
+    "#c:ores/lead",
+    "#c:ores/lead",
+    "#c:ores/silver",
+    "#c:ores/silver",
+    "#c:ores/nickel",
+    "#c:ores/nickel",
+    "#c:ores/aluminum",
+    "#c:ores/aluminum",
+    "#c:ores/uranium",
+    "#c:ores/uranium",
+    "#c:ores/titanium",
+    "#c:ores/titanium"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:raw_silver",
+    "modernmachines:raw_silver",
+    "modernmachines:raw_silver",
+    "modernmachines:raw_silver",
+    "modernmachines:raw_silver",
+    "modernmachines:raw_silver",
+    "modernmachines:raw_silver",
+    "modernmachines:raw_silver",
+    "modernmachines:raw_silver"
+  ],
+  "result": {
+    "id": "modernmachines:raw_silver_block"
+  }
+}

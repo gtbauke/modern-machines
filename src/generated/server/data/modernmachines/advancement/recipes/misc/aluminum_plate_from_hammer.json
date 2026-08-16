@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_aluminum": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:aluminum_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modernmachines:aluminum_plate_from_hammer"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_aluminum"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modernmachines:aluminum_plate_from_hammer"
+    ]
+  }
+}

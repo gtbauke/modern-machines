@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "modernmachines:uranium_ingot"
+  },
+  "pattern": [
+    "I",
+    "I"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modernmachines:uranium_rod"
+  }
+}

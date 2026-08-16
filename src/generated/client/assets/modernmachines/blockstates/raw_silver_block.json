@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "modernmachines:block/template/raw_storage_block"
+    }
+  }
+}

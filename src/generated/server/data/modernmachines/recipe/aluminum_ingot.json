@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:aluminum_nugget",
+    "modernmachines:aluminum_nugget",
+    "modernmachines:aluminum_nugget",
+    "modernmachines:aluminum_nugget",
+    "modernmachines:aluminum_nugget",
+    "modernmachines:aluminum_nugget",
+    "modernmachines:aluminum_nugget",
+    "modernmachines:aluminum_nugget",
+    "modernmachines:aluminum_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:aluminum_ingot"
+  }
+}

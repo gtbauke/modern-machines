@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_iron": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:iron_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modernmachines:iron_ingot_blasting_1"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_iron"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modernmachines:iron_ingot_blasting_1"
+    ]
+  }
+}

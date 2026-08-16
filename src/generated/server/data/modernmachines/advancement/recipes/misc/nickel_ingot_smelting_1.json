@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nickel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:nickel_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modernmachines:nickel_ingot_smelting_1"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_nickel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modernmachines:nickel_ingot_smelting_1"
+    ]
+  }
+}

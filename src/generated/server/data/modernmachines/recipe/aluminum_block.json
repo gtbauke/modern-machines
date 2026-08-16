@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:aluminum_ingot",
+    "modernmachines:aluminum_ingot",
+    "modernmachines:aluminum_ingot",
+    "modernmachines:aluminum_ingot",
+    "modernmachines:aluminum_ingot",
+    "modernmachines:aluminum_ingot",
+    "modernmachines:aluminum_ingot",
+    "modernmachines:aluminum_ingot",
+    "modernmachines:aluminum_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:aluminum_block"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:bronze_nugget",
+    "modernmachines:bronze_nugget",
+    "modernmachines:bronze_nugget",
+    "modernmachines:bronze_nugget",
+    "modernmachines:bronze_nugget",
+    "modernmachines:bronze_nugget",
+    "modernmachines:bronze_nugget",
+    "modernmachines:bronze_nugget",
+    "modernmachines:bronze_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:bronze_ingot"
+  }
+}

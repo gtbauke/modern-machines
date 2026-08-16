@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 0.7,
+  "ingredient": "modernmachines:netherite_dust",
+  "result": {
+    "id": "minecraft:netherite_ingot"
+  }
+}

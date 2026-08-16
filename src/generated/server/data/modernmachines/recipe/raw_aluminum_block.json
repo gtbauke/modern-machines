@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:raw_aluminum",
+    "modernmachines:raw_aluminum",
+    "modernmachines:raw_aluminum",
+    "modernmachines:raw_aluminum",
+    "modernmachines:raw_aluminum",
+    "modernmachines:raw_aluminum",
+    "modernmachines:raw_aluminum",
+    "modernmachines:raw_aluminum",
+    "modernmachines:raw_aluminum"
+  ],
+  "result": {
+    "id": "modernmachines:raw_aluminum_block"
+  }
+}

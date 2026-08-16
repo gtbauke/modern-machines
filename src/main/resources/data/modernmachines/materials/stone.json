@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:stone",
+  "color": "#7F7F7F",
+  "head": {
+    "durability": 131,
+    "mining_speed": 4.0,
+    "attack_damage": 1.5,
+    "harvest_tier": "stone"
+  },
+  "handle": {
+    "durability_multiplier": 0.8,
+    "mining_speed_multiplier": 0.9,
+    "attack_speed_bonus": -0.1
+  },
+  "binding": {
+    "bonus_durability": 40
+  },
+  "attachment": {
+    "bonus_durability": 50,
+    "attack_damage_bonus": 0.4
+  },
+  "traits": [
+    {
+      "id": "modernmachines:cheap",
+      "level": 1
+    }
+  ]
+}

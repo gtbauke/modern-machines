@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "modernmachines:item/template/part/hoe_head",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -3309774
+      }
+    ]
+  }
+}

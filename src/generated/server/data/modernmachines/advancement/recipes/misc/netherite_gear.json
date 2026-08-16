@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_netherite_plate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:netherite_plate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modernmachines:netherite_gear"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_netherite_plate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modernmachines:netherite_gear"
+    ]
+  }
+}

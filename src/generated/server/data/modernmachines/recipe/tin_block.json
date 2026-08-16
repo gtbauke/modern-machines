@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:tin_ingot",
+    "modernmachines:tin_ingot",
+    "modernmachines:tin_ingot",
+    "modernmachines:tin_ingot",
+    "modernmachines:tin_ingot",
+    "modernmachines:tin_ingot",
+    "modernmachines:tin_ingot",
+    "modernmachines:tin_ingot",
+    "modernmachines:tin_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:tin_block"
+  }
+}

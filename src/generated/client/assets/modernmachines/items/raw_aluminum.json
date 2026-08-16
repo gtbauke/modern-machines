@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "modernmachines:item/template/raw_ore",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -2300692
+      }
+    ]
+  }
+}

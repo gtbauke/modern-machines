@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "modernmachines:basic_alloy_smelter_controller"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "modernmachines:blocks/basic_alloy_smelter_controller"
+}

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.7,
+  "ingredient": "modernmachines:raw_nickel",
+  "result": {
+    "id": "modernmachines:nickel_ingot"
+  }
+}

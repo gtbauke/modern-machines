@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:constantan",
+  "color": "#D98A5B",
+  "head": {
+    "durability": 400,
+    "mining_speed": 6.2,
+    "attack_damage": 2.0,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 1.1,
+    "mining_speed_multiplier": 1.05,
+    "attack_speed_bonus": 0.0
+  },
+  "binding": {
+    "bonus_durability": 110
+  },
+  "attachment": {
+    "bonus_durability": 130,
+    "attack_damage_bonus": 0.8
+  },
+  "traits": [
+    {
+      "id": "modernmachines:thermal_resistance",
+      "level": 1
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:nickel_ingot",
+    "modernmachines:nickel_ingot",
+    "modernmachines:nickel_ingot",
+    "modernmachines:nickel_ingot",
+    "modernmachines:nickel_ingot",
+    "modernmachines:nickel_ingot",
+    "modernmachines:nickel_ingot",
+    "modernmachines:nickel_ingot",
+    "modernmachines:nickel_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:nickel_block"
+  }
+}

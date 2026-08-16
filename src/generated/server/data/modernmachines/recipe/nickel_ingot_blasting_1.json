@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 0.7,
+  "ingredient": "modernmachines:nickel_ore",
+  "result": {
+    "id": "modernmachines:nickel_ingot"
+  }
+}

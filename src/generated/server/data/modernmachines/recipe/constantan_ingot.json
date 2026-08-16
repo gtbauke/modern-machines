@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:constantan_nugget",
+    "modernmachines:constantan_nugget",
+    "modernmachines:constantan_nugget",
+    "modernmachines:constantan_nugget",
+    "modernmachines:constantan_nugget",
+    "modernmachines:constantan_nugget",
+    "modernmachines:constantan_nugget",
+    "modernmachines:constantan_nugget",
+    "modernmachines:constantan_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:constantan_ingot"
+  }
+}

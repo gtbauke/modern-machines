@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_invar_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:invar_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:invar_nugget_from_invar_ingot"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_invar_ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:invar_nugget_from_invar_ingot"
+    ]
+  }
+}

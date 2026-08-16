@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bronze_gear": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:bronze_gear"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modernmachines:speed_upgrade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bronze_gear"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modernmachines:speed_upgrade"
+    ]
+  }
+}

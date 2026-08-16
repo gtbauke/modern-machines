@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:bronze",
+  "color": "#D18E42",
+  "head": {
+    "durability": 450,
+    "mining_speed": 6.5,
+    "attack_damage": 2.2,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 1.15,
+    "mining_speed_multiplier": 1.05,
+    "attack_speed_bonus": 0.0
+  },
+  "binding": {
+    "bonus_durability": 120
+  },
+  "attachment": {
+    "bonus_durability": 140,
+    "attack_damage_bonus": 0.9
+  },
+  "traits": [
+    {
+      "id": "modernmachines:resilient",
+      "level": 1
+    }
+  ]
+}

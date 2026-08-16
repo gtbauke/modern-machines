@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:nickel",
+  "color": "#C5BFA7",
+  "head": {
+    "durability": 300,
+    "mining_speed": 6.0,
+    "attack_damage": 2.0,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 1.15,
+    "mining_speed_multiplier": 1.0,
+    "attack_speed_bonus": 0.0
+  },
+  "binding": {
+    "bonus_durability": 100
+  },
+  "attachment": {
+    "bonus_durability": 120,
+    "attack_damage_bonus": 0.8
+  },
+  "traits": [
+    {
+      "id": "modernmachines:tough",
+      "level": 1
+    }
+  ]
+}

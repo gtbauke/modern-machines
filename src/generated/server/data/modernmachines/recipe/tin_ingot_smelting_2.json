@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.6,
+  "ingredient": "modernmachines:deepslate_tin_ore",
+  "result": {
+    "id": "modernmachines:tin_ingot"
+  }
+}

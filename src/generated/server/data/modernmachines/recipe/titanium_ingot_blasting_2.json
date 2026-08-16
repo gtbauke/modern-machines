@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 1.5,
+  "ingredient": "modernmachines:deepslate_titanium_ore",
+  "result": {
+    "id": "modernmachines:titanium_ingot"
+  }
+}

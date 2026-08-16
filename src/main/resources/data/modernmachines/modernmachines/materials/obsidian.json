@@ -1,0 +1,34 @@
+{
+  "material": "minecraft:obsidian",
+  "display_name": "Obsidian",
+  "color": "#20182E",
+  "ingredient": {
+    "item": "minecraft:obsidian"
+  },
+  "head": {
+    "durability": 1200,
+    "mining_speed": 4.5,
+    "attack_damage": 3.5,
+    "harvest_tier": "diamond"
+  },
+  "handle": {
+    "durability_multiplier": 1.4,
+    "mining_speed_multiplier": 0.85,
+    "attack_speed_bonus": -0.1
+  },
+  "binding": {
+    "bonus_durability": 180
+  },
+  "attachment": {
+    "bonus_durability": 90,
+    "attack_damage_bonus": 1.5,
+    "speed_bonus": -0.1
+  },
+  "traits": [
+    {
+      "id": "modernmachines:blast_resistant",
+      "level": 1,
+      "description": "High resistance to explosive wear"
+    }
+  ]
+}

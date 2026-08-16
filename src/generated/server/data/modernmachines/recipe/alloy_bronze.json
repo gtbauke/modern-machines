@@ -1,0 +1,18 @@
+{
+  "type": "modernmachines:alloy_smelting",
+  "energy": 3000,
+  "inputs": [
+    {
+      "count": 3,
+      "ingredient": "#c:ingots/copper"
+    },
+    {
+      "count": 1,
+      "ingredient": "#c:ingots/tin"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "modernmachines:bronze_ingot"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "modernmachines:alloy_smelting",
+  "cooking_time": 240,
+  "energy": 3000,
+  "inputs": [
+    {
+      "count": 1,
+      "ingredient": "#c:ingots/iron"
+    },
+    {
+      "count": 1,
+      "ingredient": "#minecraft:coals"
+    }
+  ],
+  "result": {
+    "id": "modernmachines:steel_ingot"
+  }
+}

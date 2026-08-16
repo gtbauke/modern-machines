@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:uranium_nugget",
+    "modernmachines:uranium_nugget",
+    "modernmachines:uranium_nugget",
+    "modernmachines:uranium_nugget",
+    "modernmachines:uranium_nugget",
+    "modernmachines:uranium_nugget",
+    "modernmachines:uranium_nugget",
+    "modernmachines:uranium_nugget",
+    "modernmachines:uranium_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:uranium_ingot"
+  }
+}

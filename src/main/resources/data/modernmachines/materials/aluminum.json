@@ -1,0 +1,28 @@
+{
+  "material": "modernmachines:aluminum",
+  "color": "#CBD7DB",
+  "head": {
+    "durability": 280,
+    "mining_speed": 7.5,
+    "attack_damage": 1.8,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 1.1,
+    "mining_speed_multiplier": 1.15,
+    "attack_speed_bonus": 0.1
+  },
+  "binding": {
+    "bonus_durability": 85
+  },
+  "attachment": {
+    "bonus_durability": 100,
+    "attack_damage_bonus": 0.7
+  },
+  "traits": [
+    {
+      "id": "modernmachines:aerodynamic",
+      "level": 1
+    }
+  ]
+}

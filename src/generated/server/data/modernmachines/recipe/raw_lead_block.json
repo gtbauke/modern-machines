@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:raw_lead",
+    "modernmachines:raw_lead",
+    "modernmachines:raw_lead",
+    "modernmachines:raw_lead",
+    "modernmachines:raw_lead",
+    "modernmachines:raw_lead",
+    "modernmachines:raw_lead",
+    "modernmachines:raw_lead",
+    "modernmachines:raw_lead"
+  ],
+  "result": {
+    "id": "modernmachines:raw_lead_block"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "values": [
+    "#c:nuggets/iron",
+    "#c:nuggets/gold",
+    "#c:nuggets/copper",
+    "#c:nuggets/tin",
+    "#c:nuggets/lead",
+    "#c:nuggets/silver",
+    "#c:nuggets/nickel",
+    "#c:nuggets/aluminum",
+    "#c:nuggets/uranium",
+    "#c:nuggets/titanium",
+    "#c:nuggets/bronze",
+    "#c:nuggets/steel",
+    "#c:nuggets/invar",
+    "#c:nuggets/electrum",
+    "#c:nuggets/constantan"
+  ]
+}

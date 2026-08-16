@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:nickel_nugget",
+    "modernmachines:nickel_nugget",
+    "modernmachines:nickel_nugget",
+    "modernmachines:nickel_nugget",
+    "modernmachines:nickel_nugget",
+    "modernmachines:nickel_nugget",
+    "modernmachines:nickel_nugget",
+    "modernmachines:nickel_nugget",
+    "modernmachines:nickel_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:nickel_ingot"
+  }
+}

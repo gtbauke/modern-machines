@@ -1,0 +1,182 @@
+package io.github.gtbauke.modernmachines.datagen;
+
+import io.github.gtbauke.modernmachines.ModernMachines;
+import io.github.gtbauke.modernmachines.api.modular.PartSlot;
+import io.github.gtbauke.modernmachines.api.modular.ToolPartType;
+import io.github.gtbauke.modernmachines.api.resource.Material;
+import io.github.gtbauke.modernmachines.api.resource.ResourceForm;
+import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
+import io.github.gtbauke.modernmachines.core.registry.ModItems;
+import io.github.gtbauke.modernmachines.core.registry.ModMaterials;
+import net.minecraft.data.PackOutput;
+import net.neoforged.neoforge.common.data.LanguageProvider;
+
+public class ModLanguageProvider extends LanguageProvider {
+
+    public ModLanguageProvider(PackOutput output) {
+        super(output, ModernMachines.MOD_ID, "en_us");
+    }
+
+    @Override
+    protected void addTranslations() {
+        // Creative tabs
+        add("itemGroup.modernmachines.materials", "Modern Machines: Materials");
+
+        // Workstations
+        addBlock(ModBlocks.PART_BUILDER, "Part Builder");
+        addBlock(ModBlocks.TINKERING_TABLE, "Tinkering Table");
+        addBlock(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER, "Basic Alloy Smelter Controller");
+        addBlock(ModBlocks.BASIC_ALLOY_SMELTER_HEATER, "Basic Alloy Smelter Heater");
+        addBlock(ModBlocks.ENGINEERS_TERMINAL, "Engineer's Terminal");
+        addItem(ModItems.ENGINEERS_TABLET, "Engineer's Tablet");
+        add("container.modernmachines.part_builder", "Part Builder");
+        add("container.modernmachines.tinkering_table", "Tinkering Table");
+        add("container.modernmachines.basic_alloy_smelter", "Basic Alloy Smelter");
+        add("container.modernmachines.alloy_smelter", "Basic Alloy Smelter");
+        add("container.modernmachines.engineers_terminal", "Engineer's Terminal");
+
+        // Upgrades
+        addItem(ModItems.SPEED_UPGRADE, "Speed Upgrade");
+        addItem(ModItems.ENERGY_EFFICIENCY_UPGRADE, "Energy Efficiency Upgrade");
+        add("gui.modernmachines.upgrades", "Upgrades");
+        add("stat.modernmachines.speed", "Processing Speed");
+        add("stat.modernmachines.energy_efficiency", "Energy Efficiency");
+        add("stat.modernmachines.energy_capacity", "Energy Capacity");
+        add("tooltip.modernmachines.upgrade.speed_boost", "Speed: %s");
+        add("tooltip.modernmachines.upgrade.energy_cost_penalty", "Energy Cost: %s");
+        add("tooltip.modernmachines.upgrade.energy_efficiency_boost", "Energy Efficiency: %s");
+        add("tooltip.modernmachines.upgrade.max_stack", "Max Upgrades per slot: %d");
+
+        // Crafting Tools
+        addItem(ModItems.ENGINEER_HAMMER, "Engineer's Hammer");
+        addItem(ModItems.WIRE_CUTTER, "Wire Cutters");
+
+        // Patterns
+        addItem(ModItems.BLANK_PATTERN, "Blank Pattern");
+        addItem(ModItems.PICKAXE_HEAD_PATTERN, "Pickaxe Head Pattern");
+        addItem(ModItems.AXE_HEAD_PATTERN, "Axe Head Pattern");
+        addItem(ModItems.SHOVEL_HEAD_PATTERN, "Shovel Head Pattern");
+        addItem(ModItems.SWORD_BLADE_PATTERN, "Sword Blade Pattern");
+        addItem(ModItems.HOE_HEAD_PATTERN, "Hoe Head Pattern");
+        addItem(ModItems.HANDLE_PATTERN, "Handle Pattern");
+        addItem(ModItems.BINDING_PATTERN, "Binding Pattern");
+        addItem(ModItems.TIP_PATTERN, "Tip Pattern");
+        addItem(ModItems.GRIP_PATTERN, "Grip Pattern");
+
+        // Modular Tools
+        addItem(ModItems.MODULAR_PICKAXE, "Modular Pickaxe");
+        addItem(ModItems.MODULAR_AXE, "Modular Axe");
+        addItem(ModItems.MODULAR_SHOVEL, "Modular Shovel");
+        addItem(ModItems.MODULAR_SWORD, "Modular Sword");
+        addItem(ModItems.MODULAR_HOE, "Modular Hoe");
+
+        // Tool Parts
+        for (Material material : ModMaterials.getAllMaterials()) {
+            for (ToolPartType partType : ToolPartType.values()) {
+                String regName = partType.getSerializedName() + "_" + material.name();
+                String partName = formatPartName(partType, material);
+                add("item.modernmachines." + regName, partName);
+            }
+        }
+
+        // Part Slots & Types
+        for (PartSlot slot : PartSlot.values()) {
+            add("part_slot.modernmachines." + slot.getSerializedName(), capitalize(slot.getSerializedName()));
+        }
+        for (ToolPartType type : ToolPartType.values()) {
+            add("part_type.modernmachines." + type.getSerializedName(), capitalize(type.getSerializedName().replace("_", " ")));
+        }
+
+        // Tooltips & Stats
+        add("tooltip.modernmachines.unassembled_tool", "Unassembled Modular Tool");
+        add("tooltip.modernmachines.part_material", "Material: %s");
+        add("tooltip.modernmachines.stat.durability", "Durability: +%d");
+        add("tooltip.modernmachines.stat.durability_ratio", "Durability: %d / %d");
+        add("tooltip.modernmachines.stat.mining_speed", "Mining Speed: %s");
+        add("tooltip.modernmachines.stat.attack_damage", "Attack Damage: %s");
+        add("tooltip.modernmachines.stat.harvest_tier", "Harvest Tier: %s");
+        add("tooltip.modernmachines.stat.durability_mult", "Durability Multiplier: %s");
+        add("tooltip.modernmachines.stat.speed_mult", "Mining Speed Multiplier: %s");
+        add("tooltip.modernmachines.stat.bonus_durability", "Durability Bonus: +%d");
+        add("tooltip.modernmachines.stat.attack_bonus", "Attack Damage: %s");
+        add("tooltip.modernmachines.pattern_for", "Carves: %s");
+        add("tooltip.modernmachines.material_cost", "Material Cost: %d");
+        add("tooltip.modernmachines.blank_pattern_desc", "Can be carved into any tool pattern");
+        add("tooltip.modernmachines.parts_header", "Tool Parts:");
+        add("tooltip.modernmachines.stats_header", "Tool Stats:");
+        add("tooltip.modernmachines.traits_header", "Material Traits:");
+        add("tooltip.modernmachines.modifiers_header", "Modifiers (%d / %d):");
+
+        // Traits
+        add("trait.modernmachines.magnetic", "Magnetic");
+        add("trait.modernmachines.conductive", "Conductive");
+        add("trait.modernmachines.crystal_sharp", "Crystal Sharp");
+        add("trait.modernmachines.fireproof", "Fireproof");
+        add("trait.modernmachines.reinforced", "Reinforced");
+        add("trait.modernmachines.lightweight", "Lightweight");
+        add("trait.modernmachines.heavy", "Heavy");
+        add("trait.modernmachines.purifying", "Purifying");
+        add("trait.modernmachines.tough", "Tough");
+        add("trait.modernmachines.aerodynamic", "Aerodynamic");
+        add("trait.modernmachines.radioactive", "Radioactive");
+        add("trait.modernmachines.resilient", "Resilient");
+        add("trait.modernmachines.sharp", "Sharp");
+        add("trait.modernmachines.temperproof", "Temperproof");
+        add("trait.modernmachines.energized", "Energized");
+        add("trait.modernmachines.thermal_resistance", "Thermal Resistance");
+        add("trait.modernmachines.splintering", "Splintering");
+        add("trait.modernmachines.cheap", "Cheap");
+        add("trait.modernmachines.jagged", "Jagged");
+        add("trait.modernmachines.fracture", "Fracture");
+        add("trait.modernmachines.lucky", "Lucky");
+
+        // Modifiers
+        add("modifier.modernmachines.haste", "Haste (Redstone)");
+        add("modifier.modernmachines.luck", "Luck (Lapis Lazuli)");
+        add("modifier.modernmachines.sharpness", "Sharpness (Quartz)");
+        add("modifier.modernmachines.diamond", "Reinforcement (Diamond)");
+        add("modifier.modernmachines.reinforced", "Fireproof (Netherite)");
+
+        // Material translation keys
+        for (Material material : ModMaterials.getAllMaterials()) {
+            add("material.modernmachines." + material.name(), material.displayName());
+            for (ResourceForm form : material.supportedForms()) {
+                if (material.isRegisteredLocally(form)) {
+                    String englishName = form.getEnglishName(material.displayName());
+                    if (form.isBlock()) {
+                        addBlock(material.getDeferredBlock(form), englishName);
+                    } else if (form.isItem()) {
+                        addItem(material.getDeferredItem(form), englishName);
+                    }
+                }
+            }
+        }
+    }
+
+    private String formatPartName(ToolPartType type, Material material) {
+        String matName = material.displayName();
+        return switch (type) {
+            case PICKAXE_HEAD -> matName + " Pickaxe Head";
+            case AXE_HEAD -> matName + " Axe Head";
+            case SHOVEL_HEAD -> matName + " Shovel Head";
+            case SWORD_BLADE -> matName + " Sword Blade";
+            case HOE_HEAD -> matName + " Hoe Head";
+            case HANDLE -> matName + " Tool Handle";
+            case BINDING -> matName + " Tool Binding";
+            case TIP -> matName + " Tool Tip";
+            case GRIP -> matName + " Tool Grip";
+        };
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        String[] words = str.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (String w : words) {
+            if (!w.isEmpty()) {
+                sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1).toLowerCase()).append(" ");
+            }
+        }
+        return sb.toString().trim();
+    }
+}
