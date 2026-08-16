@@ -99,11 +99,11 @@ public class AlloySmelterScreen extends ModularContainerScreen<AlloySmelterMenu>
             );
             winContent.setSize(new Size(winWidth, winHeight - 18));
 
-            // Floating Draggable Upgrade Window (80 x 72 px)
+            // Floating Draggable Upgrade Window (80 x 72 px, positioned on left of main screen)
             Window upgradeWindow = new Window(
                 Component.literal("Upgrades"),
                 new Bounds(
-                    new Position(this.mainWindow.getPosition().x() + this.mainWindow.getSize().width() + 4, this.mainWindow.getPosition().y()),
+                    new Position(this.mainWindow.getPosition().x() - winWidth - 4, this.mainWindow.getPosition().y()),
                     new Size(winWidth, winHeight)
                 ),
                 new Padding(0)
@@ -117,15 +117,15 @@ public class AlloySmelterScreen extends ModularContainerScreen<AlloySmelterMenu>
 
             this.windowManager.addWindow(upgradeWindow);
 
-            // Side Tab to toggle the Upgrade Window
+            // Left-sided Tab docked at the very top of the main window (0 gap)
             SideTabElement tab = new SideTabElement(
                 this.mainWindow,
                 upgradeWindow,
                 new ItemStack(ModItems.SPEED_UPGRADE.get()),
                 Component.literal("Upgrades"),
-                false
+                true // left-sided
             );
-            tab.updateDockedPosition(6);
+            tab.updateDockedPosition(0); // 0 gap at top
             this.mainWindow.addChild(tab);
         }
     }

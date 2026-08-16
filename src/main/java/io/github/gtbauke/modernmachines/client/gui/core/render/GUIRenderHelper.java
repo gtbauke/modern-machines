@@ -12,9 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class GUIRenderHelper {
+    public static final int VANILLA_BG = 0xFFC6C6C6;
     public static final int VANILLA_SLOT_BG = 0xFF8B8B8B;
     public static final int VANILLA_SLOT_DARK = 0xFF373737;
     public static final int VANILLA_SLOT_LIGHT = 0xFFFFFFFF;
+    public static final int VANILLA_BORDER_DARK = 0xFF373737;
+    public static final int VANILLA_BORDER_SHADOW = 0xFF555555;
+    public static final int VANILLA_BORDER_LIGHT = 0xFFFFFFFF;
 
     public static void drawRect(GuiGraphicsExtractor graphics, Bounds bounds, int color) {
         graphics.fill(bounds.position().x(), bounds.position().y(), bounds.right(), bounds.bottom(), color);
@@ -78,6 +82,43 @@ public class GUIRenderHelper {
         // Bottom & Right light highlight (#FFFFFF)
         graphics.fill(x + 1, bottom - 1, right, bottom, VANILLA_SLOT_LIGHT);
         graphics.fill(right - 1, y + 1, right, bottom, VANILLA_SLOT_LIGHT);
+    }
+
+    public static void drawVanillaTab(GuiGraphicsExtractor graphics, Bounds bounds, boolean leftSided) {
+        int x = bounds.position().x();
+        int y = bounds.position().y();
+        int right = bounds.right();
+        int bottom = bounds.bottom();
+
+        if (!leftSided) {
+            // Right-sided tab
+            // 1. Background fill
+            graphics.fill(x, y + 1, right - 1, bottom - 1, VANILLA_BG);
+
+            // 2. Dark outer outline (#373737)
+            graphics.fill(x, y, right - 1, y + 1, VANILLA_BORDER_DARK);              // Top outer
+            graphics.fill(right - 1, y + 1, right, bottom - 1, VANILLA_BORDER_DARK);  // Right outer
+            graphics.fill(x, bottom - 1, right - 1, bottom, VANILLA_BORDER_DARK);     // Bottom outer
+
+            // 3. Inner 3D highlight & shadow
+            graphics.fill(x, y + 1, right - 2, y + 2, VANILLA_BORDER_LIGHT);          // Top inner light
+            graphics.fill(right - 2, y + 2, right - 1, bottom - 2, VANILLA_BORDER_SHADOW); // Right inner shadow
+            graphics.fill(x, bottom - 2, right - 2, bottom - 1, VANILLA_BORDER_SHADOW);    // Bottom inner shadow
+        } else {
+            // Left-sided tab
+            // 1. Background fill
+            graphics.fill(x + 1, y + 1, right, bottom - 1, VANILLA_BG);
+
+            // 2. Dark outer outline (#373737)
+            graphics.fill(x + 1, y, right, y + 1, VANILLA_BORDER_DARK);              // Top outer
+            graphics.fill(x, y + 1, x + 1, bottom - 1, VANILLA_BORDER_DARK);          // Left outer
+            graphics.fill(x + 1, bottom - 1, right, bottom, VANILLA_BORDER_DARK);     // Bottom outer
+
+            // 3. Inner 3D highlight & shadow
+            graphics.fill(x + 2, y + 1, right, y + 2, VANILLA_BORDER_LIGHT);          // Top inner light
+            graphics.fill(x + 1, y + 2, x + 2, bottom - 2, VANILLA_BORDER_LIGHT);     // Left inner light
+            graphics.fill(x + 2, bottom - 2, right, bottom - 1, VANILLA_BORDER_SHADOW);    // Bottom inner shadow
+        }
     }
 
     public static void drawTooltip(GuiGraphicsExtractor graphics, Font font, List<Component> text, Position mousePosition) {
