@@ -38,13 +38,15 @@ public class HeaderControlButtonWidget extends UiWidget {
 
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, Font font, GuiTheme theme, int mouseX, int mouseY, float partialTick) {
-        if (!visible) return;
+        if (!visible) {
+            return;
+        }
+
         Bounds b = getBounds();
 
         int bgColor = hovered ? (pressed ? 0xFF1C1C26 : 0xFF353545) : 0xFF242430;
         int borderColor = hovered ? 0xFF58586E : 0xFF3A3A4A;
 
-        // Draw clean button plate
         graphics.fill(b.x(), b.y(), b.x() + b.width(), b.y() + b.height(), borderColor);
         graphics.fill(b.x() + 1, b.y() + 1, b.x() + b.width() - 1, b.y() + b.height() - 1, bgColor);
     }
@@ -63,12 +65,17 @@ public class HeaderControlButtonWidget extends UiWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!visible || !enabled || button != 0) return false;
+        if (!visible || !enabled || button != 0) {
+            return false;
+        }
+
         this.pressed = true;
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+
         if (onPress != null) {
             onPress.accept(this);
         }
+
         return true;
     }
 

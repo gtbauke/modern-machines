@@ -94,9 +94,9 @@ public abstract class ModularContainerScreen<T extends AbstractContainerMenu> ex
     /**
      * Helper to create and register a floating draggable tab window with a docked tab button on the main window.
      */
-    protected FloatingTabWindow addFloatingTab(Component title, int iconU, int iconV, int width, int height, boolean leftSided, java.util.function.Function<FloatingTabWindow, UiWidget> contentFactory) {
-        FloatingTabWindow floatingWindow = new FloatingTabWindow(title, iconU, iconV, width, height, this.mainWindow, leftSided);
-        floatingWindow.setAutoHeight(true);
+    protected FloatingTabWindow addFloatingTab(Component title, int iconU, int iconV, boolean leftSided, java.util.function.Function<FloatingTabWindow, UiWidget> contentFactory) {
+        FloatingTabWindow floatingWindow = new FloatingTabWindow(title, iconU, iconV, this.mainWindow, leftSided);
+        floatingWindow.setAutoSize(true);
         if (contentFactory != null) {
             UiWidget content = contentFactory.apply(floatingWindow);
             if (content != null) {
@@ -115,12 +115,24 @@ public abstract class ModularContainerScreen<T extends AbstractContainerMenu> ex
         return floatingWindow;
     }
 
+    protected FloatingTabWindow addFloatingTab(Component title, int iconU, int iconV, java.util.function.Function<FloatingTabWindow, UiWidget> contentFactory) {
+        return addFloatingTab(title, iconU, iconV, false, contentFactory);
+    }
+
     protected FloatingTabWindow addFloatingTab(Component title, int iconU, int iconV, int width, java.util.function.Function<FloatingTabWindow, UiWidget> contentFactory) {
-        return addFloatingTab(title, iconU, iconV, width, 100, false, contentFactory);
+        return addFloatingTab(title, iconU, iconV, false, contentFactory);
+    }
+
+    protected FloatingTabWindow addFloatingTab(Component title, int iconU, int iconV, int width, boolean leftSided, java.util.function.Function<FloatingTabWindow, UiWidget> contentFactory) {
+        return addFloatingTab(title, iconU, iconV, leftSided, contentFactory);
     }
 
     protected FloatingTabWindow addFloatingTab(Component title, int iconU, int iconV, int width, int height, java.util.function.Function<FloatingTabWindow, UiWidget> contentFactory) {
-        return addFloatingTab(title, iconU, iconV, width, height, false, contentFactory);
+        return addFloatingTab(title, iconU, iconV, false, contentFactory);
+    }
+
+    protected FloatingTabWindow addFloatingTab(Component title, int iconU, int iconV, int width, int height, boolean leftSided, java.util.function.Function<FloatingTabWindow, UiWidget> contentFactory) {
+        return addFloatingTab(title, iconU, iconV, leftSided, contentFactory);
     }
 
     @Override
@@ -135,17 +147,42 @@ public abstract class ModularContainerScreen<T extends AbstractContainerMenu> ex
     public void rebuild() {
         buildGui();
         if (mainWindow != null) {
+            mainWindow.pack();
+            this.leftPos = (this.width - mainWindow.getWindowWidth()) / 2;
+            this.topPos = (this.height - mainWindow.getWindowHeight()) / 2;
+
             mainWindow.setPosition(this.leftPos, this.topPos);
             windowManager.setMainWindow(mainWindow);
             windowManager.syncSlots(this.leftPos, this.topPos);
         }
     }
 
+    /**
+     * Override to provide the top-level declarative Scaffold (Tabs + Main Window Body).
+     */
+    protected io.github.gtbauke.modernmachines.client.gui.declarative.Scaffold buildScaffold() {
+        UiWidget content = buildContent();
+        return content != null ? io.github.gtbauke.modernmachines.client.gui.declarative.Scaffold.of(content) : null;
+    }
+
     protected void buildGui() {
         this.mainWindow = createDefaultMainWindow(this.title);
-        UiWidget content = buildContent();
-        if (content != null) {
-            this.mainWindow.getContentContainer().addChild(content);
+        io.github.gtbauke.modernmachines.client.gui.declarative.Scaffold scaffold = buildScaffold();
+        if (scaffold != null) {
+            if (scaffold.getBody() != null) {
+                this.mainWindow.getContentContainer().addChild(scaffold.getBody());
+            }
+            if (scaffold.getTabs() != null) {
+                for (io.github.gtbauke.modernmachines.client.gui.declarative.FloatingTab tab : scaffold.getTabs().getTabs()) {
+                    addFloatingTab(
+                        tab.getTitle(),
+                        tab.getIconU(),
+                        tab.getIconV(),
+                        tab.isLeftSided(),
+                        tab.getContentFactory()
+                    );
+                }
+            }
         }
     }
 

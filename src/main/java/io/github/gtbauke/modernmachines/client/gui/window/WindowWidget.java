@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 
 public class WindowWidget extends UiWidget {
     protected Component title;
+
     protected final FlexContainer headerContainer;
     protected final FlexContainer headerButtonsContainer;
     protected final FlexContainer contentContainer;
@@ -38,14 +39,23 @@ public class WindowWidget extends UiWidget {
     protected int windowWidth = 176;
     protected int windowHeight = 166;
 
-    protected boolean draggable = true;
+    protected boolean draggable = false;
     protected boolean isDragging = false;
     protected double dragOffsetX = 0;
     protected double dragOffsetY = 0;
 
-    protected boolean autoHeight = false;
+    protected boolean autoWidth = true;
+    protected boolean autoHeight = true;
+    protected int minWindowWidth = 80;
+    protected int maxWindowWidth = 600;
     protected int minWindowHeight = 40;
     protected int maxWindowHeight = 500;
+
+    public WindowWidget(Component title) {
+        this(title, 176, 166);
+        this.autoWidth = true;
+        this.autoHeight = true;
+    }
 
     public WindowWidget(Component title, int width, int height) {
         this.title = title;
@@ -93,6 +103,15 @@ public class WindowWidget extends UiWidget {
     public int getWindowWidth() { return windowWidth; }
     public int getWindowHeight() { return windowHeight; }
 
+    public WindowWidget setAutoWidth(boolean autoWidth) {
+        this.autoWidth = autoWidth;
+        return this;
+    }
+
+    public boolean isAutoWidth() {
+        return autoWidth;
+    }
+
     public WindowWidget setAutoHeight(boolean autoHeight) {
         this.autoHeight = autoHeight;
         return this;
@@ -100,6 +119,22 @@ public class WindowWidget extends UiWidget {
 
     public boolean isAutoHeight() {
         return autoHeight;
+    }
+
+    public WindowWidget setAutoSize(boolean autoSize) {
+        this.autoWidth = autoSize;
+        this.autoHeight = autoSize;
+        return this;
+    }
+
+    public WindowWidget setMinWindowWidth(int minWidth) {
+        this.minWindowWidth = minWidth;
+        return this;
+    }
+
+    public WindowWidget setMaxWindowWidth(int maxWidth) {
+        this.maxWindowWidth = maxWidth;
+        return this;
     }
 
     public WindowWidget setMinWindowHeight(int minHeight) {
@@ -112,20 +147,49 @@ public class WindowWidget extends UiWidget {
         return this;
     }
 
+    public WindowWidget setWindowControls(io.github.gtbauke.modernmachines.client.gui.declarative.WindowControls controls) {
+        this.headerButtonsContainer.clearChildren();
+        if (controls != null) {
+            for (io.github.gtbauke.modernmachines.client.gui.declarative.WindowControl c : controls.getControls()) {
+                this.headerButtonsContainer.addChild(c.createWidget());
+            }
+        }
+        pack();
+        return this;
+    }
+
     public void pack() {
         syncFlexDisplay();
-        int contentW = windowWidth - 8;
-        contentContainer.getFlexNode().setWidth(contentW);
+
+        // 1. Measure header with natural width
+        headerContainer.getFlexNode().setWidth(io.github.gtbauke.modernmachines.client.gui.layout.FlexSize.AUTO);
+        headerContainer.getFlexNode().setHeight(20);
+        headerContainer.getFlexNode().measure(2000, 20);
+        int naturalHeaderW = headerContainer.getFlexNode().getMeasuredWidth();
+
+        // 2. Measure content container unconstrained intrinsically
+        contentContainer.getFlexNode().setWidth(io.github.gtbauke.modernmachines.client.gui.layout.FlexSize.AUTO);
         contentContainer.getFlexNode().setHeight(io.github.gtbauke.modernmachines.client.gui.layout.FlexSize.AUTO);
+        contentContainer.getFlexNode().measure(2000, 2000);
 
-        headerContainer.getFlexNode().measure(windowWidth, 20);
-        contentContainer.getFlexNode().measure(contentW, 2000);
-
+        int naturalContentW = contentContainer.getFlexNode().getMeasuredWidth();
         int naturalContentH = contentContainer.getFlexNode().getMeasuredHeight();
+
+        // 3. Compute 2D auto dimensions
+        if (autoWidth) {
+            int naturalW = Math.max(naturalContentW + 8, naturalHeaderW + 16);
+            this.windowWidth = Math.max(minWindowWidth, Math.min(maxWindowWidth, naturalW));
+        }
         if (autoHeight) {
             int naturalH = 20 + naturalContentH + 8;
             this.windowHeight = Math.max(minWindowHeight, Math.min(maxWindowHeight, naturalH));
         }
+
+        // 4. Layout header and content with final resolved window bounds
+        headerContainer.getFlexNode().setWidth(this.windowWidth);
+        int finalContentW = this.windowWidth - 8;
+        contentContainer.getFlexNode().setWidth(finalContentW);
+        contentContainer.getFlexNode().setHeight(this.windowHeight - 28);
 
         flexNode.setSize(windowWidth, windowHeight);
         flexNode.measure(windowWidth, windowHeight);

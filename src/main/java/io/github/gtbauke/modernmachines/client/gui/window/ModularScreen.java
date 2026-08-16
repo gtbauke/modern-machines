@@ -39,6 +39,7 @@ public abstract class ModularScreen extends Screen {
         if (windowManager.mouseClicked(event.x(), event.y(), event.button())) {
             return true;
         }
+
         return super.mouseClicked(event, doubleClick);
     }
 
@@ -47,6 +48,7 @@ public abstract class ModularScreen extends Screen {
         if (windowManager.mouseReleased(event.x(), event.y(), event.button())) {
             return true;
         }
+
         return super.mouseReleased(event);
     }
 
@@ -55,6 +57,7 @@ public abstract class ModularScreen extends Screen {
         if (windowManager.mouseDragged(event.x(), event.y(), event.button(), dx, dy)) {
             return true;
         }
+
         return super.mouseDragged(event, dx, dy);
     }
 
@@ -63,6 +66,7 @@ public abstract class ModularScreen extends Screen {
         if (windowManager.mouseScrolled(x, y, scrollX, scrollY)) {
             return true;
         }
+
         return super.mouseScrolled(x, y, scrollX, scrollY);
     }
 

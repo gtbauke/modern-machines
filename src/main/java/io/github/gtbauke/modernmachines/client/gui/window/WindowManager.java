@@ -6,13 +6,16 @@ import java.util.List;
 
 import io.github.gtbauke.modernmachines.client.gui.render.GuiRenderHelper;
 import io.github.gtbauke.modernmachines.client.gui.theme.GuiTheme;
+import io.github.gtbauke.modernmachines.client.gui.widget.SlotWidget;
 import io.github.gtbauke.modernmachines.client.gui.widget.UiWidget;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
 
 public class WindowManager {
     private final List<WindowWidget> windows = new ArrayList<>();
+
     private WindowWidget mainWindow;
     private GuiTheme theme = GuiTheme.INDUSTRIAL_DARK;
 
@@ -38,9 +41,10 @@ public class WindowManager {
         if (this.mainWindow != null) {
             windows.remove(this.mainWindow);
         }
+
         this.mainWindow = mainWindow;
         if (mainWindow != null && !windows.contains(mainWindow)) {
-            windows.add(0, mainWindow);
+            windows.addFirst(mainWindow);
         }
     }
 
@@ -87,16 +91,18 @@ public class WindowManager {
         if (widget instanceof io.github.gtbauke.modernmachines.client.gui.widget.SlotWidget slotWidget) {
             slotWidget.syncSlotPosition(screenLeft, screenTop);
         }
+
         for (UiWidget child : widget.getChildren()) {
             syncSlotsRecursive(child, screenLeft, screenTop);
         }
     }
 
     private void hideSlotsRecursive(UiWidget widget) {
-        if (widget instanceof io.github.gtbauke.modernmachines.client.gui.widget.SlotWidget slotWidget) {
+        if (widget instanceof SlotWidget slotWidget) {
             slotWidget.getSlot().x = -9999;
             slotWidget.getSlot().y = -9999;
         }
+
         for (UiWidget child : widget.getChildren()) {
             hideSlotsRecursive(child);
         }
@@ -104,7 +110,7 @@ public class WindowManager {
 
     @FunctionalInterface
     public interface SlotRenderer {
-        void renderSlot(GuiGraphicsExtractor graphics, net.minecraft.world.inventory.Slot slot, int mouseX, int mouseY);
+        void renderSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY);
     }
 
     public void renderWindows(GuiGraphicsExtractor graphics, Font font, int mouseX, int mouseY, float partialTick) {
@@ -114,12 +120,15 @@ public class WindowManager {
     public void renderWindows(GuiGraphicsExtractor graphics, Font font, int mouseX, int mouseY, float partialTick, SlotRenderer slotRenderer) {
         for (WindowWidget window : windows) {
             window.updateHoverState(mouseX, mouseY);
+
             if (window.isVisible()) {
                 window.extractBackground(graphics, font, theme, mouseX, mouseY, partialTick);
                 window.extractForeground(graphics, font, theme, mouseX, mouseY, partialTick);
+
                 if (slotRenderer != null) {
                     for (io.github.gtbauke.modernmachines.client.gui.widget.SlotWidget sw : window.getSlotWidgets()) {
-                        net.minecraft.world.inventory.Slot s = sw.getSlot();
+                        Slot s = sw.getSlot();
+
                         if (s != null && s.x > -9000) {
                             slotRenderer.renderSlot(graphics, s, mouseX, mouseY);
                         }
@@ -140,8 +149,10 @@ public class WindowManager {
     public void extractTooltip(GuiGraphicsExtractor graphics, Font font, int mouseX, int mouseY) {
         for (int i = windows.size() - 1; i >= 0; i--) {
             WindowWidget window = windows.get(i);
+
             if (window.isVisible()) {
                 List<Component> tooltip = window.getTooltip(mouseX, mouseY);
+
                 if (!tooltip.isEmpty()) {
                     GuiRenderHelper.drawTooltip(graphics, font, tooltip, mouseX, mouseY);
                     return;
@@ -153,6 +164,7 @@ public class WindowManager {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (int i = windows.size() - 1; i >= 0; i--) {
             WindowWidget window = windows.get(i);
+
             if (window.isVisible() && window.isEnabled()) {
                 if (window.mouseClicked(mouseX, mouseY, button)) {
                     bringToFront(window);
@@ -160,36 +172,43 @@ public class WindowManager {
                 }
             }
         }
+
         return false;
     }
 
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         for (int i = windows.size() - 1; i >= 0; i--) {
             WindowWidget window = windows.get(i);
+
             if (window.isVisible() && window.mouseReleased(mouseX, mouseY, button)) {
                 return true;
             }
         }
+
         return false;
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         for (int i = windows.size() - 1; i >= 0; i--) {
             WindowWidget window = windows.get(i);
+
             if (window.isVisible() && window.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
                 return true;
             }
         }
+
         return false;
     }
 
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         for (int i = windows.size() - 1; i >= 0; i--) {
             WindowWidget window = windows.get(i);
+
             if (window.isVisible() && window.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
                 return true;
             }
         }
+
         return false;
     }
 }

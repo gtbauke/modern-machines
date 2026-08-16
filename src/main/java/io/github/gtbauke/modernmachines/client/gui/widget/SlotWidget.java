@@ -40,6 +40,7 @@ public class SlotWidget extends UiWidget {
     private final Slot slot;
     private final int slotIndex;
     private boolean drawInsetWell = true;
+    private io.github.gtbauke.modernmachines.client.gui.declarative.GhostIcons.GhostIcon ghostIcon = null;
 
     public SlotWidget(Slot slot) {
         this.slot = slot;
@@ -55,6 +56,16 @@ public class SlotWidget extends UiWidget {
         SlotWidget widget = new SlotWidget(slot);
         widget.setDrawInsetWell(drawInsetWell);
         return widget;
+    }
+
+    public SlotWidget ghostIcon(io.github.gtbauke.modernmachines.client.gui.declarative.GhostIcons.GhostIcon icon) {
+        this.ghostIcon = icon;
+        return this;
+    }
+
+    public SlotWidget ghostIcon(int u, int v) {
+        this.ghostIcon = new io.github.gtbauke.modernmachines.client.gui.declarative.GhostIcons.GhostIcon(u, v);
+        return this;
     }
 
     public Slot getSlot() {
@@ -99,6 +110,10 @@ public class SlotWidget extends UiWidget {
 
         if (drawInsetWell) {
             NineSliceRenderer.drawNineSlice(graphics, NineSliceRenderer.SLOT, b);
+        }
+
+        if (ghostIcon != null && (slot == null || !slot.hasItem())) {
+            graphics.blit(RenderPipelines.GUI_TEXTURED, NineSliceRenderer.GUI_ATLAS, b.x() + 1, b.y() + 1, (float) ghostIcon.u(), (float) ghostIcon.v(), 16, 16, 256, 256);
         }
 
         if (hovered) {
