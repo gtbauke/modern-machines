@@ -31,6 +31,7 @@ public class ModernMachines {
 
     public ModernMachines(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(ModBlockEntities::registerCapabilities);
 
         // Initialize materials before deferred registers
         ModMaterials.init();

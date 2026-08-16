@@ -98,6 +98,7 @@ public class Window extends UIElement {
         if (this.visible != visible) {
             this.visible = visible;
             markDirty();
+            calculateSize();
             calculateLayout();
         }
         return this;
@@ -149,10 +150,8 @@ public class Window extends UIElement {
     public boolean handleChildClick(double mouseX, double mouseY, int button) {
         if (!visible) return false;
         for (UIElement child : children) {
-            if (child instanceof SideTabElement tab) {
-                if (tab.mouseClicked(mouseX, mouseY, button)) {
-                    return true;
-                }
+            if (child.mouseClicked(mouseX, mouseY, button)) {
+                return true;
             }
         }
         return false;

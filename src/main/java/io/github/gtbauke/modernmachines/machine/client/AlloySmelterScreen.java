@@ -15,6 +15,7 @@ import io.github.gtbauke.modernmachines.client.gui.core.layout.Position;
 import io.github.gtbauke.modernmachines.client.gui.core.layout.Size;
 import io.github.gtbauke.modernmachines.client.gui.core.layout.UIElement;
 import io.github.gtbauke.modernmachines.client.gui.screen.ModularContainerScreen;
+import io.github.gtbauke.modernmachines.client.gui.windows.SideConfigWindow;
 import io.github.gtbauke.modernmachines.client.gui.windows.Window;
 import io.github.gtbauke.modernmachines.core.registry.ModItems;
 import io.github.gtbauke.modernmachines.machine.menu.AlloySmelterMenu;
@@ -76,6 +77,7 @@ public class AlloySmelterScreen extends ModularContainerScreen<AlloySmelterMenu>
 
     @Override
     protected void initWindows() {
+        // 1. Upgrade Window & Tab
         if (this.menu.slots.size() >= 8) {
             int winWidth = 80;
             int winHeight = 72;
@@ -123,10 +125,30 @@ public class AlloySmelterScreen extends ModularContainerScreen<AlloySmelterMenu>
                 upgradeWindow,
                 new ItemStack(ModItems.SPEED_UPGRADE.get()),
                 Component.literal("Upgrades"),
-                true // left-sided
+                true
             );
-            tab.updateDockedPosition(0); // 0 gap at top
+            tab.updateDockedPosition(0);
             this.mainWindow.addChild(tab);
+        }
+
+        // 2. Side Configuration Window & Tab
+        if (this.menu.getSideConfigurable() != null) {
+            Position sideConfigPos = new Position(
+                this.mainWindow.getPosition().x() - SideConfigWindow.WINDOW_WIDTH - 4,
+                this.mainWindow.getPosition().y()
+            );
+            SideConfigWindow sideConfigWindow = new SideConfigWindow(this.menu.getSideConfigurable(), sideConfigPos);
+            this.windowManager.addWindow(sideConfigWindow);
+
+            SideTabElement configTab = new SideTabElement(
+                this.mainWindow,
+                sideConfigWindow,
+                new ItemStack(ModItems.ENGINEERS_TABLET.get()),
+                Component.literal("Side Configuration"),
+                true
+            );
+            configTab.updateDockedPosition(28); // Docked beneath Upgrades tab at 28px
+            this.mainWindow.addChild(configTab);
         }
     }
 }

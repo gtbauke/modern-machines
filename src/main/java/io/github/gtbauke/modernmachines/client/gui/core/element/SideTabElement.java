@@ -92,6 +92,7 @@ public class SideTabElement extends UIElement {
         updateDockedPosition(0);
     }
 
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && targetWindow != null) {
             Position clickPos = new Position((int) mouseX, (int) mouseY);
@@ -104,6 +105,7 @@ public class SideTabElement extends UIElement {
                                             : (parentWindow.getPosition().x() + parentWindow.getSize().width() + 4);
                     int targetY = parentWindow.getPosition().y();
                     targetWindow.setPosition(new Position(targetX, targetY));
+                    targetWindow.calculateSize();
                     targetWindow.calculateLayout();
                 }
                 return true;

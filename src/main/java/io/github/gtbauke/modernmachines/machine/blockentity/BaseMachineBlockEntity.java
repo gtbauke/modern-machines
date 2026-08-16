@@ -13,6 +13,11 @@ import io.github.gtbauke.modernmachines.api.machine.upgrade.IUpgradableMachine;
 import io.github.gtbauke.modernmachines.machine.upgrade.UpgradeContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -100,29 +105,29 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
 
         // 1. Auto-Eject Items
         if (sideConfig.isAutoEject(MachineCapabilityType.ITEM)) {
-            int[] outputSlots = getSlotsForFace(Direction.DOWN);
-            if (outputSlots.length > 0) {
-                for (RelativeSide relSide : RelativeSide.values()) {
-                    SideIoMode mode = sideConfig.getMode(MachineCapabilityType.ITEM, relSide);
-                    if (mode.allowsOutput()) {
-                        Direction worldDir = relSide.toAbsolute(facing);
-                        BlockPos targetPos = pos.relative(worldDir);
-                        ResourceHandler<ItemResource> targetHandler = level.getCapability(Capabilities.Item.BLOCK, targetPos, worldDir.getOpposite());
-                        if (targetHandler != null) {
-                            for (int slot : outputSlots) {
-                                ItemStack inSlot = getItem(slot);
-                                if (!inSlot.isEmpty()) {
-                                    ItemStack toTransfer = inSlot.copyWithCount(Math.min(inSlot.getCount(), 8));
-                                    ItemStack remainder = ItemUtil.insertItemReturnRemaining(targetHandler, toTransfer, false, null);
-                                    int transferred = toTransfer.getCount() - remainder.getCount();
-                                    if (transferred > 0) {
-                                        inSlot.shrink(transferred);
-                                        if (inSlot.isEmpty()) {
-                                            setItem(slot, ItemStack.EMPTY);
-                                        }
-                                        setChanged();
-                                        break;
+            for (RelativeSide relSide : RelativeSide.values()) {
+                SideIoMode mode = sideConfig.getMode(MachineCapabilityType.ITEM, relSide);
+                if (mode.allowsOutput()) {
+                    Direction worldDir = relSide.toAbsolute(facing);
+                    int[] outputSlots = getSlotsForFace(worldDir);
+                    if (outputSlots.length == 0) continue;
+
+                    BlockPos targetPos = pos.relative(worldDir);
+                    ResourceHandler<ItemResource> targetHandler = level.getCapability(Capabilities.Item.BLOCK, targetPos, worldDir.getOpposite());
+                    if (targetHandler != null) {
+                        for (int slot : outputSlots) {
+                            ItemStack inSlot = getItem(slot);
+                            if (!inSlot.isEmpty() && canTakeItemThroughFace(slot, inSlot, worldDir)) {
+                                ItemStack toTransfer = inSlot.copyWithCount(Math.min(inSlot.getCount(), 8));
+                                ItemStack remainder = ItemUtil.insertItemReturnRemaining(targetHandler, toTransfer, false, null);
+                                int transferred = toTransfer.getCount() - remainder.getCount();
+                                if (transferred > 0) {
+                                    inSlot.shrink(transferred);
+                                    if (inSlot.isEmpty()) {
+                                        setItem(slot, ItemStack.EMPTY);
                                     }
+                                    setChanged();
+                                    break;
                                 }
                             }
                         }
@@ -133,39 +138,39 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
 
         // 2. Auto-Pull Items
         if (sideConfig.isAutoPull(MachineCapabilityType.ITEM)) {
-            int[] inputSlots = getSlotsForFace(Direction.UP);
-            if (inputSlots.length > 0) {
-                for (RelativeSide relSide : RelativeSide.values()) {
-                    SideIoMode mode = sideConfig.getMode(MachineCapabilityType.ITEM, relSide);
-                    if (mode.allowsInput()) {
-                        Direction worldDir = relSide.toAbsolute(facing);
-                        BlockPos targetPos = pos.relative(worldDir);
-                        ResourceHandler<ItemResource> targetHandler = level.getCapability(Capabilities.Item.BLOCK, targetPos, worldDir.getOpposite());
-                        if (targetHandler != null) {
-                            for (int targetSlot = 0; targetSlot < targetHandler.size(); targetSlot++) {
-                                ItemStack extracted = ItemUtil.getStack(targetHandler, targetSlot);
-                                if (!extracted.isEmpty()) {
-                                    for (int slot : inputSlots) {
-                                        if (canPlaceItemThroughFace(slot, extracted, worldDir)) {
-                                            ItemStack existing = getItem(slot);
-                                            int maxToTake = Math.min(extracted.getCount(), 8);
-                                            if (existing.isEmpty() || (ItemStack.isSameItemSameComponents(existing, extracted) && existing.getCount() < existing.getMaxStackSize())) {
-                                                if (!existing.isEmpty()) {
-                                                    maxToTake = Math.min(maxToTake, existing.getMaxStackSize() - existing.getCount());
-                                                }
-                                                if (maxToTake > 0) {
-                                                    try (var tx = Transaction.open(null)) {
-                                                        int reallyExtracted = targetHandler.extract(targetSlot, ItemResource.of(extracted), maxToTake, tx);
-                                                        if (reallyExtracted > 0) {
-                                                            tx.commit();
-                                                            if (existing.isEmpty()) {
-                                                                setItem(slot, extracted.copyWithCount(reallyExtracted));
-                                                            } else {
-                                                                existing.grow(reallyExtracted);
-                                                            }
-                                                            setChanged();
-                                                            return;
+            for (RelativeSide relSide : RelativeSide.values()) {
+                SideIoMode mode = sideConfig.getMode(MachineCapabilityType.ITEM, relSide);
+                if (mode.allowsInput()) {
+                    Direction worldDir = relSide.toAbsolute(facing);
+                    int[] inputSlots = getSlotsForFace(worldDir);
+                    if (inputSlots.length == 0) continue;
+
+                    BlockPos targetPos = pos.relative(worldDir);
+                    ResourceHandler<ItemResource> targetHandler = level.getCapability(Capabilities.Item.BLOCK, targetPos, worldDir.getOpposite());
+                    if (targetHandler != null) {
+                        for (int targetSlot = 0; targetSlot < targetHandler.size(); targetSlot++) {
+                            ItemStack extracted = ItemUtil.getStack(targetHandler, targetSlot);
+                            if (!extracted.isEmpty()) {
+                                for (int slot : inputSlots) {
+                                    if (canPlaceItemThroughFace(slot, extracted, worldDir)) {
+                                        ItemStack existing = getItem(slot);
+                                        int maxToTake = Math.min(extracted.getCount(), 8);
+                                        if (existing.isEmpty() || (ItemStack.isSameItemSameComponents(existing, extracted) && existing.getCount() < existing.getMaxStackSize())) {
+                                            if (!existing.isEmpty()) {
+                                                maxToTake = Math.min(maxToTake, existing.getMaxStackSize() - existing.getCount());
+                                            }
+                                            if (maxToTake > 0) {
+                                                try (var tx = Transaction.open(null)) {
+                                                    int reallyExtracted = targetHandler.extract(targetSlot, ItemResource.of(extracted), maxToTake, tx);
+                                                    if (reallyExtracted > 0) {
+                                                        tx.commit();
+                                                        if (existing.isEmpty()) {
+                                                            setItem(slot, extracted.copyWithCount(reallyExtracted));
+                                                        } else {
+                                                            existing.grow(reallyExtracted);
                                                         }
+                                                        setChanged();
+                                                        return;
                                                     }
                                                 }
                                             }
@@ -178,6 +183,16 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
                 }
             }
         }
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveCustomOnly(registries);
     }
 
     @Override

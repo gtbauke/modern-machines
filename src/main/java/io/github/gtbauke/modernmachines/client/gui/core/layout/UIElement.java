@@ -199,6 +199,15 @@ public class UIElement {
         return new Bounds(getAbsolutePosition(), this.bounds.size());
     }
 
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (UIElement child : children) {
+            if (child.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Phase 1: Size calculation.
      * Recursively computes sizes of this element and its children.
