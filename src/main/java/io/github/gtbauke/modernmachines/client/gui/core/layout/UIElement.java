@@ -178,6 +178,28 @@ public class UIElement {
     }
 
     /**
+     * Calculates the absolute position of this element on the screen.
+     */
+    public Position getAbsolutePosition() {
+        int x = this.bounds.position().x();
+        int y = this.bounds.position().y();
+        UIElement current = this.parent;
+        while (current != null) {
+            x += current.getPosition().x() + current.getPadding().left();
+            y += current.getPosition().y() + current.getPadding().top();
+            current = current.getParent();
+        }
+        return new Position(x, y);
+    }
+
+    /**
+     * Calculates the absolute bounds of this element on the screen.
+     */
+    public Bounds getAbsoluteBounds() {
+        return new Bounds(getAbsolutePosition(), this.bounds.size());
+    }
+
+    /**
      * Phase 1: Size calculation.
      * Recursively computes sizes of this element and its children.
      */

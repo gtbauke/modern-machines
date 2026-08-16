@@ -103,31 +103,63 @@ public class SlotElement extends UIElement {
     }
 
     /**
-     * Synchronizes backend Slot coordinates with this element's position relative to the Window.
+     * Synchronizes backend Slot coordinates with this element's position relative to the main Screen.
      */
     public void syncSlotPosition() {
         if (this.slot != null) {
-            Position posRelToWindow = getPositionRelativeToWindow();
-            int targetX = posRelToWindow.x() + 1;
-            int targetY = posRelToWindow.y() + 1;
-
-            if (this.slot instanceof SlotAccessor accessor) {
-                try {
-                    accessor.setX(targetX);
-                    accessor.setY(targetY);
-                } catch (Throwable ignored) {}
+            Window win = findAncestorWindow();
+            if (win != null && !win.isVisible()) {
+                setSlotCoords(-9999, -9999);
+                return;
             }
+
+            int screenLeft = 0;
+            int screenTop = 0;
+            if (win != null) {
+                UIElement root = win;
+                while (root.getParent() != null) {
+                    root = root.getParent();
+                }
+                screenLeft = root.getPosition().x();
+                screenTop = root.getPosition().y();
+            }
+
+            Position absPos = getAbsolutePosition();
+            int targetX = absPos.x() + 1 - screenLeft;
+            int targetY = absPos.y() + 1 - screenTop;
+            setSlotCoords(targetX, targetY);
         }
     }
 
-    private Position getPositionRelativeToWindow() {
+    public void syncSlotPosition(int screenLeft, int screenTop) {
+        if (this.slot != null) {
+            Window win = findAncestorWindow();
+            if (win != null && !win.isVisible()) {
+                setSlotCoords(-9999, -9999);
+                return;
+            }
+
+            Position absPos = getAbsolutePosition();
+            int targetX = absPos.x() + 1 - screenLeft;
+            int targetY = absPos.y() + 1 - screenTop;
+            setSlotCoords(targetX, targetY);
+        }
+    }
+
+    private void setSlotCoords(int x, int y) {
+        if (this.slot instanceof SlotAccessor accessor) {
+            try {
+                accessor.setX(x);
+                accessor.setY(y);
+            } catch (Throwable ignored) {}
+        }
+    }
+
+    public Position getAbsolutePosition() {
         int x = this.bounds.position().x();
         int y = this.bounds.position().y();
         UIElement current = this.parent;
         while (current != null) {
-            if (current instanceof Window) {
-                break;
-            }
             x += current.getPosition().x() + current.getPadding().left();
             y += current.getPosition().y() + current.getPadding().top();
             current = current.getParent();
@@ -135,8 +167,24 @@ public class SlotElement extends UIElement {
         return new Position(x, y);
     }
 
+    public Window findAncestorWindow() {
+        UIElement current = this.parent;
+        while (current != null) {
+            if (current instanceof Window win) {
+                return win;
+            }
+            current = current.getParent();
+        }
+        return null;
+    }
+
     @Override
     protected void renderSelf(GuiGraphicsExtractor graphics, Bounds absoluteBounds, int mouseX, int mouseY, float partialTick) {
+        Window win = findAncestorWindow();
+        if (win != null && !win.isVisible()) {
+            return;
+        }
+
         if (drawInsetWell) {
             if (slotStyle == SlotStyle.VANILLA) {
                 GUIRenderHelper.drawVanillaSlot(graphics, absoluteBounds);
