@@ -1,7 +1,8 @@
 package io.github.gtbauke.modernmachines.integration.jei.category;
 
-import io.github.gtbauke.modernmachines.client.gui.render.GuiRenderHelper;
-import io.github.gtbauke.modernmachines.client.gui.render.NineSliceRenderer;
+import io.github.gtbauke.modernmachines.client.gui.core.layout.Position;
+import io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper;
+import io.github.gtbauke.modernmachines.client.gui.core.render.NineSliceRenderer;
 import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.integration.jei.JeiRecipeTypes;
 import io.github.gtbauke.modernmachines.integration.jei.recipe.ToolAssemblyRecipe;
@@ -11,13 +12,14 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class ToolAssemblyCategory implements IRecipeCategory<ToolAssemblyRecipe> {
     private final IDrawable icon;
@@ -29,12 +31,12 @@ public class ToolAssemblyCategory implements IRecipeCategory<ToolAssemblyRecipe>
     }
 
     @Override
-    public RecipeType<ToolAssemblyRecipe> getRecipeType() {
+    public @NonNull IRecipeType<ToolAssemblyRecipe> getRecipeType() {
         return JeiRecipeTypes.TOOL_ASSEMBLY;
     }
 
     @Override
-    public Component getTitle() {
+    public @NonNull Component getTitle() {
         return Component.literal("Tool Assembly");
     }
 
@@ -54,7 +56,7 @@ public class ToolAssemblyCategory implements IRecipeCategory<ToolAssemblyRecipe>
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ToolAssemblyRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, ToolAssemblyRecipe recipe, @NonNull IFocusGroup focuses) {
         // Head Slot
         builder.addInputSlot(14, 8).add(recipe.head());
         // Handle Slot
@@ -70,7 +72,7 @@ public class ToolAssemblyCategory implements IRecipeCategory<ToolAssemblyRecipe>
     }
 
     @Override
-    public void draw(ToolAssemblyRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(ToolAssemblyRecipe recipe, @NonNull IRecipeSlotsView recipeSlotsView, @NonNull GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         // 1. Draw Slot Outlines
         NineSliceRenderer.drawNineSlice(guiGraphics, NineSliceRenderer.SLOT, 13, 7, 18, 18);
         NineSliceRenderer.drawNineSlice(guiGraphics, NineSliceRenderer.SLOT, 13, 29, 18, 18);
@@ -80,6 +82,6 @@ public class ToolAssemblyCategory implements IRecipeCategory<ToolAssemblyRecipe>
 
         // 2. Draw Arrow
         Font font = Minecraft.getInstance().font;
-        GuiRenderHelper.drawCenteredString(guiGraphics, font, Component.literal("➔"), 95, 23, 0xFF55FF55, false);
+        GUIRenderHelper.drawCenteredString(guiGraphics, font, Component.literal("➔"), new Position(95, 23), 0xFF55FF55, false);
     }
 }

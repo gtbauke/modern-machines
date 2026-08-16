@@ -1,7 +1,8 @@
 package io.github.gtbauke.modernmachines.integration.jei.category;
 
-import io.github.gtbauke.modernmachines.client.gui.render.GuiRenderHelper;
-import io.github.gtbauke.modernmachines.client.gui.render.NineSliceRenderer;
+import io.github.gtbauke.modernmachines.client.gui.core.layout.Position;
+import io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper;
+import io.github.gtbauke.modernmachines.client.gui.core.render.NineSliceRenderer;
 import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.integration.jei.JeiRecipeTypes;
 import io.github.gtbauke.modernmachines.integration.jei.recipe.ToolUpgradingRecipe;
@@ -11,13 +12,14 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class ToolUpgradingCategory implements IRecipeCategory<ToolUpgradingRecipe> {
     private final IDrawable icon;
@@ -29,12 +31,12 @@ public class ToolUpgradingCategory implements IRecipeCategory<ToolUpgradingRecip
     }
 
     @Override
-    public RecipeType<ToolUpgradingRecipe> getRecipeType() {
+    public @NonNull IRecipeType<ToolUpgradingRecipe> getRecipeType() {
         return JeiRecipeTypes.TOOL_UPGRADING;
     }
 
     @Override
-    public Component getTitle() {
+    public @NonNull Component getTitle() {
         return Component.literal("Tool Modifying & Upgrades");
     }
 
@@ -54,7 +56,7 @@ public class ToolUpgradingCategory implements IRecipeCategory<ToolUpgradingRecip
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ToolUpgradingRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, ToolUpgradingRecipe recipe, @NonNull IFocusGroup focuses) {
         // Base Tool Slot
         builder.addInputSlot(16, 12).add(recipe.inputTool());
         // Modifier Slot
@@ -64,7 +66,7 @@ public class ToolUpgradingCategory implements IRecipeCategory<ToolUpgradingRecip
     }
 
     @Override
-    public void draw(ToolUpgradingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(ToolUpgradingRecipe recipe, @NonNull IRecipeSlotsView recipeSlotsView, @NonNull GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         // 1. Draw Slot Outlines
         NineSliceRenderer.drawNineSlice(guiGraphics, NineSliceRenderer.SLOT, 15, 11, 18, 18);
         NineSliceRenderer.drawNineSlice(guiGraphics, NineSliceRenderer.SLOT, 41, 11, 18, 18);
@@ -72,12 +74,12 @@ public class ToolUpgradingCategory implements IRecipeCategory<ToolUpgradingRecip
 
         // 2. Draw plus and arrow
         Font font = Minecraft.getInstance().font;
-        GuiRenderHelper.drawCenteredString(guiGraphics, font, Component.literal("+"), 36, 16, 0xFF888888, false);
-        GuiRenderHelper.drawCenteredString(guiGraphics, font, Component.literal("➔"), 82, 16, 0xFF55FF55, false);
+        GUIRenderHelper.drawCenteredString(guiGraphics, font, Component.literal("+"), new Position(36, 16), 0xFF888888, false);
+        GUIRenderHelper.drawCenteredString(guiGraphics, font, Component.literal("➔"), new Position(82, 16), 0xFF55FF55, false);
 
         // 3. Modifier effect description
         if (recipe.description() != null) {
-            GuiRenderHelper.drawCenteredString(guiGraphics, font, recipe.description(), 70, 36, 0xFF00E5FF, false);
+            GUIRenderHelper.drawCenteredString(guiGraphics, font, recipe.description(), new Position(70, 36), 0xFF00E5FF, false);
         }
     }
 }
