@@ -1,6 +1,20 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "modernmachines:item/modular_shovel"
+    "model": "modernmachines:item/modular_shovel",
+    "tints": [
+      {
+        "type": "modernmachines:modular_part_tint",
+        "slot": "handle"
+      },
+      {
+        "type": "modernmachines:modular_part_tint",
+        "slot": "binding"
+      },
+      {
+        "type": "modernmachines:modular_part_tint",
+        "slot": "head"
+      }
+    ]
   }
 }

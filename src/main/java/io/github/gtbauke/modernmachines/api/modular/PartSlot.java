@@ -2,6 +2,7 @@ package io.github.gtbauke.modernmachines.api.modular;
 
 import java.util.Locale;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 import org.jspecify.annotations.NonNull;
 
@@ -11,6 +12,8 @@ public enum PartSlot implements StringRepresentable {
     BINDING("binding", true),
     TIP("tip", false),
     GRIP("grip", false);
+
+    public static final Codec<PartSlot> CODEC = StringRepresentable.fromEnum(PartSlot::values);
 
     private final String name;
     private final boolean required;

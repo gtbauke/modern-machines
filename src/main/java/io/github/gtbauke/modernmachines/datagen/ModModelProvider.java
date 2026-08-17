@@ -5,19 +5,24 @@ import java.util.Locale;
 import java.util.Set;
 
 import io.github.gtbauke.modernmachines.ModernMachines;
+import io.github.gtbauke.modernmachines.api.modular.PartSlot;
 import io.github.gtbauke.modernmachines.api.modular.ToolPartType;
 import io.github.gtbauke.modernmachines.api.resource.Material;
 import io.github.gtbauke.modernmachines.api.resource.ResourceForm;
 import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.core.registry.ModItems;
 import io.github.gtbauke.modernmachines.core.registry.ModMaterials;
+import io.github.gtbauke.modernmachines.modular.client.tint.ModularToolPartTintSource;
 import io.github.gtbauke.modernmachines.modular.item.ToolPartItem;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -80,12 +85,35 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.TIP_PATTERN.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.GRIP_PATTERN.get(), ModelTemplates.FLAT_ITEM);
 
-        // Register Modular Tools
-        itemModels.generateFlatItem(ModItems.MODULAR_PICKAXE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
-        itemModels.generateFlatItem(ModItems.MODULAR_AXE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
-        itemModels.generateFlatItem(ModItems.MODULAR_SHOVEL.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
-        itemModels.generateFlatItem(ModItems.MODULAR_SWORD.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
-        itemModels.generateFlatItem(ModItems.MODULAR_HOE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        // -------------------------------------------------------------
+        // Modular Tools (Multi-Layer Tinted Handheld Models)
+        // -------------------------------------------------------------
+        ModelTemplate threeLayerHandheld = new ModelTemplate(
+                java.util.Optional.of(Identifier.withDefaultNamespace("item/handheld")),
+                java.util.Optional.empty(),
+                TextureSlot.LAYER0,
+                TextureSlot.LAYER1,
+                TextureSlot.LAYER2
+        );
+
+        Identifier handleTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/handle");
+        Identifier bindingTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/binding");
+        Identifier guardTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/sword_guard");
+
+        registerModularToolModel(itemModels, ModItems.MODULAR_PICKAXE.get(), threeLayerHandheld,
+                handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/pickaxe_head"));
+
+        registerModularToolModel(itemModels, ModItems.MODULAR_AXE.get(), threeLayerHandheld,
+                handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/axe_head"));
+
+        registerModularToolModel(itemModels, ModItems.MODULAR_SHOVEL.get(), threeLayerHandheld,
+                handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/shovel_head"));
+
+        registerModularToolModel(itemModels, ModItems.MODULAR_SWORD.get(), threeLayerHandheld,
+                handleTex, guardTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/sword_blade"));
+
+        registerModularToolModel(itemModels, ModItems.MODULAR_HOE.get(), threeLayerHandheld,
+                handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/hoe_head"));
 
         // -------------------------------------------------------------
         // Dynamic Template Layered Tinting for Tool Parts
@@ -171,5 +199,26 @@ public class ModModelProvider extends ModelProvider {
                 }
             }
         }
+    }
+
+    private void registerModularToolModel(ItemModelGenerators itemModels, Item toolItem, ModelTemplate template,
+                                          Identifier handleTexture, Identifier bindingTexture, Identifier headTexture) {
+        Identifier modelId = ModelLocationUtils.getModelLocation(toolItem);
+        TextureMapping mapping = new TextureMapping()
+                .put(TextureSlot.LAYER0, new net.minecraft.client.resources.model.sprite.Material(handleTexture))
+                .put(TextureSlot.LAYER1, new net.minecraft.client.resources.model.sprite.Material(bindingTexture))
+                .put(TextureSlot.LAYER2, new net.minecraft.client.resources.model.sprite.Material(headTexture));
+
+        template.create(modelId, mapping, itemModels.modelOutput);
+
+        itemModels.itemModelOutput.accept(
+                toolItem,
+                ItemModelUtils.tintedModel(
+                        modelId,
+                        new ModularToolPartTintSource(PartSlot.HANDLE),
+                        new ModularToolPartTintSource(PartSlot.BINDING),
+                        new ModularToolPartTintSource(PartSlot.HEAD)
+                )
+        );
     }
 }

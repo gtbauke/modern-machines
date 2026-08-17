@@ -287,4 +287,23 @@ public abstract class ModularToolItem extends Item {
 
         super.appendHoverText(stack, context, display, tooltip, flag);
     }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        ModularToolData data = getData(stack);
+        Identifier headMat = data.getPartMaterial(PartSlot.HEAD);
+        if (headMat != null) {
+            String matName = MaterialStatsManager.getStats(headMat)
+                    .map(MaterialToolStats::getEffectiveDisplayName)
+                    .orElse(headMat.getPath());
+            return Component.translatable(this.getDescriptionId() + ".named", matName);
+        }
+        return super.getName(stack);
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        ModularToolData data = getData(stack);
+        return !data.modifiers().isEmpty() || super.isFoil(stack);
+    }
 }

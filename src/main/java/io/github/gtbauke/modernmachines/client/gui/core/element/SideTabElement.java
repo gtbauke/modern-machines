@@ -32,6 +32,8 @@ public class SideTabElement extends UIElement {
     private Component tooltip;
     private boolean leftSided = true;
     private TabStyle tabStyle = TabStyle.VANILLA;
+    private Runnable onClickAction;
+    private boolean active = false;
 
     public SideTabElement(Window parentWindow, Window targetWindow, ItemStack iconItem, Component tooltip, boolean leftSided) {
         super(new Bounds(Position.ZERO, new Size(TAB_WIDTH, TAB_HEIGHT)));
@@ -40,6 +42,10 @@ public class SideTabElement extends UIElement {
         this.iconItem = iconItem != null ? iconItem : ItemStack.EMPTY;
         this.tooltip = tooltip;
         this.leftSided = leftSided;
+    }
+
+    public SideTabElement(Window parentWindow, ItemStack iconItem, Component tooltip, boolean leftSided) {
+        this(parentWindow, null, iconItem, tooltip, leftSided);
     }
 
     public SideTabElement(Window parentWindow, Window targetWindow, int iconU, int iconV, Component tooltip, boolean leftSided) {
@@ -52,12 +58,35 @@ public class SideTabElement extends UIElement {
         this.leftSided = leftSided;
     }
 
+    public SideTabElement(Window parentWindow, int iconU, int iconV, Component tooltip, boolean leftSided) {
+        this(parentWindow, null, iconU, iconV, tooltip, leftSided);
+    }
+
     public SideTabElement(Window parentWindow, Window targetWindow, ItemStack iconItem, Component tooltip) {
         this(parentWindow, targetWindow, iconItem, tooltip, true);
     }
 
+    public SideTabElement(Window parentWindow, ItemStack iconItem, Component tooltip) {
+        this(parentWindow, null, iconItem, tooltip, true);
+    }
+
     public SideTabElement(Window parentWindow, Window targetWindow, int iconU, int iconV, Component tooltip) {
         this(parentWindow, targetWindow, iconU, iconV, tooltip, true);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public SideTabElement setActive(boolean active) {
+        this.active = active;
+        markDirty();
+        return this;
+    }
+
+    public SideTabElement setOnClick(Runnable onClickAction) {
+        this.onClickAction = onClickAction;
+        return this;
     }
 
     public Window getTargetWindow() {
@@ -94,19 +123,24 @@ public class SideTabElement extends UIElement {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0 && targetWindow != null) {
+        if (button == 0) {
             Position clickPos = new Position((int) mouseX, (int) mouseY);
             if (getAbsoluteBounds().contains(clickPos)) {
-                boolean opening = !targetWindow.isVisible();
-                targetWindow.setVisible(opening);
+                if (onClickAction != null) {
+                    onClickAction.run();
+                }
+                if (targetWindow != null) {
+                    boolean opening = !targetWindow.isVisible();
+                    targetWindow.setVisible(opening);
 
-                if (opening && parentWindow != null) {
-                    int targetX = leftSided ? (parentWindow.getPosition().x() - targetWindow.getSize().width() - 4)
-                                            : (parentWindow.getPosition().x() + parentWindow.getSize().width() + 4);
-                    int targetY = parentWindow.getPosition().y();
-                    targetWindow.setPosition(new Position(targetX, targetY));
-                    targetWindow.calculateSize();
-                    targetWindow.calculateLayout();
+                    if (opening && parentWindow != null) {
+                        int targetX = leftSided ? (parentWindow.getPosition().x() - targetWindow.getSize().width() - 4)
+                                                : (parentWindow.getPosition().x() + parentWindow.getSize().width() + 4);
+                        int targetY = parentWindow.getPosition().y();
+                        targetWindow.setPosition(new Position(targetX, targetY));
+                        targetWindow.calculateSize();
+                        targetWindow.calculateLayout();
+                    }
                 }
                 return true;
             }

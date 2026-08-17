@@ -9,7 +9,10 @@ import io.github.gtbauke.modernmachines.core.registry.ModMenuTypes;
 import io.github.gtbauke.modernmachines.machine.client.AlloySmelterScreen;
 import io.github.gtbauke.modernmachines.modular.client.PartBuilderScreen;
 import io.github.gtbauke.modernmachines.modular.client.TinkeringTableScreen;
+import io.github.gtbauke.modernmachines.modular.client.tint.ModularToolPartTintSource;
+import io.github.gtbauke.modernmachines.modular.client.tint.ToolPartMaterialTintSource;
 import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -29,6 +32,12 @@ public class ModernMachinesClient {
         modEventBus.addListener(this::onClientSetup);
         modEventBus.addListener(this::registerScreens);
         modEventBus.addListener(this::registerBlockColors);
+        modEventBus.addListener(this::registerItemColors);
+    }
+
+    private void registerItemColors(RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "modular_part_tint"), ModularToolPartTintSource.CODEC);
+        event.register(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "tool_part_material_tint"), ToolPartMaterialTintSource.CODEC);
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {

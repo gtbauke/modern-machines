@@ -304,6 +304,15 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     }
 
     @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id >= 0 && id <= 2) {
+            setActiveTab(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean stillValid(Player player) {
         return isStillValid(this.access, player, ModBlocks.TINKERING_TABLE.get());
     }

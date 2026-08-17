@@ -65,10 +65,15 @@ public class ModLanguageProvider extends LanguageProvider {
 
         // Modular Tools
         addItem(ModItems.MODULAR_PICKAXE, "Modular Pickaxe");
+        add("item.modernmachines.modular_pickaxe.named", "%s Pickaxe");
         addItem(ModItems.MODULAR_AXE, "Modular Axe");
+        add("item.modernmachines.modular_axe.named", "%s Axe");
         addItem(ModItems.MODULAR_SHOVEL, "Modular Shovel");
+        add("item.modernmachines.modular_shovel.named", "%s Shovel");
         addItem(ModItems.MODULAR_SWORD, "Modular Sword");
+        add("item.modernmachines.modular_sword.named", "%s Sword");
         addItem(ModItems.MODULAR_HOE, "Modular Hoe");
+        add("item.modernmachines.modular_hoe.named", "%s Hoe");
 
         // Tool Parts
         for (Material material : ModMaterials.getAllMaterials()) {
