@@ -26,7 +26,7 @@ public record ModularToolPartTintSource(PartSlot slot) implements ItemTintSource
         ModularToolData data = ModularToolItem.getData(stack);
         Identifier matId = data.getPartMaterial(slot);
         if (matId == null) {
-            return 0xFFFFFFFF;
+            return slot.isRequired() ? 0xFFFFFFFF : 0x00000000;
         }
         return MaterialStatsManager.getStats(matId)
                 .map(MaterialToolStats::color)

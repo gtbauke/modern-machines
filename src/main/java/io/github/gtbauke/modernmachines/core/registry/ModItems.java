@@ -80,6 +80,12 @@ public class ModItems {
     public static final DeferredItem<PatternItem> GRIP_PATTERN = ITEMS.registerItem("grip_pattern",
             p -> new PatternItem(Optional.of(ToolPartType.GRIP), p));
 
+    public static final DeferredItem<PatternItem> SWORD_GUARD_PATTERN = ITEMS.registerItem("sword_guard_pattern",
+            p -> new PatternItem(Optional.of(ToolPartType.SWORD_GUARD), p));
+
+    public static final DeferredItem<PatternItem> POMMEL_PATTERN = ITEMS.registerItem("pommel_pattern",
+            p -> new PatternItem(Optional.of(ToolPartType.POMMEL), p));
+
     // Modular Tools
     public static final DeferredItem<ModularPickaxeItem> MODULAR_PICKAXE = ITEMS.registerItem("modular_pickaxe",
             ModularPickaxeItem::new);
@@ -102,6 +108,14 @@ public class ModItems {
     public static void registerToolParts() {
         for (Material material : ModMaterials.getAllMaterials()) {
             for (ToolPartType partType : ToolPartType.values()) {
+                if (partType == ToolPartType.POMMEL) {
+                    if (material != ModMaterials.LAPIS_LAZULI &&
+                        material != ModMaterials.DIAMOND &&
+                        material != ModMaterials.EMERALD &&
+                        material != ModMaterials.AMETHYST) {
+                        continue;
+                    }
+                }
                 String regName = partType.getSerializedName() + "_" + material.name();
                 DeferredItem<ToolPartItem> item = ITEMS.registerItem(regName,
                         p -> new ToolPartItem(partType, material, p));

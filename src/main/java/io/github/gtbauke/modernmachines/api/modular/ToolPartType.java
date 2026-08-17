@@ -13,8 +13,10 @@ public enum ToolPartType implements StringRepresentable {
     HOE_HEAD("hoe_head", PartSlot.HEAD, 2),
     HANDLE("handle", PartSlot.HANDLE, 1),
     BINDING("binding", PartSlot.BINDING, 1),
+    SWORD_GUARD("sword_guard", PartSlot.BINDING, 1),
     TIP("tip", PartSlot.TIP, 1),
-    GRIP("grip", PartSlot.GRIP, 1);
+    GRIP("grip", PartSlot.GRIP, 1),
+    POMMEL("pommel", PartSlot.POMMEL, 1);
 
     private final String name;
     private final PartSlot slot;

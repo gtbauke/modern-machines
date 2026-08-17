@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import io.github.gtbauke.modernmachines.ModernMachines;
 import io.github.gtbauke.modernmachines.api.resource.Material;
 import io.github.gtbauke.modernmachines.api.resource.ResourceForm;
 import io.github.gtbauke.modernmachines.core.registry.ModMaterials;
@@ -50,6 +51,25 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
                     ? Optional.of(Ingredient.of(mainItem))
                     : Optional.empty();
 
+            List<MaterialTrait> traits = new java.util.ArrayList<>();
+            MaterialToolStats.AttachmentStats attachmentStats;
+
+            if (mat == ModMaterials.LAPIS_LAZULI) {
+                attachmentStats = new MaterialToolStats.AttachmentStats(60, 0.5f, 0.0f, Optional.empty());
+                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "prosperity"), 1, "Increased experience and fortune"));
+            } else if (mat == ModMaterials.DIAMOND) {
+                attachmentStats = new MaterialToolStats.AttachmentStats(150, 1.0f, 0.0f, Optional.empty());
+                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "reinforced"), 1, "Chance to not consume durability"));
+            } else if (mat == ModMaterials.EMERALD) {
+                attachmentStats = new MaterialToolStats.AttachmentStats(100, 0.75f, 0.0f, Optional.empty());
+                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "bounty"), 1, "Increased mob loot and luck"));
+            } else if (mat == ModMaterials.AMETHYST) {
+                attachmentStats = new MaterialToolStats.AttachmentStats(80, 0.6f, 0.4f, Optional.empty());
+                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "resonance"), 1, "Bonus attack and swing speed"));
+            } else {
+                attachmentStats = new MaterialToolStats.AttachmentStats((int) (durability * 0.1f), damage * 0.3f, 0.2f, Optional.empty());
+            }
+
             MaterialToolStats stats = new MaterialToolStats(
                     id,
                     Optional.of(mat.displayName()),
@@ -58,8 +78,8 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
                     Optional.of(new MaterialToolStats.HeadStats(durability, speed, damage, tier)),
                     Optional.of(new MaterialToolStats.HandleStats(1.0f + (mat.hardness() * 0.05f), 1.0f, 0.0f)),
                     Optional.of(new MaterialToolStats.BindingStats((int) (durability * 0.2f))),
-                    Optional.of(new MaterialToolStats.AttachmentStats((int) (durability * 0.1f), damage * 0.3f, 0.2f, Optional.empty())),
-                    List.of()
+                    Optional.of(attachmentStats),
+                    traits
             );
 
             STATS.put(id, stats);

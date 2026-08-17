@@ -249,6 +249,8 @@ public class RecipeCatalog {
             case BINDING -> ModItems.BINDING_PATTERN.get();
             case TIP -> ModItems.TIP_PATTERN.get();
             case GRIP -> ModItems.GRIP_PATTERN.get();
+            case SWORD_GUARD -> ModItems.SWORD_GUARD_PATTERN.get();
+            case POMMEL -> ModItems.POMMEL_PATTERN.get();
         };
         return new ItemStack(item);
     }

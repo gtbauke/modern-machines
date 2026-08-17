@@ -1,8 +1,9 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "modernmachines:item/template/part/handle",
-    "layer1": "modernmachines:item/template/part/sword_guard",
-    "layer2": "modernmachines:item/template/part/sword_blade"
+    "layer0": "modernmachines:item/template/assembled_tool_part/assembled_sword_handle",
+    "layer1": "modernmachines:item/template/assembled_tool_part/assembled_sword_pommel",
+    "layer2": "modernmachines:item/template/assembled_tool_part/assembled_sword_blade",
+    "layer3": "modernmachines:item/template/assembled_tool_part/assembled_sword_guard"
   }
 }

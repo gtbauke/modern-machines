@@ -62,6 +62,8 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.BINDING_PATTERN, "Binding Pattern");
         addItem(ModItems.TIP_PATTERN, "Tip Pattern");
         addItem(ModItems.GRIP_PATTERN, "Grip Pattern");
+        addItem(ModItems.SWORD_GUARD_PATTERN, "Sword Guard Pattern");
+        addItem(ModItems.POMMEL_PATTERN, "Pommel Pattern");
 
         // Modular Tools
         addItem(ModItems.MODULAR_PICKAXE, "Modular Pickaxe");
@@ -78,6 +80,14 @@ public class ModLanguageProvider extends LanguageProvider {
         // Tool Parts
         for (Material material : ModMaterials.getAllMaterials()) {
             for (ToolPartType partType : ToolPartType.values()) {
+                if (partType == ToolPartType.POMMEL) {
+                    if (material != ModMaterials.LAPIS_LAZULI &&
+                        material != ModMaterials.DIAMOND &&
+                        material != ModMaterials.EMERALD &&
+                        material != ModMaterials.AMETHYST) {
+                        continue;
+                    }
+                }
                 String regName = partType.getSerializedName() + "_" + material.name();
                 String partName = formatPartName(partType, material);
                 add("item.modernmachines." + regName, partName);
@@ -170,6 +180,8 @@ public class ModLanguageProvider extends LanguageProvider {
             case BINDING -> matName + " Tool Binding";
             case TIP -> matName + " Tool Tip";
             case GRIP -> matName + " Tool Grip";
+            case SWORD_GUARD -> matName + " Sword Guard";
+            case POMMEL -> matName + " Pommel";
         };
     }
 

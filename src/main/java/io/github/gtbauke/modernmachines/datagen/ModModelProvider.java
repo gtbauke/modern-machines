@@ -30,6 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 public class ModModelProvider extends ModelProvider {
+    private static final TextureSlot LAYER3 = TextureSlot.create("layer3");
 
     public ModModelProvider(PackOutput packOutput) {
         super(packOutput, ModernMachines.MOD_ID);
@@ -84,6 +85,8 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.BINDING_PATTERN.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.TIP_PATTERN.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.GRIP_PATTERN.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.SWORD_GUARD_PATTERN.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.POMMEL_PATTERN.get(), ModelTemplates.FLAT_ITEM);
 
         // -------------------------------------------------------------
         // Modular Tools (Multi-Layer Tinted Handheld Models)
@@ -96,9 +99,17 @@ public class ModModelProvider extends ModelProvider {
                 TextureSlot.LAYER2
         );
 
+        ModelTemplate fourLayerHandheld = new ModelTemplate(
+                java.util.Optional.of(Identifier.withDefaultNamespace("item/handheld")),
+                java.util.Optional.empty(),
+                TextureSlot.LAYER0,
+                TextureSlot.LAYER1,
+                TextureSlot.LAYER2,
+                LAYER3
+        );
+
         Identifier handleTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/handle");
         Identifier bindingTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/binding");
-        Identifier guardTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/sword_guard");
 
         registerModularToolModel(itemModels, ModItems.MODULAR_PICKAXE.get(), threeLayerHandheld,
                 handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/pickaxe_head"));
@@ -109,8 +120,13 @@ public class ModModelProvider extends ModelProvider {
         registerModularToolModel(itemModels, ModItems.MODULAR_SHOVEL.get(), threeLayerHandheld,
                 handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/shovel_head"));
 
-        registerModularToolModel(itemModels, ModItems.MODULAR_SWORD.get(), threeLayerHandheld,
-                handleTex, guardTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/sword_blade"));
+        Identifier swordHandleTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/assembled_tool_part/assembled_sword_handle");
+        Identifier swordPommelTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/assembled_tool_part/assembled_sword_pommel");
+        Identifier swordBladeTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/assembled_tool_part/assembled_sword_blade");
+        Identifier swordGuardTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/assembled_tool_part/assembled_sword_guard");
+
+        registerModularSwordModel(itemModels, ModItems.MODULAR_SWORD.get(), fourLayerHandheld,
+                swordHandleTex, swordPommelTex, swordBladeTex, swordGuardTex);
 
         registerModularToolModel(itemModels, ModItems.MODULAR_HOE.get(), threeLayerHandheld,
                 handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/hoe_head"));
@@ -218,6 +234,29 @@ public class ModModelProvider extends ModelProvider {
                         new ModularToolPartTintSource(PartSlot.HANDLE),
                         new ModularToolPartTintSource(PartSlot.BINDING),
                         new ModularToolPartTintSource(PartSlot.HEAD)
+                )
+        );
+    }
+
+    private void registerModularSwordModel(ItemModelGenerators itemModels, Item toolItem, ModelTemplate template,
+                                           Identifier handleTexture, Identifier pommelTexture, Identifier bladeTexture, Identifier guardTexture) {
+        Identifier modelId = ModelLocationUtils.getModelLocation(toolItem);
+        TextureMapping mapping = new TextureMapping()
+                .put(TextureSlot.LAYER0, new net.minecraft.client.resources.model.sprite.Material(handleTexture))
+                .put(TextureSlot.LAYER1, new net.minecraft.client.resources.model.sprite.Material(pommelTexture))
+                .put(TextureSlot.LAYER2, new net.minecraft.client.resources.model.sprite.Material(bladeTexture))
+                .put(LAYER3, new net.minecraft.client.resources.model.sprite.Material(guardTexture));
+
+        template.create(modelId, mapping, itemModels.modelOutput);
+
+        itemModels.itemModelOutput.accept(
+                toolItem,
+                ItemModelUtils.tintedModel(
+                        modelId,
+                        new ModularToolPartTintSource(PartSlot.HANDLE),
+                        new ModularToolPartTintSource(PartSlot.POMMEL),
+                        new ModularToolPartTintSource(PartSlot.HEAD),
+                        new ModularToolPartTintSource(PartSlot.BINDING)
                 )
         );
     }

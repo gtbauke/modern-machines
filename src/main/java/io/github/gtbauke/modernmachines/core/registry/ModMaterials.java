@@ -115,6 +115,60 @@ public class ModMaterials {
                     )
     );
 
+    public static final Material LAPIS_LAZULI = register(
+            MaterialBuilder.of("lapis_lazuli")
+                    .displayName("Lapis Lazuli")
+                    .type(MaterialType.VANILLA_EXTENSION)
+                    .color(0x2649B2)
+                    .mapColor(MapColor.LAPIS)
+                    .miningLevel(BlockTags.NEEDS_STONE_TOOL)
+                    .hardness(3.0f, 3.0f)
+                    .delegate(ResourceForm.ORE, () -> Blocks.LAPIS_ORE)
+                    .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_LAPIS_ORE)
+                    .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.LAPIS_BLOCK)
+                    .delegate(ResourceForm.GEM, () -> Items.LAPIS_LAZULI)
+                    .forms(
+                            ResourceForm.DUST,
+                            ResourceForm.PLATE
+                    )
+    );
+
+    public static final Material EMERALD = register(
+            MaterialBuilder.of("emerald")
+                    .displayName("Emerald")
+                    .type(MaterialType.VANILLA_EXTENSION)
+                    .color(0x11B047)
+                    .mapColor(MapColor.EMERALD)
+                    .miningLevel(BlockTags.NEEDS_IRON_TOOL)
+                    .hardness(5.0f, 6.0f)
+                    .delegate(ResourceForm.ORE, () -> Blocks.EMERALD_ORE)
+                    .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_EMERALD_ORE)
+                    .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.EMERALD_BLOCK)
+                    .delegate(ResourceForm.GEM, () -> Items.EMERALD)
+                    .forms(
+                            ResourceForm.DUST,
+                            ResourceForm.PLATE,
+                            ResourceForm.ROD,
+                            ResourceForm.GEAR
+                    )
+    );
+
+    public static final Material AMETHYST = register(
+            MaterialBuilder.of("amethyst")
+                    .displayName("Amethyst")
+                    .type(MaterialType.VANILLA_EXTENSION)
+                    .color(0x9A5CC6)
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .miningLevel(BlockTags.NEEDS_IRON_TOOL)
+                    .hardness(4.0f, 5.0f)
+                    .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.AMETHYST_BLOCK)
+                    .delegate(ResourceForm.GEM, () -> Items.AMETHYST_SHARD)
+                    .forms(
+                            ResourceForm.DUST,
+                            ResourceForm.PLATE
+                    )
+    );
+
     public static final Material NETHERITE = register(
             MaterialBuilder.of("netherite")
                     .displayName("Netherite")

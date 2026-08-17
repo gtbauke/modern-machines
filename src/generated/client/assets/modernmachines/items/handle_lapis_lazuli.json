@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "modernmachines:item/template/part/handle",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -14267982
+      }
+    ]
+  }
+}

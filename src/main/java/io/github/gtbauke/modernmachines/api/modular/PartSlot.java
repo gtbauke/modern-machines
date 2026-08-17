@@ -11,7 +11,8 @@ public enum PartSlot implements StringRepresentable {
     HANDLE("handle", true),
     BINDING("binding", true),
     TIP("tip", false),
-    GRIP("grip", false);
+    GRIP("grip", false),
+    POMMEL("pommel", false);
 
     public static final Codec<PartSlot> CODEC = StringRepresentable.fromEnum(PartSlot::values);
 

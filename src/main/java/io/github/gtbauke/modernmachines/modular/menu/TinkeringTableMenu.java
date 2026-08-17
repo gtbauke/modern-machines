@@ -14,6 +14,7 @@ import io.github.gtbauke.modernmachines.core.registry.ModItems;
 import io.github.gtbauke.modernmachines.core.registry.ModMenuTypes;
 import io.github.gtbauke.modernmachines.modular.item.ModularToolItem;
 import io.github.gtbauke.modernmachines.modular.item.ToolPartItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -186,6 +187,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
         ModularToolData toolData = new ModularToolData(parts, java.util.Collections.emptyList(), 0, 0);
         ItemStack resultStack = new ItemStack(targetTool);
         resultStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), toolData);
+        ModularToolItem.recalculateComponents(resultStack);
 
         resultContainer.setItem(0, resultStack);
     }
@@ -225,6 +227,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
         if (modifiedData != null && modifiedData != data) {
             ItemStack resultStack = toolStack.copy();
             resultStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), modifiedData);
+            ModularToolItem.recalculateComponents(resultStack);
             resultContainer.setItem(0, resultStack);
         } else {
             resultContainer.setItem(0, ItemStack.EMPTY);
@@ -276,16 +279,20 @@ public class TinkeringTableMenu extends BaseContainerMenu {
                 ModularToolData swappedData = data.withPart(newPart.getPartType().getSlot(), newMatId);
                 ItemStack resultStack = toolStack.copy();
                 resultStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), swappedData);
+                ModularToolItem.recalculateComponents(resultStack);
                 resultContainer.setItem(0, resultStack);
                 return;
             }
         }
 
-        if (data.damage() > 0) {
+        int curDmg = toolStack.getOrDefault(DataComponents.DAMAGE, data.damage());
+        if (curDmg > 0) {
             int repairAmount = (int) (ModularToolItem.getMaxDurability(toolStack) * 0.35f);
-            int newDamage = Math.max(0, data.damage() - repairAmount);
+            int newDamage = Math.max(0, curDmg - repairAmount);
             ItemStack resultStack = toolStack.copy();
             resultStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data.withDamage(newDamage));
+            resultStack.set(DataComponents.DAMAGE, newDamage);
+            ModularToolItem.recalculateComponents(resultStack);
             resultContainer.setItem(0, resultStack);
         } else {
             resultContainer.setItem(0, ItemStack.EMPTY);

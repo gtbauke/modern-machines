@@ -1,5 +1,7 @@
 package io.github.gtbauke.modernmachines.modular.item;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -12,22 +14,37 @@ import io.github.gtbauke.modernmachines.api.modular.PartSlot;
 import io.github.gtbauke.modernmachines.core.registry.ModDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
 public abstract class ModularToolItem extends Item {
+    public static final Identifier BASE_ATTACK_DAMAGE_ID = Identifier.withDefaultNamespace("base_attack_damage");
+    public static final Identifier BASE_ATTACK_SPEED_ID = Identifier.withDefaultNamespace("base_attack_speed");
+
     private final TagKey<Block> mineableTag;
     private final float baseAttackDamage;
     private final float baseAttackSpeed;
@@ -43,6 +60,14 @@ public abstract class ModularToolItem extends Item {
         return mineableTag;
     }
 
+    public float getBaseAttackDamage() {
+        return baseAttackDamage;
+    }
+
+    public float getBaseAttackSpeed() {
+        return baseAttackSpeed;
+    }
+
     public static ModularToolData getData(ItemStack stack) {
         ModularToolData data = stack.get(ModDataComponents.MODULAR_TOOL_DATA.get());
         return data != null ? data : ModularToolData.EMPTY;
@@ -50,6 +75,7 @@ public abstract class ModularToolItem extends Item {
 
     public static void setData(ItemStack stack, ModularToolData data) {
         stack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data);
+        recalculateComponents(stack);
     }
 
     public static int getMaxDurability(ItemStack stack) {
@@ -84,6 +110,13 @@ public abstract class ModularToolItem extends Item {
         Identifier tipMat = data.getPartMaterial(PartSlot.TIP);
         if (tipMat != null) {
             attachmentBonus += MaterialStatsManager.getStats(tipMat)
+                    .flatMap(MaterialToolStats::attachment)
+                    .map(MaterialToolStats.AttachmentStats::bonusDurability)
+                    .orElse(0);
+        }
+        Identifier pommelMat = data.getPartMaterial(PartSlot.POMMEL);
+        if (pommelMat != null) {
+            attachmentBonus += MaterialStatsManager.getStats(pommelMat)
                     .flatMap(MaterialToolStats::attachment)
                     .map(MaterialToolStats.AttachmentStats::bonusDurability)
                     .orElse(0);
@@ -131,7 +164,14 @@ public abstract class ModularToolItem extends Item {
         float attachmentBonus = 0.0f;
         Identifier tipMat = data.getPartMaterial(PartSlot.TIP);
         if (tipMat != null) {
-            attachmentBonus = MaterialStatsManager.getStats(tipMat)
+            attachmentBonus += MaterialStatsManager.getStats(tipMat)
+                    .flatMap(MaterialToolStats::attachment)
+                    .map(MaterialToolStats.AttachmentStats::attackDamageBonus)
+                    .orElse(0.0f);
+        }
+        Identifier pommelMat = data.getPartMaterial(PartSlot.POMMEL);
+        if (pommelMat != null) {
+            attachmentBonus += MaterialStatsManager.getStats(pommelMat)
                     .flatMap(MaterialToolStats::attachment)
                     .map(MaterialToolStats.AttachmentStats::attackDamageBonus)
                     .orElse(0.0f);
@@ -140,6 +180,23 @@ public abstract class ModularToolItem extends Item {
         float sharpnessBonus = data.getModifierLevel(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "sharpness")) * 1.25f;
 
         return baseDamage + headDamage + attachmentBonus + sharpnessBonus;
+    }
+
+    public static float getAttackSpeed(ItemStack stack, float baseSpeed) {
+        ModularToolData data = getData(stack);
+        float speedBonus = 0.0f;
+
+        Identifier pommelMat = data.getPartMaterial(PartSlot.POMMEL);
+        if (pommelMat != null) {
+            speedBonus += MaterialStatsManager.getStats(pommelMat)
+                    .flatMap(MaterialToolStats::attachment)
+                    .map(MaterialToolStats.AttachmentStats::speedBonus)
+                    .orElse(0.0f);
+        }
+
+        float hasteBonus = data.getModifierLevel(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "haste")) * 0.2f;
+
+        return Math.min(0.0f, baseSpeed + speedBonus + hasteBonus);
     }
 
     public static String getHarvestTier(ItemStack stack) {
@@ -164,6 +221,61 @@ public abstract class ModularToolItem extends Item {
         return "wood";
     }
 
+    public static void recalculateComponents(ItemStack stack) {
+        if (!(stack.getItem() instanceof ModularToolItem toolItem)) return;
+        ModularToolData data = getData(stack);
+        if (data.parts().isEmpty()) return;
+
+        // 1. Durability Components
+        int maxDurability = getMaxDurability(stack);
+        stack.set(DataComponents.MAX_DAMAGE, maxDurability);
+        if (!stack.has(DataComponents.DAMAGE)) {
+            stack.set(DataComponents.DAMAGE, data.damage());
+        }
+
+        // 2. Attribute Modifiers Component
+        float totalDamage = getAttackDamage(stack, toolItem.baseAttackDamage);
+        float totalSpeed = getAttackSpeed(stack, toolItem.baseAttackSpeed);
+
+        ItemAttributeModifiers.Builder attrBuilder = ItemAttributeModifiers.builder();
+        attrBuilder.add(
+                Attributes.ATTACK_DAMAGE,
+                new AttributeModifier(BASE_ATTACK_DAMAGE_ID, totalDamage, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
+        );
+        attrBuilder.add(
+                Attributes.ATTACK_SPEED,
+                new AttributeModifier(BASE_ATTACK_SPEED_ID, totalSpeed, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
+        );
+        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, attrBuilder.build());
+
+        // 3. Tool Component (Mining Speed & Harvest Rule)
+        float miningSpeed = getMiningSpeed(stack);
+        List<Tool.Rule> rules = new ArrayList<>();
+        if (toolItem.mineableTag != null) {
+            BuiltInRegistries.BLOCK.get(toolItem.mineableTag).ifPresent(tag -> {
+                rules.add(Tool.Rule.minesAndDrops(tag, miningSpeed));
+            });
+        }
+        if (toolItem instanceof ModularSwordItem) {
+            rules.add(Tool.Rule.minesAndDrops(HolderSet.direct(Blocks.COBWEB.builtInRegistryHolder()), 15.0F));
+            BuiltInRegistries.BLOCK.get(BlockTags.SWORD_EFFICIENT).ifPresent(tag -> {
+                rules.add(Tool.Rule.overrideSpeed(tag, 1.5F));
+            });
+        }
+
+        stack.set(DataComponents.TOOL, new Tool(rules, 1.0F, 1, false));
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+        if (!stack.has(DataComponents.MAX_DAMAGE) || !stack.has(DataComponents.ATTRIBUTE_MODIFIERS)) {
+            recalculateComponents(stack);
+        }
+        super.inventoryTick(stack, level, entity, slot);
+    }
+
     @Override
     public int getMaxDamage(ItemStack stack) {
         return getMaxDurability(stack);
@@ -171,13 +283,18 @@ public abstract class ModularToolItem extends Item {
 
     @Override
     public int getDamage(ItemStack stack) {
-        return getData(stack).damage();
+        return stack.getOrDefault(DataComponents.DAMAGE, getData(stack).damage());
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
+        int max = getMaxDamage(stack);
+        int clamped = Math.min(Math.max(0, damage), max);
+        stack.set(DataComponents.DAMAGE, clamped);
         ModularToolData data = getData(stack);
-        setData(stack, data.withDamage(Math.min(damage, getMaxDamage(stack))));
+        if (data.damage() != clamped) {
+            stack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data.withDamage(clamped));
+        }
     }
 
     @Override
@@ -205,7 +322,7 @@ public abstract class ModularToolItem extends Item {
         if (mineableTag != null && state.is(mineableTag)) {
             return getMiningSpeed(stack);
         }
-        return 1.0F;
+        return super.getDestroySpeed(stack, state);
     }
 
     @Override
@@ -221,7 +338,7 @@ public abstract class ModularToolItem extends Item {
             }
             return true;
         }
-        return false;
+        return super.isCorrectToolForDrops(stack, state);
     }
 
     @Override
@@ -237,13 +354,17 @@ public abstract class ModularToolItem extends Item {
         return true;
     }
 
-    protected void applyDamage(ItemStack stack, int amount, LivingEntity entity) {
+    public void applyDamage(ItemStack stack, int amount, LivingEntity entity) {
         ModularToolData data = getData(stack);
         int unbreaking = data.getModifierLevel(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "reinforced"));
         if (unbreaking > 0 && entity.getRandom().nextInt(1 + unbreaking) > 0) {
             return; // Durability saved
         }
         stack.hurtAndBreak(amount, entity, EquipmentSlot.MAINHAND);
+        int newDmg = stack.getOrDefault(DataComponents.DAMAGE, 0);
+        if (data.damage() != newDmg) {
+            stack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data.withDamage(newDmg));
+        }
     }
 
     @Override

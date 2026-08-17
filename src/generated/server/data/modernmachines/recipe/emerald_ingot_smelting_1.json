@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.7,
+  "ingredient": "modernmachines:emerald_dust",
+  "result": {
+    "id": "minecraft:emerald"
+  }
+}
