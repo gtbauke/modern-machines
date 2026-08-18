@@ -9,11 +9,15 @@
       },
       {
         "type": "modernmachines:modular_part_tint",
-        "slot": "binding"
+        "slot": "head"
       },
       {
         "type": "modernmachines:modular_part_tint",
-        "slot": "head"
+        "slot": "tip"
+      },
+      {
+        "type": "modernmachines:modular_part_tint",
+        "slot": "binding"
       }
     ]
   }

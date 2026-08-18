@@ -111,8 +111,13 @@ public class ModModelProvider extends ModelProvider {
         Identifier handleTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/handle");
         Identifier bindingTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/binding");
 
-        registerModularToolModel(itemModels, ModItems.MODULAR_PICKAXE.get(), threeLayerHandheld,
-                handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/pickaxe_head"));
+        Identifier pickaxeHandleTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/assembled_tool_part/assembled_pickaxe_handle");
+        Identifier pickaxeHeadTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/assembled_tool_part/assembled_pickaxe_head");
+        Identifier pickaxeTipTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/assembled_tool_part/assembled_pickaxe_tip");
+        Identifier pickaxeBindingTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/assembled_tool_part/assembled_pickaxe_binding");
+
+        registerModularPickaxeModel(itemModels, ModItems.MODULAR_PICKAXE.get(), fourLayerHandheld,
+                pickaxeHandleTex, pickaxeHeadTex, pickaxeTipTex, pickaxeBindingTex);
 
         registerModularToolModel(itemModels, ModItems.MODULAR_AXE.get(), threeLayerHandheld,
                 handleTex, bindingTex, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/part/axe_head"));
@@ -256,6 +261,29 @@ public class ModModelProvider extends ModelProvider {
                         new ModularToolPartTintSource(PartSlot.HANDLE),
                         new ModularToolPartTintSource(PartSlot.POMMEL),
                         new ModularToolPartTintSource(PartSlot.HEAD),
+                        new ModularToolPartTintSource(PartSlot.BINDING)
+                )
+        );
+    }
+
+    private void registerModularPickaxeModel(ItemModelGenerators itemModels, Item toolItem, ModelTemplate template,
+                                             Identifier handleTexture, Identifier headTexture, Identifier tipTexture, Identifier bindingTexture) {
+        Identifier modelId = ModelLocationUtils.getModelLocation(toolItem);
+        TextureMapping mapping = new TextureMapping()
+                .put(TextureSlot.LAYER0, new net.minecraft.client.resources.model.sprite.Material(handleTexture))
+                .put(TextureSlot.LAYER1, new net.minecraft.client.resources.model.sprite.Material(headTexture))
+                .put(TextureSlot.LAYER2, new net.minecraft.client.resources.model.sprite.Material(tipTexture))
+                .put(LAYER3, new net.minecraft.client.resources.model.sprite.Material(bindingTexture));
+
+        template.create(modelId, mapping, itemModels.modelOutput);
+
+        itemModels.itemModelOutput.accept(
+                toolItem,
+                ItemModelUtils.tintedModel(
+                        modelId,
+                        new ModularToolPartTintSource(PartSlot.HANDLE),
+                        new ModularToolPartTintSource(PartSlot.HEAD),
+                        new ModularToolPartTintSource(PartSlot.TIP),
                         new ModularToolPartTintSource(PartSlot.BINDING)
                 )
         );
