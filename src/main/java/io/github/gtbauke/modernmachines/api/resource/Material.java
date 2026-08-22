@@ -18,6 +18,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 
 public record Material(String name, String displayName, MaterialType type, int colorHex, MapColor mapColor,
                        TagKey<Block> miningLevelTag, float hardness, float resistance, float smeltingXp,
+                       int overlayIndex,
                        Set<ResourceForm> supportedForms, Map<ResourceForm, DeferredBlock<Block>> blockRegistry,
                        Map<ResourceForm, DeferredItem<? extends Item>> itemRegistry,
                        Map<ResourceForm, Supplier<? extends ItemLike>> delegates) {
@@ -31,6 +32,7 @@ public record Material(String name, String displayName, MaterialType type, int c
             float hardness,
             float resistance,
             float smeltingXp,
+            int overlayIndex,
             Set<ResourceForm> supportedForms,
             Map<ResourceForm, DeferredBlock<Block>> blockRegistry,
             Map<ResourceForm, DeferredItem<? extends Item>> itemRegistry,
@@ -45,6 +47,7 @@ public record Material(String name, String displayName, MaterialType type, int c
         this.hardness = hardness;
         this.resistance = resistance;
         this.smeltingXp = smeltingXp;
+        this.overlayIndex = overlayIndex;
         this.supportedForms = Collections.unmodifiableSet(supportedForms);
         this.blockRegistry = Collections.unmodifiableMap(blockRegistry);
         this.itemRegistry = Collections.unmodifiableMap(itemRegistry);

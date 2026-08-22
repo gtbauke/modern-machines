@@ -21,6 +21,11 @@ public class ModLanguageProvider extends LanguageProvider {
     protected void addTranslations() {
         // Creative tabs
         add("itemGroup.modernmachines.materials", "Modern Machines: Materials");
+        add("itemGroup.modernmachines.resources", "Modern Machines Resources");
+
+        addBlock(ModBlocks.ADOBE_BRICK, "Adobe Brick");
+        addItem(ModItems.ADOBE_BRICKS, "Adobe Bricks");
+        addItem(ModItems.ADOBE_MIXTURE, "Adobe Mixture");
 
         // Workstations
         addBlock(ModBlocks.PART_BUILDER, "Part Builder");

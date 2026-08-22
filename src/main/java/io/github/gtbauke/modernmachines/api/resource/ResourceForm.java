@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.Block;
 public enum ResourceForm {
     ORE(FormType.BLOCK, "%s_ore", "ores/%s", "ores", "%s Ore"),
     DEEPSLATE_ORE(FormType.BLOCK, "deepslate_%s_ore", "ores/%s", "ores", "Deepslate %s Ore"),
+    NETHERRACK_ORE(FormType.BLOCK, "netherrack_%s_ore", "ores/%s", "ores", "Netherrack %s Ore"),
+    END_STONE_ORE(FormType.BLOCK, "end_stone_%s_ore", "ores/%s", "ores", "End Stone %s Ore"),
     STORAGE_BLOCK(FormType.BLOCK, "%s_block", "storage_blocks/%s", "storage_blocks", "Block of %s"),
     RAW_STORAGE_BLOCK(FormType.BLOCK, "raw_%s_block", "storage_blocks/raw_%s", "storage_blocks", "Block of Raw %s"),
     RAW_ORE(FormType.ITEM, "raw_%s", "raw_materials/%s", "raw_materials", "Raw %s"),

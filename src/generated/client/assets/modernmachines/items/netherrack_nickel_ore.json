@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "modernmachines:block/template/netherrack_ore_007",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -2040379
+      }
+    ]
+  }
+}

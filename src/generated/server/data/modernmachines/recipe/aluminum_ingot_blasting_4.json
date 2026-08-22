@@ -1,7 +1,7 @@
 {
   "type": "minecraft:blasting",
   "experience": 0.6,
-  "ingredient": "modernmachines:aluminum_dust",
+  "ingredient": "modernmachines:end_stone_aluminum_ore",
   "result": {
     "id": "modernmachines:aluminum_ingot"
   }

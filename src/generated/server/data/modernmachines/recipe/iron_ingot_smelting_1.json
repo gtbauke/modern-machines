@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "experience": 0.7,
-  "ingredient": "modernmachines:iron_dust",
+  "ingredient": "modernmachines:netherrack_iron_ore",
   "result": {
     "id": "minecraft:iron_ingot"
   }

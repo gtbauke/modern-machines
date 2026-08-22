@@ -1,6 +1,8 @@
 {
   "values": [
     "minecraft:copper_ore",
-    "minecraft:deepslate_copper_ore"
+    "minecraft:deepslate_copper_ore",
+    "modernmachines:netherrack_copper_ore",
+    "modernmachines:end_stone_copper_ore"
   ]
 }

@@ -29,6 +29,24 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
                         output.accept(ModBlocks.ENGINEERS_TERMINAL.get());
 
+                        // Steam Era Blocks & Machines
+                        output.accept(ModItems.ADOBE_BRICKS);
+                        output.accept(ModItems.ADOBE_MIXTURE);
+                        output.accept(ModBlocks.ADOBE_BRICK);
+//                        output.accept(ModBlocks.BRONZE_CASING.get());
+//                        output.accept(ModBlocks.SOLID_FUEL_BOILER.get());
+//                        output.accept(ModBlocks.STEAM_TURBINE.get());
+//                        output.accept(ModBlocks.STEAM_CRUSHER.get());
+//                        output.accept(ModBlocks.STEAM_ALLOY_SMELTER.get());
+//                        output.accept(ModBlocks.BRONZE_FLUID_TANK.get());
+//                        output.accept(ModBlocks.BRONZE_FLUID_PIPE.get());
+
+                        // Steam Era Components
+//                        output.accept(ModItems.STEAM_PISTON.get());
+//                        output.accept(ModItems.PRESSURE_GAUGE.get());
+//                        output.accept(ModItems.BRONZE_VALVE.get());
+//                        output.accept(ModItems.STEAM_BUCKET.get());
+
                         // Upgrades
                         output.accept(ModItems.SPEED_UPGRADE.get());
                         output.accept(ModItems.ENERGY_EFFICIENCY_UPGRADE.get());
@@ -59,16 +77,8 @@ public class ModCreativeTabs {
                         // Modular Tool Parts
                         ModItems.getAllToolParts().values().forEach(part -> output.accept(part.get()));
 
-                        // Iterate materials and ordered forms
-                        ResourceForm[] orderedForms = {
-                                ResourceForm.ORE,
-                                ResourceForm.DEEPSLATE_ORE,
-                                ResourceForm.RAW_STORAGE_BLOCK,
-                                ResourceForm.STORAGE_BLOCK,
-                                ResourceForm.RAW_ORE,
-                                ResourceForm.INGOT,
-                                ResourceForm.GEM,
-                                ResourceForm.NUGGET,
+                        // Iterate materials and ordered forms for manufactured parts
+                        ResourceForm[] orderedManufacturedForms = {
                                 ResourceForm.DUST,
                                 ResourceForm.PLATE,
                                 ResourceForm.ROD,
@@ -78,7 +88,39 @@ public class ModCreativeTabs {
                         };
 
                         for (Material material : ModMaterials.getAllMaterials()) {
-                            for (ResourceForm form : orderedForms) {
+                            for (ResourceForm form : orderedManufacturedForms) {
+                                if (material.isRegisteredLocally(form)) {
+                                    DeferredItem<?> item = material.getDeferredItem(form);
+                                    if (item != null) {
+                                        output.accept(item.get());
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    .build());
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> RESOURCES_TAB =
+            CREATIVE_MODE_TABS.register("resources", () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.modernmachines.resources"))
+                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+                    .icon(() -> ModMaterials.TIN.getItem(ResourceForm.RAW_ORE).getDefaultInstance())
+                    .displayItems((parameters, output) -> {
+                        ResourceForm[] orderedResourceForms = {
+                                ResourceForm.ORE,
+                                ResourceForm.DEEPSLATE_ORE,
+                                ResourceForm.NETHERRACK_ORE,
+                                ResourceForm.END_STONE_ORE,
+                                ResourceForm.RAW_STORAGE_BLOCK,
+                                ResourceForm.STORAGE_BLOCK,
+                                ResourceForm.RAW_ORE,
+                                ResourceForm.INGOT,
+                                ResourceForm.GEM,
+                                ResourceForm.NUGGET
+                        };
+
+                        for (Material material : ModMaterials.getAllMaterials()) {
+                            for (ResourceForm form : orderedResourceForms) {
                                 if (material.isRegisteredLocally(form)) {
                                     DeferredItem<?> item = material.getDeferredItem(form);
                                     if (item != null) {

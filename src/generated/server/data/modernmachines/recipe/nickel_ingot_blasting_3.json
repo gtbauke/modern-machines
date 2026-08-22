@@ -1,7 +1,7 @@
 {
   "type": "minecraft:blasting",
   "experience": 0.7,
-  "ingredient": "modernmachines:raw_nickel",
+  "ingredient": "modernmachines:netherrack_nickel_ore",
   "result": {
     "id": "modernmachines:nickel_ingot"
   }

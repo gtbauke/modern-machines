@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "experience": 0.8,
-  "ingredient": "modernmachines:raw_lead",
+  "ingredient": "modernmachines:netherrack_lead_ore",
   "result": {
     "id": "modernmachines:lead_ingot"
   }

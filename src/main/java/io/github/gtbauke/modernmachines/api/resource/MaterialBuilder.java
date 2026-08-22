@@ -30,16 +30,23 @@ public class MaterialBuilder {
     private float hardness = 3.0f;
     private float resistance = 3.0f;
     private float smeltingXp = 0.7f;
+    private int overlayIndex;
     private final Set<ResourceForm> forms = EnumSet.noneOf(ResourceForm.class);
     private final Map<ResourceForm, Supplier<? extends ItemLike>> delegates = new EnumMap<>(ResourceForm.class);
 
     public MaterialBuilder(String name) {
         this.name = name;
         this.displayName = capitalize(name);
+        this.overlayIndex = (Math.abs(name.hashCode()) % 10) + 1;
     }
 
     public static MaterialBuilder of(String name) {
         return new MaterialBuilder(name);
+    }
+
+    public MaterialBuilder overlayIndex(int overlayIndex) {
+        this.overlayIndex = overlayIndex;
+        return this;
     }
 
     public MaterialBuilder displayName(String displayName) {
@@ -93,6 +100,8 @@ public class MaterialBuilder {
         return this.forms(
                 ResourceForm.ORE,
                 ResourceForm.DEEPSLATE_ORE,
+                ResourceForm.NETHERRACK_ORE,
+                ResourceForm.END_STONE_ORE,
                 ResourceForm.RAW_ORE,
                 ResourceForm.RAW_STORAGE_BLOCK,
                 ResourceForm.STORAGE_BLOCK,
@@ -150,6 +159,7 @@ public class MaterialBuilder {
                 this.hardness,
                 this.resistance,
                 this.smeltingXp,
+                this.overlayIndex,
                 this.forms,
                 blockRegistry,
                 itemRegistry,
@@ -164,6 +174,18 @@ public class MaterialBuilder {
                             .mapColor(MapColor.DEEPSLATE)
                             .strength(this.hardness * 1.5f, this.resistance)
                             .sound(SoundType.DEEPSLATE)
+                            .requiresCorrectToolForDrops());
+            case NETHERRACK_ORE -> blockRegister.registerSimpleBlock(registryName,
+                    () -> BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.NETHER)
+                            .strength(Math.max(0.4f, this.hardness * 0.8f), this.resistance)
+                            .sound(SoundType.NETHERRACK)
+                            .requiresCorrectToolForDrops());
+            case END_STONE_ORE -> blockRegister.registerSimpleBlock(registryName,
+                    () -> BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.SAND)
+                            .strength(this.hardness * 1.5f, Math.max(9.0f, this.resistance * 1.5f))
+                            .sound(SoundType.STONE)
                             .requiresCorrectToolForDrops());
             case ORE -> blockRegister.registerSimpleBlock(registryName,
                     () -> BlockBehaviour.Properties.of()

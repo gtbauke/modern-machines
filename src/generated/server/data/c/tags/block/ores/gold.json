@@ -1,6 +1,8 @@
 {
   "values": [
     "minecraft:gold_ore",
-    "minecraft:deepslate_gold_ore"
+    "minecraft:deepslate_gold_ore",
+    "minecraft:nether_gold_ore",
+    "modernmachines:end_stone_gold_ore"
   ]
 }

@@ -42,6 +42,14 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.ENGINEER_HAMMER.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateFlatItem(ModItems.WIRE_CUTTER.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
 
+        itemModels.generateFlatItem(ModItems.ADOBE_BRICKS.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.ADOBE_MIXTURE.get(), ModelTemplates.FLAT_ITEM);
+
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
+                ModBlocks.ADOBE_BRICK.get(),
+                BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ALL.create(ModBlocks.ADOBE_BRICK.get(), TextureMapping.cube(ModBlocks.ADOBE_BRICK.get()), blockModels.modelOutput))
+        ));
+
         // Register machine upgrades
         itemModels.generateFlatItem(ModItems.SPEED_UPGRADE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.ENERGY_EFFICIENCY_UPGRADE.get(), ModelTemplates.FLAT_ITEM);
@@ -192,11 +200,16 @@ public class ModModelProvider extends ModelProvider {
                 if (form.isBlock() && material.isRegisteredLocally(form)) {
                     Block block = material.getBlock(form);
                     if (block != null) {
+                        String overlaySuffix = String.format("%03d", material.overlayIndex());
                         Identifier templateBlockModelId;
                         if (form == ResourceForm.ORE) {
-                            templateBlockModelId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/stone_ore");
+                            templateBlockModelId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/stone_ore_" + overlaySuffix);
                         } else if (form == ResourceForm.DEEPSLATE_ORE) {
-                            templateBlockModelId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/deepslate_ore");
+                            templateBlockModelId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/deepslate_ore_" + overlaySuffix);
+                        } else if (form == ResourceForm.NETHERRACK_ORE) {
+                            templateBlockModelId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/netherrack_ore_" + overlaySuffix);
+                        } else if (form == ResourceForm.END_STONE_ORE) {
+                            templateBlockModelId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/end_stone_ore_" + overlaySuffix);
                         } else if (form == ResourceForm.STORAGE_BLOCK) {
                             templateBlockModelId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/storage_block");
                         } else if (form == ResourceForm.RAW_STORAGE_BLOCK) {

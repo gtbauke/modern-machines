@@ -1,7 +1,7 @@
 {
   "type": "minecraft:blasting",
   "experience": 0.7,
-  "ingredient": "modernmachines:emerald_dust",
+  "ingredient": "modernmachines:netherrack_emerald_ore",
   "result": {
     "id": "minecraft:emerald"
   }

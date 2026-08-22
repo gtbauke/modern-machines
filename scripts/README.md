@@ -14,6 +14,7 @@ This directory contains development and asset generation utility scripts for **M
 | `generate_terminal_assets.py` | Generates Engineer's Terminal and Tablet workstation sprites and models. |
 | `generate_textures.py` | Baseline procedural texture generation utility. |
 | `generate_tool_textures.py` | Tool item model texture generation utility. |
+| `generate_steam_assets.py` | Generates Steam Era machine, casing, pipe, tank, item, and fluid textures. |
 | `generate_modular_data.py` | Modular tool part data generation helper. |
 
 ---

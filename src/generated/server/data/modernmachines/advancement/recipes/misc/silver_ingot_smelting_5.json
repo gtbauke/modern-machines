@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_silver": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modernmachines:raw_silver"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modernmachines:silver_ingot_smelting_5"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_silver"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modernmachines:silver_ingot_smelting_5"
+    ]
+  }
+}

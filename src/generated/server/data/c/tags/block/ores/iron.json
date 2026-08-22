@@ -1,6 +1,8 @@
 {
   "values": [
     "minecraft:iron_ore",
-    "minecraft:deepslate_iron_ore"
+    "minecraft:deepslate_iron_ore",
+    "modernmachines:netherrack_iron_ore",
+    "modernmachines:end_stone_iron_ore"
   ]
 }

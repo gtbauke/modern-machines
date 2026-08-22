@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "experience": 0.7,
-  "ingredient": "modernmachines:diamond_dust",
+  "ingredient": "modernmachines:netherrack_diamond_ore",
   "result": {
     "id": "minecraft:diamond"
   }

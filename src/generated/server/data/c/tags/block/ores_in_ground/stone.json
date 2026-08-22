@@ -1,0 +1,17 @@
+{
+  "values": [
+    "minecraft:iron_ore",
+    "minecraft:gold_ore",
+    "minecraft:copper_ore",
+    "minecraft:diamond_ore",
+    "minecraft:lapis_ore",
+    "minecraft:emerald_ore",
+    "modernmachines:tin_ore",
+    "modernmachines:lead_ore",
+    "modernmachines:silver_ore",
+    "modernmachines:nickel_ore",
+    "modernmachines:aluminum_ore",
+    "modernmachines:uranium_ore",
+    "modernmachines:titanium_ore"
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "modernmachines:block/template/stone_ore",
+    "model": "modernmachines:block/template/stone_ore_007",
     "tints": [
       {
         "type": "minecraft:constant",

@@ -1,6 +1,8 @@
 {
   "values": [
     "modernmachines:tin_ore",
-    "modernmachines:deepslate_tin_ore"
+    "modernmachines:deepslate_tin_ore",
+    "modernmachines:netherrack_tin_ore",
+    "modernmachines:end_stone_tin_ore"
   ]
 }

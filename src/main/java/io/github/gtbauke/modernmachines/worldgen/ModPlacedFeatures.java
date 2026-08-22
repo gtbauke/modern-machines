@@ -27,6 +27,22 @@ public class ModPlacedFeatures {
     public static final ResourceKey<PlacedFeature> ORE_URANIUM_PLACED = registerKey("ore_uranium_placed");
     public static final ResourceKey<PlacedFeature> ORE_TITANIUM_PLACED = registerKey("ore_titanium_placed");
 
+    public static final ResourceKey<PlacedFeature> ORE_NETHERRACK_TIN_PLACED = registerKey("ore_netherrack_tin_placed");
+    public static final ResourceKey<PlacedFeature> ORE_NETHERRACK_LEAD_PLACED = registerKey("ore_netherrack_lead_placed");
+    public static final ResourceKey<PlacedFeature> ORE_NETHERRACK_SILVER_PLACED = registerKey("ore_netherrack_silver_placed");
+    public static final ResourceKey<PlacedFeature> ORE_NETHERRACK_NICKEL_PLACED = registerKey("ore_netherrack_nickel_placed");
+    public static final ResourceKey<PlacedFeature> ORE_NETHERRACK_ALUMINUM_PLACED = registerKey("ore_netherrack_aluminum_placed");
+    public static final ResourceKey<PlacedFeature> ORE_NETHERRACK_URANIUM_PLACED = registerKey("ore_netherrack_uranium_placed");
+    public static final ResourceKey<PlacedFeature> ORE_NETHERRACK_TITANIUM_PLACED = registerKey("ore_netherrack_titanium_placed");
+
+    public static final ResourceKey<PlacedFeature> ORE_END_STONE_TIN_PLACED = registerKey("ore_end_stone_tin_placed");
+    public static final ResourceKey<PlacedFeature> ORE_END_STONE_LEAD_PLACED = registerKey("ore_end_stone_lead_placed");
+    public static final ResourceKey<PlacedFeature> ORE_END_STONE_SILVER_PLACED = registerKey("ore_end_stone_silver_placed");
+    public static final ResourceKey<PlacedFeature> ORE_END_STONE_NICKEL_PLACED = registerKey("ore_end_stone_nickel_placed");
+    public static final ResourceKey<PlacedFeature> ORE_END_STONE_ALUMINUM_PLACED = registerKey("ore_end_stone_aluminum_placed");
+    public static final ResourceKey<PlacedFeature> ORE_END_STONE_URANIUM_PLACED = registerKey("ore_end_stone_uranium_placed");
+    public static final ResourceKey<PlacedFeature> ORE_END_STONE_TITANIUM_PLACED = registerKey("ore_end_stone_titanium_placed");
+
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
@@ -57,6 +73,38 @@ public class ModPlacedFeatures {
         // Titanium: Rare very deep elevations (vein size 4, 3 veins/chunk, Y: -64 to -16, peak at -48)
         register(context, ORE_TITANIUM_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_TITANIUM),
                 commonOrePlacement(3, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(-16))));
+
+        // Nether Placed Ores (Y: 10 to 115)
+        register(context, ORE_NETHERRACK_TIN_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_NETHERRACK_TIN),
+                commonOrePlacement(10, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(115))));
+        register(context, ORE_NETHERRACK_LEAD_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_NETHERRACK_LEAD),
+                commonOrePlacement(6, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(115))));
+        register(context, ORE_NETHERRACK_SILVER_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_NETHERRACK_SILVER),
+                commonOrePlacement(5, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(115))));
+        register(context, ORE_NETHERRACK_NICKEL_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_NETHERRACK_NICKEL),
+                commonOrePlacement(5, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(115))));
+        register(context, ORE_NETHERRACK_ALUMINUM_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_NETHERRACK_ALUMINUM),
+                commonOrePlacement(8, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(115))));
+        register(context, ORE_NETHERRACK_URANIUM_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_NETHERRACK_URANIUM),
+                commonOrePlacement(3, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(115))));
+        register(context, ORE_NETHERRACK_TITANIUM_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_NETHERRACK_TITANIUM),
+                commonOrePlacement(3, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(115))));
+
+        // End Placed Ores (Y: 10 to 70)
+        register(context, ORE_END_STONE_TIN_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_END_STONE_TIN),
+                commonOrePlacement(6, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(70))));
+        register(context, ORE_END_STONE_LEAD_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_END_STONE_LEAD),
+                commonOrePlacement(4, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(70))));
+        register(context, ORE_END_STONE_SILVER_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_END_STONE_SILVER),
+                commonOrePlacement(4, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(70))));
+        register(context, ORE_END_STONE_NICKEL_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_END_STONE_NICKEL),
+                commonOrePlacement(4, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(70))));
+        register(context, ORE_END_STONE_ALUMINUM_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_END_STONE_ALUMINUM),
+                commonOrePlacement(5, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(70))));
+        register(context, ORE_END_STONE_URANIUM_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_END_STONE_URANIUM),
+                commonOrePlacement(3, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(70))));
+        register(context, ORE_END_STONE_TITANIUM_PLACED, configuredFeatures.getOrThrow(ModConfiguredFeatures.ORE_END_STONE_TITANIUM),
+                commonOrePlacement(3, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(70))));
     }
 
     private static List<PlacementModifier> orePlacement(PlacementModifier count, PlacementModifier heightRange) {

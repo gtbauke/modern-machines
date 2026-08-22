@@ -1,7 +1,7 @@
 {
   "type": "minecraft:blasting",
   "experience": 0.8,
-  "ingredient": "modernmachines:lead_dust",
+  "ingredient": "modernmachines:end_stone_lead_ore",
   "result": {
     "id": "modernmachines:lead_ingot"
   }

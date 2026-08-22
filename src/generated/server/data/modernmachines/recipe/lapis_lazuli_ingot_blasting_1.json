@@ -1,7 +1,7 @@
 {
   "type": "minecraft:blasting",
   "experience": 0.7,
-  "ingredient": "modernmachines:lapis_lazuli_dust",
+  "ingredient": "modernmachines:netherrack_lapis_lazuli_ore",
   "result": {
     "id": "minecraft:lapis_lazuli"
   }

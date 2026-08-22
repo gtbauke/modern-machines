@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "experience": 0.6,
-  "ingredient": "modernmachines:raw_aluminum",
+  "ingredient": "modernmachines:netherrack_aluminum_ore",
   "result": {
     "id": "modernmachines:aluminum_ingot"
   }

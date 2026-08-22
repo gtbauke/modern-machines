@@ -2,6 +2,7 @@ package io.github.gtbauke.modernmachines.datagen;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import io.github.gtbauke.modernmachines.api.resource.Material;
@@ -29,14 +30,15 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
         dropSelf(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
         dropSelf(ModBlocks.ENGINEERS_TERMINAL.get());
+        dropSelf(ModBlocks.ADOBE_BRICK.get());
 
         for (Material material : ModMaterials.getAllMaterials()) {
             // Storage blocks
             if (material.isRegisteredLocally(ResourceForm.STORAGE_BLOCK)) {
-                dropSelf(material.getBlock(ResourceForm.STORAGE_BLOCK));
+                dropSelf(Objects.requireNonNull(material.getBlock(ResourceForm.STORAGE_BLOCK)));
             }
             if (material.isRegisteredLocally(ResourceForm.RAW_STORAGE_BLOCK)) {
-                dropSelf(material.getBlock(ResourceForm.RAW_STORAGE_BLOCK));
+                dropSelf(Objects.requireNonNull(material.getBlock(ResourceForm.RAW_STORAGE_BLOCK)));
             }
 
             // Ores
@@ -51,8 +53,10 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
             if (material.isRegisteredLocally(ResourceForm.ORE)) {
                 Block oreBlock = material.getBlock(ResourceForm.ORE);
                 if (dropItem != null) {
+                    assert oreBlock != null;
                     add(oreBlock, createOreDrop(oreBlock, dropItem));
                 } else {
+                    assert oreBlock != null;
                     dropSelf(oreBlock);
                 }
             }
@@ -60,9 +64,33 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
             if (material.isRegisteredLocally(ResourceForm.DEEPSLATE_ORE)) {
                 Block deepslateOreBlock = material.getBlock(ResourceForm.DEEPSLATE_ORE);
                 if (dropItem != null) {
+                    assert deepslateOreBlock != null;
                     add(deepslateOreBlock, createOreDrop(deepslateOreBlock, dropItem));
                 } else {
+                    assert deepslateOreBlock != null;
                     dropSelf(deepslateOreBlock);
+                }
+            }
+
+            if (material.isRegisteredLocally(ResourceForm.NETHERRACK_ORE)) {
+                Block netherrackOreBlock = material.getBlock(ResourceForm.NETHERRACK_ORE);
+                if (dropItem != null) {
+                    assert netherrackOreBlock != null;
+                    add(netherrackOreBlock, createOreDrop(netherrackOreBlock, dropItem));
+                } else {
+                    assert netherrackOreBlock != null;
+                    dropSelf(netherrackOreBlock);
+                }
+            }
+
+            if (material.isRegisteredLocally(ResourceForm.END_STONE_ORE)) {
+                Block endStoneOreBlock = material.getBlock(ResourceForm.END_STONE_ORE);
+                if (dropItem != null) {
+                    assert endStoneOreBlock != null;
+                    add(endStoneOreBlock, createOreDrop(endStoneOreBlock, dropItem));
+                } else {
+                    assert endStoneOreBlock != null;
+                    dropSelf(endStoneOreBlock);
                 }
             }
         }
@@ -76,6 +104,7 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
         knownBlocks.add(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
         knownBlocks.add(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
         knownBlocks.add(ModBlocks.ENGINEERS_TERMINAL.get());
+        knownBlocks.add(ModBlocks.ADOBE_BRICK.get());
 
         for (Material material : ModMaterials.getAllMaterials()) {
             for (ResourceForm form : material.supportedForms()) {

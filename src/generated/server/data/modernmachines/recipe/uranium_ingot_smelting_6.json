@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 1.2,
+  "ingredient": "modernmachines:uranium_dust",
+  "result": {
+    "id": "modernmachines:uranium_ingot"
+  }
+}

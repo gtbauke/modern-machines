@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "experience": 1.2,
-  "ingredient": "modernmachines:raw_uranium",
+  "ingredient": "modernmachines:netherrack_uranium_ore",
   "result": {
     "id": "modernmachines:uranium_ingot"
   }

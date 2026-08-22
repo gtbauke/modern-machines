@@ -1,0 +1,17 @@
+{
+  "values": [
+    "minecraft:deepslate_iron_ore",
+    "minecraft:deepslate_gold_ore",
+    "minecraft:deepslate_copper_ore",
+    "minecraft:deepslate_diamond_ore",
+    "minecraft:deepslate_lapis_ore",
+    "minecraft:deepslate_emerald_ore",
+    "modernmachines:deepslate_tin_ore",
+    "modernmachines:deepslate_lead_ore",
+    "modernmachines:deepslate_silver_ore",
+    "modernmachines:deepslate_nickel_ore",
+    "modernmachines:deepslate_aluminum_ore",
+    "modernmachines:deepslate_uranium_ore",
+    "modernmachines:deepslate_titanium_ore"
+  ]
+}

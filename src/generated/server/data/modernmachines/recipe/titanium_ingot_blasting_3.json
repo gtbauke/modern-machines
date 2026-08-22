@@ -1,7 +1,7 @@
 {
   "type": "minecraft:blasting",
   "experience": 1.5,
-  "ingredient": "modernmachines:raw_titanium",
+  "ingredient": "modernmachines:netherrack_titanium_ore",
   "result": {
     "id": "modernmachines:titanium_ingot"
   }

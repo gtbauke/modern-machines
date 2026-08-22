@@ -36,6 +36,8 @@ public class ModMaterials {
                     .delegate(ResourceForm.INGOT, () -> Items.IRON_INGOT)
                     .delegate(ResourceForm.NUGGET, () -> Items.IRON_NUGGET)
                     .forms(
+                            ResourceForm.NETHERRACK_ORE,
+                            ResourceForm.END_STONE_ORE,
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
                             ResourceForm.ROD,
@@ -55,12 +57,14 @@ public class ModMaterials {
                     .hardness(3.0f, 3.0f)
                     .delegate(ResourceForm.ORE, () -> Blocks.GOLD_ORE)
                     .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_GOLD_ORE)
+                    .delegate(ResourceForm.NETHERRACK_ORE, () -> Blocks.NETHER_GOLD_ORE)
                     .delegate(ResourceForm.RAW_ORE, () -> Items.RAW_GOLD)
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.GOLD_BLOCK)
                     .delegate(ResourceForm.RAW_STORAGE_BLOCK, () -> Blocks.RAW_GOLD_BLOCK)
                     .delegate(ResourceForm.INGOT, () -> Items.GOLD_INGOT)
                     .delegate(ResourceForm.NUGGET, () -> Items.GOLD_NUGGET)
                     .forms(
+                            ResourceForm.END_STONE_ORE,
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
                             ResourceForm.ROD,
@@ -85,6 +89,8 @@ public class ModMaterials {
                     .delegate(ResourceForm.RAW_STORAGE_BLOCK, () -> Blocks.RAW_COPPER_BLOCK)
                     .delegate(ResourceForm.INGOT, () -> Items.COPPER_INGOT)
                     .forms(
+                            ResourceForm.NETHERRACK_ORE,
+                            ResourceForm.END_STONE_ORE,
                             ResourceForm.NUGGET,
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
@@ -108,6 +114,8 @@ public class ModMaterials {
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.DIAMOND_BLOCK)
                     .delegate(ResourceForm.GEM, () -> Items.DIAMOND)
                     .forms(
+                            ResourceForm.NETHERRACK_ORE,
+                            ResourceForm.END_STONE_ORE,
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
                             ResourceForm.ROD,
@@ -128,6 +136,8 @@ public class ModMaterials {
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.LAPIS_BLOCK)
                     .delegate(ResourceForm.GEM, () -> Items.LAPIS_LAZULI)
                     .forms(
+                            ResourceForm.NETHERRACK_ORE,
+                            ResourceForm.END_STONE_ORE,
                             ResourceForm.DUST,
                             ResourceForm.PLATE
                     )
@@ -146,6 +156,8 @@ public class ModMaterials {
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.EMERALD_BLOCK)
                     .delegate(ResourceForm.GEM, () -> Items.EMERALD)
                     .forms(
+                            ResourceForm.NETHERRACK_ORE,
+                            ResourceForm.END_STONE_ORE,
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
                             ResourceForm.ROD,
@@ -263,6 +275,8 @@ public class ModMaterials {
                     .forms(
                             ResourceForm.ORE,
                             ResourceForm.DEEPSLATE_ORE,
+                            ResourceForm.NETHERRACK_ORE,
+                            ResourceForm.END_STONE_ORE,
                             ResourceForm.RAW_ORE,
                             ResourceForm.RAW_STORAGE_BLOCK,
                             ResourceForm.STORAGE_BLOCK,

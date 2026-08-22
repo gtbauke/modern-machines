@@ -1,6 +1,8 @@
 {
   "values": [
     "modernmachines:lead_ore",
-    "modernmachines:deepslate_lead_ore"
+    "modernmachines:deepslate_lead_ore",
+    "modernmachines:netherrack_lead_ore",
+    "modernmachines:end_stone_lead_ore"
   ]
 }

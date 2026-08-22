@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "experience": 0.9,
-  "ingredient": "modernmachines:raw_silver",
+  "ingredient": "modernmachines:netherrack_silver_ore",
   "result": {
     "id": "modernmachines:silver_ingot"
   }

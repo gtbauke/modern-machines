@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "experience": 0.7,
-  "ingredient": "modernmachines:nickel_dust",
+  "ingredient": "modernmachines:end_stone_nickel_ore",
   "result": {
     "id": "modernmachines:nickel_ingot"
   }

@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "experience": 0.7,
-  "ingredient": "modernmachines:gold_dust",
+  "ingredient": "modernmachines:end_stone_gold_ore",
   "result": {
     "id": "minecraft:gold_ingot"
   }

@@ -36,6 +36,7 @@ public class ModernMachines {
         // Initialize materials before deferred registers
         ModMaterials.init();
 
+        io.github.gtbauke.modernmachines.core.registry.ModFluids.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);

@@ -1,11 +1,21 @@
 {
   "values": [
+    "modernmachines:netherrack_iron_ore",
+    "modernmachines:end_stone_iron_ore",
+    "modernmachines:netherrack_copper_ore",
+    "modernmachines:end_stone_copper_ore",
+    "modernmachines:netherrack_lapis_lazuli_ore",
+    "modernmachines:end_stone_lapis_lazuli_ore",
     "modernmachines:tin_ore",
     "modernmachines:deepslate_tin_ore",
+    "modernmachines:netherrack_tin_ore",
+    "modernmachines:end_stone_tin_ore",
     "modernmachines:tin_block",
     "modernmachines:raw_tin_block",
     "modernmachines:aluminum_ore",
     "modernmachines:deepslate_aluminum_ore",
+    "modernmachines:netherrack_aluminum_ore",
+    "modernmachines:end_stone_aluminum_ore",
     "modernmachines:aluminum_block",
     "modernmachines:raw_aluminum_block"
   ]

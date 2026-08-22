@@ -1,0 +1,17 @@
+{
+  "values": [
+    "modernmachines:end_stone_iron_ore",
+    "modernmachines:end_stone_gold_ore",
+    "modernmachines:end_stone_copper_ore",
+    "modernmachines:end_stone_diamond_ore",
+    "modernmachines:end_stone_lapis_lazuli_ore",
+    "modernmachines:end_stone_emerald_ore",
+    "modernmachines:end_stone_tin_ore",
+    "modernmachines:end_stone_lead_ore",
+    "modernmachines:end_stone_silver_ore",
+    "modernmachines:end_stone_nickel_ore",
+    "modernmachines:end_stone_aluminum_ore",
+    "modernmachines:end_stone_uranium_ore",
+    "modernmachines:end_stone_titanium_ore"
+  ]
+}

@@ -9,7 +9,9 @@ import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.core.registry.ModMaterials;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -56,6 +58,17 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
                             // Specific and common plural tags
                             tag(material.getBlockTag(form)).add(blockKey);
                             tag(form.getPluralBlockTag()).addTag(material.getBlockTag(form));
+
+                            TagKey<Block> inGroundTag = switch (form) {
+                                case ORE -> TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores_in_ground/stone"));
+                                case DEEPSLATE_ORE -> TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores_in_ground/deepslate"));
+                                case NETHERRACK_ORE -> TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores_in_ground/netherrack"));
+                                case END_STONE_ORE -> TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores_in_ground/end_stone"));
+                                default -> null;
+                            };
+                            if (inGroundTag != null) {
+                                tag(inGroundTag).add(blockKey);
+                            }
                         }
                     }
                 }

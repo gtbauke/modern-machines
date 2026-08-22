@@ -16,6 +16,7 @@ import io.github.gtbauke.modernmachines.modular.item.ModularSwordItem;
 import io.github.gtbauke.modernmachines.modular.item.PatternItem;
 import io.github.gtbauke.modernmachines.modular.item.ToolPartItem;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,6 +31,29 @@ public class ModItems {
     public static final DeferredItem<BlockItem> BASIC_ALLOY_SMELTER_HEATER = ITEMS.registerSimpleBlockItem(ModBlocks.BASIC_ALLOY_SMELTER_HEATER);
     public static final DeferredItem<BlockItem> ALLOY_SMELTER = BASIC_ALLOY_SMELTER_CONTROLLER;
     public static final DeferredItem<BlockItem> ENGINEERS_TERMINAL = ITEMS.registerSimpleBlockItem(ModBlocks.ENGINEERS_TERMINAL);
+
+    // Steam Era Block Items
+    public static final DeferredItem<BlockItem> ADOBE_BRICK_BLOCK = ITEMS.registerSimpleBlockItem(ModBlocks.ADOBE_BRICK);
+//    public static final DeferredItem<BlockItem> BRONZE_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.BRONZE_CASING);
+//    public static final DeferredItem<BlockItem> SOLID_FUEL_BOILER = ITEMS.registerSimpleBlockItem(ModBlocks.SOLID_FUEL_BOILER);
+//    public static final DeferredItem<BlockItem> STEAM_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_TURBINE);
+//    public static final DeferredItem<BlockItem> STEAM_CRUSHER = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_CRUSHER);
+//    public static final DeferredItem<BlockItem> STEAM_ALLOY_SMELTER = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ALLOY_SMELTER);
+//    public static final DeferredItem<BlockItem> BRONZE_FLUID_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.BRONZE_FLUID_TANK);
+//    public static final DeferredItem<BlockItem> BRONZE_FLUID_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.BRONZE_FLUID_PIPE);
+
+    // Steam Era Components
+    public static final DeferredItem<Item> ADOBE_MIXTURE = ITEMS.registerItem("adobe_mixture", Item::new);
+    public static final DeferredItem<Item> ADOBE_BRICKS = ITEMS.registerItem("adobe_bricks", Item::new);
+
+//    public static final DeferredItem<Item> STEAM_PISTON = ITEMS.registerItem("steam_piston",
+//            Item::new);
+//    public static final DeferredItem<Item> PRESSURE_GAUGE = ITEMS.registerItem("pressure_gauge",
+//            Item::new);
+//    public static final DeferredItem<Item> BRONZE_VALVE = ITEMS.registerItem("bronze_valve",
+//            Item::new);
+//    public static final DeferredItem<BucketItem> STEAM_BUCKET = ITEMS.registerItem("steam_bucket",
+//            p -> new BucketItem(ModFluids.STEAM_SOURCE.get(), p.stacksTo(1)));
 
     // Engineer's Tablet Item
     public static final DeferredItem<io.github.gtbauke.modernmachines.core.item.EngineersTabletItem> ENGINEERS_TABLET = ITEMS.registerItem("engineers_tablet",

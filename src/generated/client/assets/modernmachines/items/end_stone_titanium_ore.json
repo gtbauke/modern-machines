@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "modernmachines:block/template/end_stone_ore_002",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -3884858
+      }
+    ]
+  }
+}

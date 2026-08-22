@@ -1,6 +1,8 @@
 {
   "values": [
     "minecraft:lapis_ore",
-    "minecraft:deepslate_lapis_ore"
+    "minecraft:deepslate_lapis_ore",
+    "modernmachines:netherrack_lapis_lazuli_ore",
+    "modernmachines:end_stone_lapis_lazuli_ore"
   ]
 }

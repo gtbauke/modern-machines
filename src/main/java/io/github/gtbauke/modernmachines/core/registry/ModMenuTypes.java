@@ -25,6 +25,7 @@ public class ModMenuTypes {
     public static final Supplier<MenuType<AlloySmelterMenu>> ALLOY_SMELTER =
             MENUS.register("alloy_smelter", () -> net.neoforged.neoforge.common.extensions.IMenuTypeExtension.create(AlloySmelterMenu::new));
 
+
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);
     }

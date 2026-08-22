@@ -1,6 +1,8 @@
 {
   "values": [
     "minecraft:diamond_ore",
-    "minecraft:deepslate_diamond_ore"
+    "minecraft:deepslate_diamond_ore",
+    "modernmachines:netherrack_diamond_ore",
+    "modernmachines:end_stone_diamond_ore"
   ]
 }

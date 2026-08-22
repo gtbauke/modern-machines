@@ -1,0 +1,14 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_nether",
+  "features": [
+    "modernmachines:ore_netherrack_tin_placed",
+    "modernmachines:ore_netherrack_lead_placed",
+    "modernmachines:ore_netherrack_silver_placed",
+    "modernmachines:ore_netherrack_nickel_placed",
+    "modernmachines:ore_netherrack_aluminum_placed",
+    "modernmachines:ore_netherrack_uranium_placed",
+    "modernmachines:ore_netherrack_titanium_placed"
+  ],
+  "step": "underground_ores"
+}

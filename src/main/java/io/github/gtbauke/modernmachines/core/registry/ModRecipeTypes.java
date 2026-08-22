@@ -24,6 +24,12 @@ public class ModRecipeTypes {
     public static final Supplier<RecipeSerializer<AlloySmeltingRecipe>> ALLOY_SMELTING_SERIALIZER =
             RECIPE_SERIALIZERS.register("alloy_smelting", () -> new RecipeSerializer<>(AlloySmeltingRecipe.CODEC, AlloySmeltingRecipe.STREAM_CODEC));
 
+    public static final Supplier<RecipeType<io.github.gtbauke.modernmachines.machine.recipe.CrushingRecipe>> CRUSHING =
+            RECIPE_TYPES.register("crushing", () -> RecipeType.simple(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "crushing")));
+
+    public static final Supplier<RecipeSerializer<io.github.gtbauke.modernmachines.machine.recipe.CrushingRecipe>> CRUSHING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("crushing", () -> new RecipeSerializer<>(io.github.gtbauke.modernmachines.machine.recipe.CrushingRecipe.CODEC, io.github.gtbauke.modernmachines.machine.recipe.CrushingRecipe.STREAM_CODEC));
+
     public static void register(IEventBus eventBus) {
         RECIPE_TYPES.register(eventBus);
         RECIPE_SERIALIZERS.register(eventBus);

@@ -1,6 +1,8 @@
 {
   "values": [
     "modernmachines:aluminum_ore",
-    "modernmachines:deepslate_aluminum_ore"
+    "modernmachines:deepslate_aluminum_ore",
+    "modernmachines:netherrack_aluminum_ore",
+    "modernmachines:end_stone_aluminum_ore"
   ]
 }

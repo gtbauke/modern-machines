@@ -1,0 +1,17 @@
+{
+  "values": [
+    "modernmachines:netherrack_iron_ore",
+    "minecraft:nether_gold_ore",
+    "modernmachines:netherrack_copper_ore",
+    "modernmachines:netherrack_diamond_ore",
+    "modernmachines:netherrack_lapis_lazuli_ore",
+    "modernmachines:netherrack_emerald_ore",
+    "modernmachines:netherrack_tin_ore",
+    "modernmachines:netherrack_lead_ore",
+    "modernmachines:netherrack_silver_ore",
+    "modernmachines:netherrack_nickel_ore",
+    "modernmachines:netherrack_aluminum_ore",
+    "modernmachines:netherrack_uranium_ore",
+    "modernmachines:netherrack_titanium_ore"
+  ]
+}

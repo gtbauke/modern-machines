@@ -2,6 +2,8 @@
   "values": [
     "modernmachines:titanium_ore",
     "modernmachines:deepslate_titanium_ore",
+    "modernmachines:netherrack_titanium_ore",
+    "modernmachines:end_stone_titanium_ore",
     "modernmachines:titanium_block",
     "modernmachines:raw_titanium_block"
   ]

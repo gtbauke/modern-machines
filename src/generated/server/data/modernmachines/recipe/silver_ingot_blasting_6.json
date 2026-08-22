@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 0.9,
+  "ingredient": "modernmachines:silver_dust",
+  "result": {
+    "id": "modernmachines:silver_ingot"
+  }
+}

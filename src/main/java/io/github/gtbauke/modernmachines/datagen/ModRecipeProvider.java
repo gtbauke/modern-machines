@@ -221,6 +221,8 @@ public class ModRecipeProvider extends RecipeProvider {
             Item rawOre = material.getItem(ResourceForm.RAW_ORE);
             Block ore = material.getBlock(ResourceForm.ORE);
             Block deepslateOre = material.getBlock(ResourceForm.DEEPSLATE_ORE);
+            Block netherrackOre = material.getBlock(ResourceForm.NETHERRACK_ORE);
+            Block endStoneOre = material.getBlock(ResourceForm.END_STONE_ORE);
             Item dust = material.getItem(ResourceForm.DUST);
             Item plate = material.getItem(ResourceForm.PLATE);
             Item rod = material.getItem(ResourceForm.ROD);
@@ -251,6 +253,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 List<ItemLike> smeltables = new ArrayList<>();
                 if (material.isRegisteredLocally(ResourceForm.ORE) && ore != null) smeltables.add(ore);
                 if (material.isRegisteredLocally(ResourceForm.DEEPSLATE_ORE) && deepslateOre != null) smeltables.add(deepslateOre);
+                if (material.isRegisteredLocally(ResourceForm.NETHERRACK_ORE) && netherrackOre != null) smeltables.add(netherrackOre);
+                if (material.isRegisteredLocally(ResourceForm.END_STONE_ORE) && endStoneOre != null) smeltables.add(endStoneOre);
                 if (material.isRegisteredLocally(ResourceForm.RAW_ORE) && rawOre != null) smeltables.add(rawOre);
                 if (material.isRegisteredLocally(ResourceForm.DUST) && dust != null) smeltables.add(dust);
 

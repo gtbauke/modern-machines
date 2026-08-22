@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 1.2,
+  "ingredient": "modernmachines:raw_uranium",
+  "result": {
+    "id": "modernmachines:uranium_ingot"
+  }
+}
