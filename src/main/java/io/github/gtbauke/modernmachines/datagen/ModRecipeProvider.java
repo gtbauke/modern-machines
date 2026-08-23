@@ -2,6 +2,7 @@ package io.github.gtbauke.modernmachines.datagen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import io.github.gtbauke.modernmachines.ModernMachines;
@@ -27,6 +28,8 @@ import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import org.jspecify.annotations.NonNull;
 
 public class ModRecipeProvider extends RecipeProvider {
 
@@ -78,12 +81,14 @@ public class ModRecipeProvider extends RecipeProvider {
 
         // Workstation: Basic Alloy Smelter Controller (Copper + Iron + Redstone)
         ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get())
-                .pattern("ICI")
+                .pattern("IFI")
                 .pattern("CRC")
-                .pattern("ICI")
+                .pattern("AAA")
                 .define('I', Items.IRON_INGOT)
                 .define('C', Items.COPPER_INGOT)
-                .define('R', Items.REDSTONE)
+                .define('R', Blocks.REPEATER)
+                .define('A', ModBlocks.ADOBE_BRICK)
+                .define('F', Items.FURNACE)
                 .unlockedBy("has_furnace", has(Items.FURNACE))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "basic_alloy_smelter_controller")));
 
@@ -91,10 +96,11 @@ public class ModRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get())
                 .pattern("ICI")
                 .pattern("CFC")
-                .pattern("ICI")
+                .pattern("AAA")
                 .define('I', Items.IRON_INGOT)
                 .define('C', Items.COPPER_INGOT)
                 .define('F', Items.FURNACE)
+                .define('A', ModBlocks.ADOBE_BRICK)
                 .unlockedBy("has_furnace", has(Items.FURNACE))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "basic_alloy_smelter_heater")));
 
@@ -109,6 +115,8 @@ public class ModRecipeProvider extends RecipeProvider {
 
         // Steel Pipe (6 Steel Ingots -> 6 Pipes)
         Item steelIngot = ModMaterials.STEEL.getItem(ResourceForm.INGOT);
+
+        assert steelIngot != null;
         ShapedRecipeBuilder.shaped(this.items, RecipeCategory.BUILDING_BLOCKS, ModBlocks.STEEL_PIPE.get(), 6)
                 .pattern("SSS")
                 .pattern("   ")
@@ -150,11 +158,11 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("PRP")
                 .pattern("WGW")
                 .pattern("PRP")
-                .define('P', ModMaterials.COPPER.getItem(ResourceForm.PLATE))
+                .define('P', Objects.requireNonNull(ModMaterials.COPPER.getItem(ResourceForm.PLATE)))
                 .define('R', Items.REDSTONE)
-                .define('W', ModMaterials.GOLD.getItem(ResourceForm.WIRE))
-                .define('G', ModMaterials.BRONZE.getItem(ResourceForm.GEAR))
-                .unlockedBy("has_bronze_gear", has(ModMaterials.BRONZE.getItem(ResourceForm.GEAR)))
+                .define('W', Objects.requireNonNull(ModMaterials.GOLD.getItem(ResourceForm.WIRE)))
+                .define('G', Objects.requireNonNull(ModMaterials.BRONZE.getItem(ResourceForm.GEAR)))
+                .unlockedBy("has_bronze_gear", has(Objects.requireNonNull(ModMaterials.BRONZE.getItem(ResourceForm.GEAR))))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "speed_upgrade")));
 
         // Upgrades: Energy Efficiency Upgrade
@@ -162,11 +170,11 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("PRP")
                 .pattern("WGW")
                 .pattern("PRP")
-                .define('P', ModMaterials.TIN.getItem(ResourceForm.PLATE))
+                .define('P', Objects.requireNonNull(ModMaterials.TIN.getItem(ResourceForm.PLATE)))
                 .define('R', Items.REDSTONE)
-                .define('W', ModMaterials.COPPER.getItem(ResourceForm.WIRE))
-                .define('G', ModMaterials.INVAR.getItem(ResourceForm.GEAR))
-                .unlockedBy("has_invar_gear", has(ModMaterials.INVAR.getItem(ResourceForm.GEAR)))
+                .define('W', Objects.requireNonNull(ModMaterials.COPPER.getItem(ResourceForm.WIRE)))
+                .define('G', Objects.requireNonNull(ModMaterials.INVAR.getItem(ResourceForm.GEAR)))
+                .unlockedBy("has_invar_gear", has(Objects.requireNonNull(ModMaterials.INVAR.getItem(ResourceForm.GEAR))))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "energy_efficiency_upgrade")));
 
         // Blank Pattern (2 sticks + 2 planks -> 4 patterns)
@@ -384,35 +392,35 @@ public class ModRecipeProvider extends RecipeProvider {
         HolderLookup.RegistryLookup<Item> itemLookup = this.registries.lookupOrThrow(Registries.ITEM);
 
         // 1. Bronze: 3x Copper Ingot + 1x Tin Ingot -> 4x Bronze Ingot
-        AlloySmeltingRecipeBuilder.smelting(ModMaterials.BRONZE.getItem(ResourceForm.INGOT), 4)
+        AlloySmeltingRecipeBuilder.smelting(Objects.requireNonNull(ModMaterials.BRONZE.getItem(ResourceForm.INGOT)), 4)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.COPPER.getItemTag(ResourceForm.INGOT))), 3)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.TIN.getItemTag(ResourceForm.INGOT))), 1)
                 .cookingTime(200)
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "alloy_bronze")));
 
         // 2. Constantan: 1x Copper Ingot + 1x Nickel Ingot -> 2x Constantan Ingot
-        AlloySmeltingRecipeBuilder.smelting(ModMaterials.CONSTANTAN.getItem(ResourceForm.INGOT), 2)
+        AlloySmeltingRecipeBuilder.smelting(Objects.requireNonNull(ModMaterials.CONSTANTAN.getItem(ResourceForm.INGOT)), 2)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.COPPER.getItemTag(ResourceForm.INGOT))), 1)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.NICKEL.getItemTag(ResourceForm.INGOT))), 1)
                 .cookingTime(180)
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "alloy_constantan")));
 
         // 3. Electrum: 1x Gold Ingot + 1x Silver Ingot -> 2x Electrum Ingot
-        AlloySmeltingRecipeBuilder.smelting(ModMaterials.ELECTRUM.getItem(ResourceForm.INGOT), 2)
+        AlloySmeltingRecipeBuilder.smelting(Objects.requireNonNull(ModMaterials.ELECTRUM.getItem(ResourceForm.INGOT)), 2)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.GOLD.getItemTag(ResourceForm.INGOT))), 1)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.SILVER.getItemTag(ResourceForm.INGOT))), 1)
                 .cookingTime(180)
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "alloy_electrum")));
 
         // 4. Invar: 2x Iron Ingot + 1x Nickel Ingot -> 3x Invar Ingot
-        AlloySmeltingRecipeBuilder.smelting(ModMaterials.INVAR.getItem(ResourceForm.INGOT), 3)
+        AlloySmeltingRecipeBuilder.smelting(Objects.requireNonNull(ModMaterials.INVAR.getItem(ResourceForm.INGOT)), 3)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.IRON.getItemTag(ResourceForm.INGOT))), 2)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.NICKEL.getItemTag(ResourceForm.INGOT))), 1)
                 .cookingTime(200)
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "alloy_invar")));
 
         // 5. Steel: 1x Iron Ingot + 1x Coal/Charcoal -> 1x Steel Ingot
-        AlloySmeltingRecipeBuilder.smelting(ModMaterials.STEEL.getItem(ResourceForm.INGOT), 1)
+        AlloySmeltingRecipeBuilder.smelting(Objects.requireNonNull(ModMaterials.STEEL.getItem(ResourceForm.INGOT)), 1)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(ModMaterials.IRON.getItemTag(ResourceForm.INGOT))), 1)
                 .addInput(Ingredient.of(itemLookup.getOrThrow(net.minecraft.tags.ItemTags.COALS)), 1)
                 .cookingTime(240)
@@ -467,12 +475,12 @@ public class ModRecipeProvider extends RecipeProvider {
         }
 
         @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        protected @NonNull RecipeProvider createRecipeProvider(HolderLookup.@NonNull Provider registries, @NonNull RecipeOutput output) {
             return new ModRecipeProvider(registries, output);
         }
 
         @Override
-        public String getName() {
+        public @NonNull String getName() {
             return "Modern Machines Recipes";
         }
     }

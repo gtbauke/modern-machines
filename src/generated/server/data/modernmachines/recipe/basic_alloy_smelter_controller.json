@@ -1,14 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
+    "A": "modernmachines:adobe_brick",
     "C": "minecraft:copper_ingot",
+    "F": "minecraft:furnace",
     "I": "minecraft:iron_ingot",
-    "R": "minecraft:redstone"
+    "R": "minecraft:repeater"
   },
   "pattern": [
-    "ICI",
+    "IFI",
     "CRC",
-    "ICI"
+    "AAA"
   ],
   "result": {
     "id": "modernmachines:basic_alloy_smelter_controller"

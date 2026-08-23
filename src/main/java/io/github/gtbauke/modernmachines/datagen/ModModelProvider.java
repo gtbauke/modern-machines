@@ -129,7 +129,26 @@ public class ModModelProvider extends ModelProvider {
 
         // 3. Basic Alloy Smelter Multiblock (Furnace: Orientable horizontal facing + unlit / lit states)
         blockModels.createFurnace(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get(), TexturedModel.ORIENTABLE_ONLY_TOP);
-        blockModels.createFurnace(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get(), TexturedModel.ORIENTABLE_ONLY_TOP);
+
+        ModelTemplate orientableTemplate = new ModelTemplate(
+                java.util.Optional.of(Identifier.withDefaultNamespace("block/orientable")),
+                java.util.Optional.empty(),
+                TextureSlot.TOP,
+                TextureSlot.SIDE,
+                TextureSlot.FRONT
+        );
+
+        TexturedModel.Provider heaterModelProvider = block -> {
+            Identifier adobeBrickTex = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/adobe_brick");
+            Identifier heaterFrontOff = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/basic_alloy_smelter_heater");
+            TextureMapping mapping = new TextureMapping()
+                    .put(TextureSlot.FRONT, new net.minecraft.client.resources.model.sprite.Material(heaterFrontOff))
+                    .put(TextureSlot.SIDE, new net.minecraft.client.resources.model.sprite.Material(adobeBrickTex))
+                    .put(TextureSlot.TOP, new net.minecraft.client.resources.model.sprite.Material(adobeBrickTex));
+            return new TexturedModel(mapping, orientableTemplate);
+        };
+
+        blockModels.createFurnace(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get(), heaterModelProvider);
 
         // 4. Engineer's Terminal Model & Blockstate (Cube Bottom Top: top, bottom, side)
         TextureMapping terminalMapping = TextureMapping.cubeBottomTop(ModBlocks.ENGINEERS_TERMINAL.get());

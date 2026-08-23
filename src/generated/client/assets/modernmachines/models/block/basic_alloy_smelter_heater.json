@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "front": "modernmachines:block/basic_alloy_smelter_heater_front",
-    "side": "modernmachines:block/basic_alloy_smelter_heater_side",
-    "top": "modernmachines:block/basic_alloy_smelter_heater_top"
+    "front": "modernmachines:block/basic_alloy_smelter_heater",
+    "side": "modernmachines:block/adobe_brick",
+    "top": "modernmachines:block/adobe_brick"
   }
 }
