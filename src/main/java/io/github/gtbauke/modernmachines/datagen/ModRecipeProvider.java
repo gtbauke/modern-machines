@@ -107,6 +107,16 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_copper", has(Items.COPPER_INGOT))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "copper_pipe")));
 
+        // Steel Pipe (6 Steel Ingots -> 6 Pipes)
+        Item steelIngot = ModMaterials.STEEL.getItem(ResourceForm.INGOT);
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.BUILDING_BLOCKS, ModBlocks.STEEL_PIPE.get(), 6)
+                .pattern("SSS")
+                .pattern("   ")
+                .pattern("SSS")
+                .define('S', steelIngot)
+                .unlockedBy("has_steel_ingot", has(steelIngot))
+                .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "steel_pipe")));
+
         // Upgrades: Speed Upgrade
         ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModItems.SPEED_UPGRADE.get())
                 .pattern("PRP")

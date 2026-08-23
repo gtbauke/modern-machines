@@ -48,6 +48,10 @@ public class ModBlocks {
             io.github.gtbauke.modernmachines.machine.block.CopperPipeBlock::new,
             () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(1.5f, 3.0f).sound(SoundType.COPPER).noOcclusion());
 
+    public static final DeferredBlock<io.github.gtbauke.modernmachines.machine.block.SteelPipeBlock> STEEL_PIPE = BLOCKS.registerBlock("steel_pipe",
+            io.github.gtbauke.modernmachines.machine.block.SteelPipeBlock::new,
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0f, 4.0f).sound(SoundType.METAL).noOcclusion());
+
 //    public static final DeferredBlock<io.github.gtbauke.modernmachines.machine.block.BronzeCasingBlock> BRONZE_CASING = BLOCKS.registerBlock("bronze_casing",
 //            io.github.gtbauke.modernmachines.machine.block.BronzeCasingBlock::new,
 //            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(3.0f, 5.0f).sound(SoundType.METAL));

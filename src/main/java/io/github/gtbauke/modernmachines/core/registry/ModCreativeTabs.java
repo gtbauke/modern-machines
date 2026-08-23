@@ -16,11 +16,11 @@ public class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ModernMachines.MOD_ID);
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MATERIALS_TAB =
-            CREATIVE_MODE_TABS.register("materials", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.modernmachines.materials"))
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BLOCKS_TAB =
+            CREATIVE_MODE_TABS.register("blocks", () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.modernmachines.blocks"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-                    .icon(() -> ModItems.ENGINEER_HAMMER.get().getDefaultInstance())
+                    .icon(() -> ModBlocks.COPPER_PIPE.get().asItem().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         // Workstations
                         output.accept(ModBlocks.PART_BUILDER.get());
@@ -29,24 +29,23 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
                         output.accept(ModBlocks.ENGINEERS_TERMINAL.get());
 
-                        // Steam Era Blocks & Machines
+                        // Building Blocks & Pipes
+                        output.accept(ModBlocks.ADOBE_BRICK.get());
+                        output.accept(ModBlocks.COPPER_PIPE.get());
+                        output.accept(ModBlocks.STEEL_PIPE.get());
+                    })
+                    .build());
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MATERIALS_TAB =
+            CREATIVE_MODE_TABS.register("materials", () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.modernmachines.materials"))
+                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+                    .icon(() -> ModItems.ENGINEER_HAMMER.get().getDefaultInstance())
+                    .displayItems((parameters, output) -> {
+                        // Steam Era Components & Materials
                         output.accept(ModItems.ADOBE_BRICKS);
                         output.accept(ModItems.ADOBE_MIXTURE);
-                        output.accept(ModBlocks.ADOBE_BRICK);
-                        output.accept(ModBlocks.COPPER_PIPE.get());
-//                        output.accept(ModBlocks.BRONZE_CASING.get());
-//                        output.accept(ModBlocks.SOLID_FUEL_BOILER.get());
-//                        output.accept(ModBlocks.STEAM_TURBINE.get());
-//                        output.accept(ModBlocks.STEAM_CRUSHER.get());
-//                        output.accept(ModBlocks.STEAM_ALLOY_SMELTER.get());
-//                        output.accept(ModBlocks.BRONZE_FLUID_TANK.get());
-//                        output.accept(ModBlocks.BRONZE_FLUID_PIPE.get());
-
-                        // Steam Era Components
-//                        output.accept(ModItems.STEAM_PISTON.get());
-//                        output.accept(ModItems.PRESSURE_GAUGE.get());
-//                        output.accept(ModItems.BRONZE_VALVE.get());
-//                        output.accept(ModItems.STEAM_BUCKET.get());
+                        output.accept(ModItems.ENGINEERS_TABLET);
 
                         // Upgrades
                         output.accept(ModItems.SPEED_UPGRADE.get());

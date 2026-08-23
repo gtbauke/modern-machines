@@ -20,12 +20,14 @@ public class ModLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         // Creative tabs
+        add("itemGroup.modernmachines.blocks", "Modern Machines: Blocks");
         add("itemGroup.modernmachines.materials", "Modern Machines: Materials");
         add("itemGroup.modernmachines.resources", "Modern Machines Resources");
         add("itemGroup.modernmachines.fluids", "Modern Machines: Fluids");
 
         addBlock(ModBlocks.ADOBE_BRICK, "Adobe Brick");
         addBlock(ModBlocks.COPPER_PIPE, "Copper Pipe");
+        addBlock(ModBlocks.STEEL_PIPE, "Steel Pipe");
         addItem(ModItems.ADOBE_BRICKS, "Adobe Bricks");
         addItem(ModItems.ADOBE_MIXTURE, "Adobe Mixture");
 

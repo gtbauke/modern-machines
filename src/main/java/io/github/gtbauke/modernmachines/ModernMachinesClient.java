@@ -76,6 +76,9 @@ public class ModernMachinesClient {
     }
 
     private void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources event) {
+        int steelTint = 0xFF000000 | ModMaterials.STEEL.colorHex();
+        event.getBlockColors().register(List.of((BlockTintSource) state -> steelTint), io.github.gtbauke.modernmachines.core.registry.ModBlocks.STEEL_PIPE.get());
+
         for (Material material : ModMaterials.getAllMaterials()) {
             int tintColor = 0xFF000000 | material.colorHex();
             BlockTintSource tintSource = state -> tintColor;

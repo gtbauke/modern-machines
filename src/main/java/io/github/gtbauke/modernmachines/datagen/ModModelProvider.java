@@ -57,81 +57,56 @@ public class ModModelProvider extends ModelProvider {
                 BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ALL.create(ModBlocks.ADOBE_BRICK.get(), TextureMapping.cube(ModBlocks.ADOBE_BRICK.get()), blockModels.modelOutput))
         ));
 
-        // Copper Pipe Model & Blockstate
-        Identifier pipeStraightId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/copper_pipe");
-        Identifier pipeSideId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/copper_pipe_side");
-        Identifier pipeCrossId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/copper_pipe_cross");
+        // Copper Pipe Model & Blockstate (Multipart: Center + 6 Directional Arms)
+        Identifier pipeCenterId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/pipe_center");
+        Identifier pipeArmId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/pipe_arm");
 
-        MultiVariant straight = BlockModelGenerators.plainVariant(pipeStraightId);
-        MultiVariant straightX = straight.with(VariantMutator.Y_ROT.withValue(Quadrant.R90));
-        MultiVariant straightY = straight.with(VariantMutator.X_ROT.withValue(Quadrant.R90));
-        MultiVariant side = BlockModelGenerators.plainVariant(pipeSideId);
-        MultiVariant side90 = side.with(VariantMutator.Y_ROT.withValue(Quadrant.R90));
-        MultiVariant side180 = side.with(VariantMutator.Y_ROT.withValue(Quadrant.R180));
-        MultiVariant side270 = side.with(VariantMutator.Y_ROT.withValue(Quadrant.R270));
-        MultiVariant cross = BlockModelGenerators.plainVariant(pipeCrossId);
+        MultiVariant center = BlockModelGenerators.plainVariant(pipeCenterId);
+        MultiVariant armNorth = BlockModelGenerators.plainVariant(pipeArmId);
+        MultiVariant armEast = armNorth.with(VariantMutator.Y_ROT.withValue(Quadrant.R90));
+        MultiVariant armSouth = armNorth.with(VariantMutator.Y_ROT.withValue(Quadrant.R180));
+        MultiVariant armWest = armNorth.with(VariantMutator.Y_ROT.withValue(Quadrant.R270));
+        MultiVariant armUp = armNorth.with(VariantMutator.X_ROT.withValue(Quadrant.R270));
+        MultiVariant armDown = armNorth.with(VariantMutator.X_ROT.withValue(Quadrant.R90));
 
         blockModels.blockStateOutput.accept(MultiPartGenerator.multiPart(ModBlocks.COPPER_PIPE.get())
-                // Isolated pipes rotated by placement AXIS
-                .with(new ConditionBuilder().term(CopperPipeBlock.AXIS, Direction.Axis.Z)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false)
-                        .term(CopperPipeBlock.UP, false).term(CopperPipeBlock.DOWN, false), straight)
-                .with(new ConditionBuilder().term(CopperPipeBlock.AXIS, Direction.Axis.X)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false)
-                        .term(CopperPipeBlock.UP, false).term(CopperPipeBlock.DOWN, false), straightX)
-                .with(new ConditionBuilder().term(CopperPipeBlock.AXIS, Direction.Axis.Y)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false)
-                        .term(CopperPipeBlock.UP, false).term(CopperPipeBlock.DOWN, false), straightY)
-                // Straight connections
-                .with(new ConditionBuilder().term(CopperPipeBlock.NORTH, true).term(CopperPipeBlock.SOUTH, true)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false), straight)
-                .with(new ConditionBuilder().term(CopperPipeBlock.EAST, true).term(CopperPipeBlock.WEST, true)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false), straightX)
-                .with(new ConditionBuilder().term(CopperPipeBlock.UP, true).term(CopperPipeBlock.DOWN, true)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false), straightY)
-                // Single-end connection straight pipes
-                .with(new ConditionBuilder().term(CopperPipeBlock.NORTH, true).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false)
-                        .term(CopperPipeBlock.UP, false).term(CopperPipeBlock.DOWN, false), straight)
-                .with(new ConditionBuilder().term(CopperPipeBlock.SOUTH, true).term(CopperPipeBlock.NORTH, false)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false)
-                        .term(CopperPipeBlock.UP, false).term(CopperPipeBlock.DOWN, false), straight)
-                .with(new ConditionBuilder().term(CopperPipeBlock.EAST, true).term(CopperPipeBlock.WEST, false)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.UP, false).term(CopperPipeBlock.DOWN, false), straightX)
-                .with(new ConditionBuilder().term(CopperPipeBlock.WEST, true).term(CopperPipeBlock.EAST, false)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.UP, false).term(CopperPipeBlock.DOWN, false), straightX)
-                .with(new ConditionBuilder().term(CopperPipeBlock.UP, true).term(CopperPipeBlock.DOWN, false)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false), straightY)
-                .with(new ConditionBuilder().term(CopperPipeBlock.DOWN, true).term(CopperPipeBlock.UP, false)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.SOUTH, false)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.WEST, false), straightY)
-                // Corner / Side connections
-                .with(new ConditionBuilder().term(CopperPipeBlock.NORTH, true).term(CopperPipeBlock.EAST, true)
-                        .term(CopperPipeBlock.SOUTH, false).term(CopperPipeBlock.WEST, false), side)
-                .with(new ConditionBuilder().term(CopperPipeBlock.EAST, true).term(CopperPipeBlock.SOUTH, true)
-                        .term(CopperPipeBlock.WEST, false).term(CopperPipeBlock.NORTH, false), side90)
-                .with(new ConditionBuilder().term(CopperPipeBlock.SOUTH, true).term(CopperPipeBlock.WEST, true)
-                        .term(CopperPipeBlock.NORTH, false).term(CopperPipeBlock.EAST, false), side180)
-                .with(new ConditionBuilder().term(CopperPipeBlock.WEST, true).term(CopperPipeBlock.NORTH, true)
-                        .term(CopperPipeBlock.EAST, false).term(CopperPipeBlock.SOUTH, false), side270)
-                // 3-way T-junctions
-                .with(new ConditionBuilder().term(CopperPipeBlock.NORTH, true).term(CopperPipeBlock.SOUTH, true).term(CopperPipeBlock.EAST, true).term(CopperPipeBlock.WEST, false), cross)
-                .with(new ConditionBuilder().term(CopperPipeBlock.NORTH, true).term(CopperPipeBlock.SOUTH, true).term(CopperPipeBlock.WEST, true).term(CopperPipeBlock.EAST, false), cross)
-                .with(new ConditionBuilder().term(CopperPipeBlock.EAST, true).term(CopperPipeBlock.WEST, true).term(CopperPipeBlock.NORTH, true).term(CopperPipeBlock.SOUTH, false), cross)
-                .with(new ConditionBuilder().term(CopperPipeBlock.EAST, true).term(CopperPipeBlock.WEST, true).term(CopperPipeBlock.SOUTH, true).term(CopperPipeBlock.NORTH, false), cross)
-                // 4-way Cross connection
-                .with(new ConditionBuilder().term(CopperPipeBlock.NORTH, true).term(CopperPipeBlock.SOUTH, true).term(CopperPipeBlock.EAST, true).term(CopperPipeBlock.WEST, true), cross)
+                .with(center)
+                .with(new ConditionBuilder().term(CopperPipeBlock.NORTH, true), armNorth)
+                .with(new ConditionBuilder().term(CopperPipeBlock.EAST, true), armEast)
+                .with(new ConditionBuilder().term(CopperPipeBlock.SOUTH, true), armSouth)
+                .with(new ConditionBuilder().term(CopperPipeBlock.WEST, true), armWest)
+                .with(new ConditionBuilder().term(CopperPipeBlock.UP, true), armUp)
+                .with(new ConditionBuilder().term(CopperPipeBlock.DOWN, true), armDown)
         );
         itemModels.itemModelOutput.accept(
                 ModItems.COPPER_PIPE.get().asItem(),
-                ItemModelUtils.plainModel(pipeStraightId)
+                ItemModelUtils.plainModel(pipeCenterId)
+        );
+
+        // Steel Pipe Model & Blockstate (Multipart: Center + 6 Directional Arms with Steel Tint)
+        Identifier steelPipeCenterId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/steel_pipe_center");
+        Identifier steelPipeArmId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/steel_pipe_arm");
+
+        MultiVariant steelCenter = BlockModelGenerators.plainVariant(steelPipeCenterId);
+        MultiVariant steelArmNorth = BlockModelGenerators.plainVariant(steelPipeArmId);
+        MultiVariant steelArmEast = steelArmNorth.with(VariantMutator.Y_ROT.withValue(Quadrant.R90));
+        MultiVariant steelArmSouth = steelArmNorth.with(VariantMutator.Y_ROT.withValue(Quadrant.R180));
+        MultiVariant steelArmWest = steelArmNorth.with(VariantMutator.Y_ROT.withValue(Quadrant.R270));
+        MultiVariant steelArmUp = steelArmNorth.with(VariantMutator.X_ROT.withValue(Quadrant.R270));
+        MultiVariant steelArmDown = steelArmNorth.with(VariantMutator.X_ROT.withValue(Quadrant.R90));
+
+        blockModels.blockStateOutput.accept(MultiPartGenerator.multiPart(ModBlocks.STEEL_PIPE.get())
+                .with(steelCenter)
+                .with(new ConditionBuilder().term(CopperPipeBlock.NORTH, true), steelArmNorth)
+                .with(new ConditionBuilder().term(CopperPipeBlock.EAST, true), steelArmEast)
+                .with(new ConditionBuilder().term(CopperPipeBlock.SOUTH, true), steelArmSouth)
+                .with(new ConditionBuilder().term(CopperPipeBlock.WEST, true), steelArmWest)
+                .with(new ConditionBuilder().term(CopperPipeBlock.UP, true), steelArmUp)
+                .with(new ConditionBuilder().term(CopperPipeBlock.DOWN, true), steelArmDown)
+        );
+        itemModels.itemModelOutput.accept(
+                ModItems.STEEL_PIPE.get().asItem(),
+                ItemModelUtils.tintedModel(steelPipeCenterId, ItemModelUtils.constantTint(0xFF000000 | ModMaterials.STEEL.colorHex()))
         );
 
         // Register machine upgrades

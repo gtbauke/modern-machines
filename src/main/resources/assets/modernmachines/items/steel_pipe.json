@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "modernmachines:block/pipe/steel_pipe_center",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -9800835
+      }
+    ]
+  }
+}
