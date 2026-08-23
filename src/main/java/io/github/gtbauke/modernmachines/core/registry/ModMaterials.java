@@ -88,10 +88,10 @@ public class ModMaterials {
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.COPPER_BLOCK.weathering().unaffected())
                     .delegate(ResourceForm.RAW_STORAGE_BLOCK, () -> Blocks.RAW_COPPER_BLOCK)
                     .delegate(ResourceForm.INGOT, () -> Items.COPPER_INGOT)
+                    .delegate(ResourceForm.NUGGET, () -> Items.COPPER_NUGGET)
                     .forms(
                             ResourceForm.NETHERRACK_ORE,
                             ResourceForm.END_STONE_ORE,
-                            ResourceForm.NUGGET,
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
                             ResourceForm.ROD,
