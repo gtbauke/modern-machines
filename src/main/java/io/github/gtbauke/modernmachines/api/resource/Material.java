@@ -12,16 +12,33 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
-public record Material(String name, String displayName, MaterialType type, int colorHex, MapColor mapColor,
-                       TagKey<Block> miningLevelTag, float hardness, float resistance, float smeltingXp,
-                       int overlayIndex,
-                       Set<ResourceForm> supportedForms, Map<ResourceForm, DeferredBlock<Block>> blockRegistry,
-                       Map<ResourceForm, DeferredItem<? extends Item>> itemRegistry,
-                       Map<ResourceForm, Supplier<? extends ItemLike>> delegates) {
+public record Material(
+        String name,
+        String displayName,
+        MaterialType type,
+        int colorHex,
+        MapColor mapColor,
+        TagKey<Block> miningLevelTag,
+        float hardness,
+        float resistance,
+        float smeltingXp,
+        int meltingPoint,
+        int overlayIndex,
+        Set<ResourceForm> supportedForms,
+        Map<ResourceForm, DeferredBlock<Block>> blockRegistry,
+        Map<ResourceForm, DeferredItem<? extends Item>> itemRegistry,
+        Map<ResourceForm, Supplier<? extends FluidType>> fluidTypeRegistry,
+        Map<ResourceForm, Supplier<? extends FlowingFluid>> fluidSourceRegistry,
+        Map<ResourceForm, Supplier<? extends FlowingFluid>> fluidFlowingRegistry,
+        Map<ResourceForm, Supplier<? extends ItemLike>> delegates
+) {
     public Material(
             String name,
             String displayName,
@@ -32,10 +49,14 @@ public record Material(String name, String displayName, MaterialType type, int c
             float hardness,
             float resistance,
             float smeltingXp,
+            int meltingPoint,
             int overlayIndex,
             Set<ResourceForm> supportedForms,
             Map<ResourceForm, DeferredBlock<Block>> blockRegistry,
             Map<ResourceForm, DeferredItem<? extends Item>> itemRegistry,
+            Map<ResourceForm, Supplier<? extends FluidType>> fluidTypeRegistry,
+            Map<ResourceForm, Supplier<? extends FlowingFluid>> fluidSourceRegistry,
+            Map<ResourceForm, Supplier<? extends FlowingFluid>> fluidFlowingRegistry,
             Map<ResourceForm, Supplier<? extends ItemLike>> delegates
     ) {
         this.name = name;
@@ -47,10 +68,14 @@ public record Material(String name, String displayName, MaterialType type, int c
         this.hardness = hardness;
         this.resistance = resistance;
         this.smeltingXp = smeltingXp;
+        this.meltingPoint = meltingPoint;
         this.overlayIndex = overlayIndex;
         this.supportedForms = Collections.unmodifiableSet(supportedForms);
         this.blockRegistry = Collections.unmodifiableMap(blockRegistry);
         this.itemRegistry = Collections.unmodifiableMap(itemRegistry);
+        this.fluidTypeRegistry = Collections.unmodifiableMap(fluidTypeRegistry);
+        this.fluidSourceRegistry = Collections.unmodifiableMap(fluidSourceRegistry);
+        this.fluidFlowingRegistry = Collections.unmodifiableMap(fluidFlowingRegistry);
         this.delegates = Collections.unmodifiableMap(delegates);
     }
 
@@ -59,7 +84,7 @@ public record Material(String name, String displayName, MaterialType type, int c
     }
 
     public boolean isRegisteredLocally(ResourceForm form) {
-        return blockRegistry.containsKey(form) || itemRegistry.containsKey(form);
+        return blockRegistry.containsKey(form) || itemRegistry.containsKey(form) || fluidSourceRegistry.containsKey(form);
     }
 
     public boolean isDelegated(ResourceForm form) {
@@ -72,6 +97,21 @@ public record Material(String name, String displayName, MaterialType type, int c
 
     public DeferredItem<? extends Item> getDeferredItem(ResourceForm form) {
         return itemRegistry.get(form);
+    }
+
+    public FluidType getFluidType(ResourceForm form) {
+        Supplier<? extends FluidType> supplier = fluidTypeRegistry.get(form);
+        return supplier != null ? supplier.get() : null;
+    }
+
+    public FlowingFluid getFluid(ResourceForm form) {
+        Supplier<? extends FlowingFluid> supplier = fluidSourceRegistry.get(form);
+        return supplier != null ? supplier.get() : null;
+    }
+
+    public FlowingFluid getFlowingFluid(ResourceForm form) {
+        Supplier<? extends FlowingFluid> supplier = fluidFlowingRegistry.get(form);
+        return supplier != null ? supplier.get() : null;
     }
 
     public Supplier<? extends ItemLike> getItemLikeSupplier(ResourceForm form) {
@@ -110,6 +150,10 @@ public record Material(String name, String displayName, MaterialType type, int c
 
     public TagKey<Block> getBlockTag(ResourceForm form) {
         return form.getBlockTag(this.name);
+    }
+
+    public TagKey<Fluid> getFluidTag(ResourceForm form) {
+        return form.getFluidTag(this.name);
     }
 
     public Identifier getId() {

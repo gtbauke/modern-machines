@@ -17,6 +17,7 @@ public record MaterialToolStats(
         Identifier materialId,
         Optional<String> displayName,
         int color,
+        Optional<Integer> meltingPoint,
         Optional<Ingredient> ingredient,
         Optional<HeadStats> head,
         Optional<HandleStats> handle,
@@ -30,6 +31,7 @@ public record MaterialToolStats(
                     Codec.STRING.optionalFieldOf("display_name").forGetter(MaterialToolStats::displayName),
                     Codec.STRING.xmap(s -> (int) Long.parseLong(s.replace("#", "").replace("0x", ""), 16),
                             i -> String.format("#%06X", (0xFFFFFF & i))).optionalFieldOf("color", 0xFFFFFF).forGetter(MaterialToolStats::color),
+                    Codec.INT.optionalFieldOf("melting_point").forGetter(MaterialToolStats::meltingPoint),
                     Ingredient.CODEC.optionalFieldOf("ingredient").forGetter(MaterialToolStats::ingredient),
                     HeadStats.CODEC.optionalFieldOf("head").forGetter(MaterialToolStats::head),
                     HandleStats.CODEC.optionalFieldOf("handle").forGetter(MaterialToolStats::handle),
@@ -39,27 +41,36 @@ public record MaterialToolStats(
             ).apply(instance, MaterialToolStats::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, MaterialToolStats> STREAM_CODEC = StreamCodec.composite(
-            Identifier.STREAM_CODEC,
-            MaterialToolStats::materialId,
-            ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8),
-            MaterialToolStats::displayName,
-            ByteBufCodecs.VAR_INT,
-            MaterialToolStats::color,
-            ByteBufCodecs.optional(Ingredient.CONTENTS_STREAM_CODEC),
-            MaterialToolStats::ingredient,
-            ByteBufCodecs.optional(HeadStats.STREAM_CODEC),
-            MaterialToolStats::head,
-            ByteBufCodecs.optional(HandleStats.STREAM_CODEC),
-            MaterialToolStats::handle,
-            ByteBufCodecs.optional(BindingStats.STREAM_CODEC),
-            MaterialToolStats::binding,
-            ByteBufCodecs.optional(AttachmentStats.STREAM_CODEC),
-            MaterialToolStats::attachment,
-            MaterialTrait.STREAM_CODEC.apply(ByteBufCodecs.list()),
-            MaterialToolStats::traits,
-            MaterialToolStats::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, MaterialToolStats> STREAM_CODEC = StreamCodec.of(
+            (buf, stats) -> {
+                Identifier.STREAM_CODEC.encode(buf, stats.materialId());
+                ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8).encode(buf, stats.displayName());
+                ByteBufCodecs.VAR_INT.encode(buf, stats.color());
+                ByteBufCodecs.optional(ByteBufCodecs.VAR_INT).encode(buf, stats.meltingPoint());
+                ByteBufCodecs.optional(Ingredient.CONTENTS_STREAM_CODEC).encode(buf, stats.ingredient());
+                ByteBufCodecs.optional(HeadStats.STREAM_CODEC).encode(buf, stats.head());
+                ByteBufCodecs.optional(HandleStats.STREAM_CODEC).encode(buf, stats.handle());
+                ByteBufCodecs.optional(BindingStats.STREAM_CODEC).encode(buf, stats.binding());
+                ByteBufCodecs.optional(AttachmentStats.STREAM_CODEC).encode(buf, stats.attachment());
+                MaterialTrait.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buf, stats.traits());
+            },
+            buf -> new MaterialToolStats(
+                    Identifier.STREAM_CODEC.decode(buf),
+                    ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8).decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.optional(ByteBufCodecs.VAR_INT).decode(buf),
+                    ByteBufCodecs.optional(Ingredient.CONTENTS_STREAM_CODEC).decode(buf),
+                    ByteBufCodecs.optional(HeadStats.STREAM_CODEC).decode(buf),
+                    ByteBufCodecs.optional(HandleStats.STREAM_CODEC).decode(buf),
+                    ByteBufCodecs.optional(BindingStats.STREAM_CODEC).decode(buf),
+                    ByteBufCodecs.optional(AttachmentStats.STREAM_CODEC).decode(buf),
+                    MaterialTrait.STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buf)
+            )
     );
+
+    public int getEffectiveMeltingPoint(int fallback) {
+        return meltingPoint.orElse(fallback);
+    }
 
     public String getEffectiveDisplayName() {
         if (displayName.isPresent() && !displayName.get().isEmpty()) {

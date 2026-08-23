@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:copper",
   "color": "#E77C56",
+  "melting_point": 1085,
   "head": {
     "durability": 200,
     "mining_speed": 5.5,

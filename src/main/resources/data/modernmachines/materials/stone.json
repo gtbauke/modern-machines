@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:stone",
   "color": "#7F7F7F",
+  "melting_point": 0,
   "head": {
     "durability": 131,
     "mining_speed": 4.0,

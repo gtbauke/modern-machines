@@ -233,6 +233,40 @@ public class ModModelProvider extends ModelProvider {
                 }
             }
         }
+
+        // -------------------------------------------------------------
+        // Molten Fluid Buckets & Liquid Blocks
+        // -------------------------------------------------------------
+        Identifier moltenBucketTemplateId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/molten_bucket");
+        TextureMapping bucketMapping = new TextureMapping()
+                .put(TextureSlot.LAYER0, new net.minecraft.client.resources.model.sprite.Material(Identifier.fromNamespaceAndPath("minecraft", "item/bucket")))
+                .put(TextureSlot.LAYER1, new net.minecraft.client.resources.model.sprite.Material(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "item/template/molten_resource_bucket_overlay")));
+        ModelTemplates.TWO_LAYERED_ITEM.create(moltenBucketTemplateId, bucketMapping, itemModels.modelOutput);
+
+        for (Material material : ModMaterials.getAllMaterials()) {
+            if (material.hasForm(ResourceForm.MOLTEN) && material.isRegisteredLocally(ResourceForm.MOLTEN)) {
+                Item bucketItem = material.getItem(ResourceForm.MOLTEN);
+                if (bucketItem != null) {
+                    int tintColor = 0xFF000000 | material.colorHex();
+                    itemModels.itemModelOutput.accept(
+                            bucketItem,
+                            ItemModelUtils.tintedModel(
+                                    moltenBucketTemplateId,
+                                    ItemModelUtils.constantTint(0xFFFFFFFF),
+                                    ItemModelUtils.constantTint(tintColor)
+                            )
+                    );
+                }
+
+                Block liquidBlock = material.getBlock(ResourceForm.MOLTEN);
+                if (liquidBlock != null) {
+                    blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
+                            liquidBlock,
+                            BlockModelGenerators.plainVariant(Identifier.fromNamespaceAndPath("minecraft", "block/air"))
+                    ));
+                }
+            }
+        }
     }
 
     private void registerModularToolModel(ItemModelGenerators itemModels, Item toolItem, ModelTemplate template,

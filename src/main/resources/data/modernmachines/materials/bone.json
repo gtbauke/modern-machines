@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:bone",
   "color": "#E1DEC3",
+  "melting_point": 0,
   "head": {
     "durability": 180,
     "mining_speed": 4.5,

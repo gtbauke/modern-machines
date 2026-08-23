@@ -6,6 +6,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
+import net.minecraft.world.level.material.Fluid;
+
 public enum ResourceForm {
     ORE(FormType.BLOCK, "%s_ore", "ores/%s", "ores", "%s Ore"),
     DEEPSLATE_ORE(FormType.BLOCK, "deepslate_%s_ore", "ores/%s", "ores", "Deepslate %s Ore"),
@@ -22,11 +24,13 @@ public enum ResourceForm {
     ROD(FormType.ITEM, "%s_rod", "rods/%s", "rods", "%s Rod"),
     SCREW(FormType.ITEM, "%s_screw", "screws/%s", "screws", "%s Screw"),
     WIRE(FormType.ITEM, "%s_wire", "wires/%s", "wires", "%s Wire"),
-    GEAR(FormType.ITEM, "%s_gear", "gears/%s", "gears", "%s Gear");
+    GEAR(FormType.ITEM, "%s_gear", "gears/%s", "gears", "%s Gear"),
+    MOLTEN(FormType.FLUID, "molten_%s", "fluids/molten_%s", "fluids/molten", "Molten %s");
 
     public enum FormType {
         BLOCK,
-        ITEM
+        ITEM,
+        FLUID
     }
 
     private final FormType formType;
@@ -51,6 +55,10 @@ public enum ResourceForm {
         return this.formType == FormType.ITEM;
     }
 
+    public boolean isFluid() {
+        return this.formType == FormType.FLUID;
+    }
+
     public String getRegistryName(String materialName) {
         return String.format(this.namePattern, materialName);
     }
@@ -67,11 +75,19 @@ public enum ResourceForm {
         return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", String.format(this.tagPattern, materialName)));
     }
 
+    public TagKey<Fluid> getFluidTag(String materialName) {
+        return TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", String.format(this.tagPattern, materialName)));
+    }
+
     public TagKey<Item> getPluralItemTag() {
         return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", this.pluralTag));
     }
 
     public TagKey<Block> getPluralBlockTag() {
         return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", this.pluralTag));
+    }
+
+    public TagKey<Fluid> getPluralFluidTag() {
+        return TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", this.pluralTag));
     }
 }

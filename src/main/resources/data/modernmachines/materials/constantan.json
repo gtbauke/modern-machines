@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:constantan",
-  "color": "#D98A5B",
+  "color": "#D88E68",
+  "melting_point": 1220,
   "head": {
     "durability": 400,
     "mining_speed": 6.2,

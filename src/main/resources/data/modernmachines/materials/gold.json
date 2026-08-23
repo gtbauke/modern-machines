@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:gold",
   "color": "#FDF55F",
+  "melting_point": 1064,
   "head": {
     "durability": 32,
     "mining_speed": 12.0,

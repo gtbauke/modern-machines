@@ -22,6 +22,7 @@ public class ModLanguageProvider extends LanguageProvider {
         // Creative tabs
         add("itemGroup.modernmachines.materials", "Modern Machines: Materials");
         add("itemGroup.modernmachines.resources", "Modern Machines Resources");
+        add("itemGroup.modernmachines.fluids", "Modern Machines: Fluids");
 
         addBlock(ModBlocks.ADOBE_BRICK, "Adobe Brick");
         addItem(ModItems.ADOBE_BRICKS, "Adobe Bricks");
@@ -167,6 +168,10 @@ public class ModLanguageProvider extends LanguageProvider {
                         addBlock(material.getDeferredBlock(form), englishName);
                     } else if (form.isItem()) {
                         addItem(material.getDeferredItem(form), englishName);
+                    } else if (form.isFluid()) {
+                        add("fluid_type." + ModernMachines.MOD_ID + "." + form.getRegistryName(material.name()), englishName);
+                        addBlock(material.getDeferredBlock(form), englishName);
+                        addItem(material.getDeferredItem(form), englishName + " Bucket");
                     }
                 }
             }

@@ -12,20 +12,27 @@ import io.github.gtbauke.modernmachines.modular.client.TinkeringTableScreen;
 import io.github.gtbauke.modernmachines.modular.client.tint.ModularToolPartTintSource;
 import io.github.gtbauke.modernmachines.modular.client.tint.ToolPartMaterialTintSource;
 import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
+import net.neoforged.neoforge.client.fluid.FluidTintSources;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 @Mod(value = ModernMachines.MOD_ID, dist = Dist.CLIENT)
 public class ModernMachinesClient {
+    private static final Identifier FLUID_STILL = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/fluid_still");
+    private static final Identifier FLUID_FLOWING = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/template/fluid_flow");
 
     public ModernMachinesClient(IEventBus modEventBus, ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
@@ -33,6 +40,24 @@ public class ModernMachinesClient {
         modEventBus.addListener(this::registerScreens);
         modEventBus.addListener(this::registerBlockColors);
         modEventBus.addListener(this::registerItemColors);
+        modEventBus.addListener(this::registerFluidModels);
+    }
+
+    private void registerFluidModels(RegisterFluidModelsEvent event) {
+        net.minecraft.client.resources.model.sprite.Material stillMat = new net.minecraft.client.resources.model.sprite.Material(FLUID_STILL);
+        net.minecraft.client.resources.model.sprite.Material flowingMat = new net.minecraft.client.resources.model.sprite.Material(FLUID_FLOWING);
+        for (Material material : ModMaterials.getAllMaterials()) {
+            if (material.hasForm(ResourceForm.MOLTEN) && material.isRegisteredLocally(ResourceForm.MOLTEN)) {
+                FlowingFluid stillFluid = material.getFluid(ResourceForm.MOLTEN);
+                FlowingFluid flowingFluid = material.getFlowingFluid(ResourceForm.MOLTEN);
+                if (stillFluid != null && flowingFluid != null) {
+                    int tintColor = 0xFF000000 | material.colorHex();
+                    FluidTintSource tintSource = FluidTintSources.constant(tintColor);
+                    FluidModel.Unbaked unbaked = new FluidModel.Unbaked(stillMat, flowingMat, null, tintSource);
+                    event.register(unbaked, stillFluid, flowingFluid);
+                }
+            }
+        }
     }
 
     private void registerItemColors(RegisterColorHandlersEvent.ItemTintSources event) {

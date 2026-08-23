@@ -1,0 +1,30 @@
+{
+  "material": "modernmachines:emerald",
+  "color": "#11B047",
+  "melting_point": 1600,
+  "head": {
+    "durability": 600,
+    "mining_speed": 7.0,
+    "attack_damage": 2.5,
+    "harvest_tier": "iron"
+  },
+  "handle": {
+    "durability_multiplier": 1.15,
+    "mining_speed_multiplier": 1.05,
+    "attack_speed_bonus": 0.0
+  },
+  "binding": {
+    "bonus_durability": 100
+  },
+  "attachment": {
+    "bonus_durability": 100,
+    "attack_damage_bonus": 0.75,
+    "speed_bonus": 0.0
+  },
+  "traits": [
+    {
+      "id": "modernmachines:bounty",
+      "level": 1
+    }
+  ]
+}

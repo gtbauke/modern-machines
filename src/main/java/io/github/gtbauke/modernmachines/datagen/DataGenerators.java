@@ -29,6 +29,7 @@ public class DataGenerators {
     public static void gatherDataServer(GatherDataEvent.Server event) {
         event.createDatapackRegistryObjects(BUILDER);
         event.createBlockAndItemTags(ModBlockTagsProvider::new, ModItemTagsProvider::new);
+        event.createProvider(ModFluidTagsProvider::new);
         event.createProvider(ModLootTableProvider::new);
         event.createProvider(ModRecipeProvider.Runner::new);
     }

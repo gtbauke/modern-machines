@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:diamond",
   "color": "#4AEDD9",
+  "melting_point": 1700,
   "head": {
     "durability": 1561,
     "mining_speed": 8.0,

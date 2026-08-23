@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:flint",
   "color": "#393939",
+  "melting_point": 0,
   "head": {
     "durability": 150,
     "mining_speed": 5.0,

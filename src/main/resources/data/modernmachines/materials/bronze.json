@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:bronze",
-  "color": "#D18E42",
+  "color": "#CD7F32",
+  "melting_point": 950,
   "head": {
     "durability": 450,
     "mining_speed": 6.5,

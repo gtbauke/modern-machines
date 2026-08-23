@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:wood",
   "color": "#855C38",
+  "melting_point": 0,
   "head": {
     "durability": 60,
     "mining_speed": 2.0,

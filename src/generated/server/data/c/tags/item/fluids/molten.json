@@ -1,0 +1,24 @@
+{
+  "values": [
+    "#c:fluids/molten_iron",
+    "#c:fluids/molten_gold",
+    "#c:fluids/molten_copper",
+    "#c:fluids/molten_diamond",
+    "#c:fluids/molten_lapis_lazuli",
+    "#c:fluids/molten_emerald",
+    "#c:fluids/molten_amethyst",
+    "#c:fluids/molten_netherite",
+    "#c:fluids/molten_tin",
+    "#c:fluids/molten_lead",
+    "#c:fluids/molten_silver",
+    "#c:fluids/molten_nickel",
+    "#c:fluids/molten_aluminum",
+    "#c:fluids/molten_uranium",
+    "#c:fluids/molten_titanium",
+    "#c:fluids/molten_bronze",
+    "#c:fluids/molten_steel",
+    "#c:fluids/molten_invar",
+    "#c:fluids/molten_electrum",
+    "#c:fluids/molten_constantan"
+  ]
+}

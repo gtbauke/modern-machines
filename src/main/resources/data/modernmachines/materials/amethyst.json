@@ -1,0 +1,16 @@
+{
+  "material": "modernmachines:amethyst",
+  "color": "#9A5CC6",
+  "melting_point": 1650,
+  "attachment": {
+    "bonus_durability": 80,
+    "attack_damage_bonus": 0.6,
+    "speed_bonus": 0.4
+  },
+  "traits": [
+    {
+      "id": "modernmachines:resonance",
+      "level": 1
+    }
+  ]
+}

@@ -74,6 +74,7 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
                     id,
                     Optional.of(mat.displayName()),
                     mat.colorHex(),
+                    Optional.of(mat.meltingPoint()),
                     ingredient,
                     Optional.of(new MaterialToolStats.HeadStats(durability, speed, damage, tier)),
                     Optional.of(new MaterialToolStats.HandleStats(1.0f + (mat.hardness() * 0.05f), 1.0f, 0.0f)),

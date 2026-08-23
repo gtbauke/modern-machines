@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:aluminum",
   "color": "#CBD7DB",
+  "melting_point": 660,
   "head": {
     "durability": 280,
     "mining_speed": 7.5,

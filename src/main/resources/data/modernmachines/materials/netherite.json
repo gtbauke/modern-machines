@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:netherite",
-  "color": "#4C4447",
+  "color": "#4C444B",
+  "melting_point": 1800,
   "head": {
     "durability": 2031,
     "mining_speed": 9.0,

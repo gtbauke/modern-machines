@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:steel",
-  "color": "#636B78",
+  "color": "#6A737D",
+  "melting_point": 1425,
   "head": {
     "durability": 800,
     "mining_speed": 7.5,

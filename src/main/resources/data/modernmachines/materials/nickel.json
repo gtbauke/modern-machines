@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:nickel",
-  "color": "#C5BFA7",
+  "color": "#DEDCB9",
+  "melting_point": 1455,
   "head": {
     "durability": 300,
     "mining_speed": 6.0,

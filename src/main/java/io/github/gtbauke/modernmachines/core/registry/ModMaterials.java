@@ -28,6 +28,7 @@ public class ModMaterials {
                     .mapColor(MapColor.METAL)
                     .miningLevel(BlockTags.NEEDS_STONE_TOOL)
                     .hardness(5.0f, 6.0f)
+                    .meltingPoint(1538)
                     .delegate(ResourceForm.ORE, () -> Blocks.IRON_ORE)
                     .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_IRON_ORE)
                     .delegate(ResourceForm.RAW_ORE, () -> Items.RAW_IRON)
@@ -43,7 +44,8 @@ public class ModMaterials {
                             ResourceForm.ROD,
                             ResourceForm.SCREW,
                             ResourceForm.WIRE,
-                            ResourceForm.GEAR
+                            ResourceForm.GEAR,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -55,6 +57,7 @@ public class ModMaterials {
                     .mapColor(MapColor.GOLD)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(3.0f, 3.0f)
+                    .meltingPoint(1064)
                     .delegate(ResourceForm.ORE, () -> Blocks.GOLD_ORE)
                     .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_GOLD_ORE)
                     .delegate(ResourceForm.NETHERRACK_ORE, () -> Blocks.NETHER_GOLD_ORE)
@@ -70,7 +73,8 @@ public class ModMaterials {
                             ResourceForm.ROD,
                             ResourceForm.SCREW,
                             ResourceForm.WIRE,
-                            ResourceForm.GEAR
+                            ResourceForm.GEAR,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -82,6 +86,7 @@ public class ModMaterials {
                     .mapColor(MapColor.COLOR_ORANGE)
                     .miningLevel(BlockTags.NEEDS_STONE_TOOL)
                     .hardness(3.0f, 3.0f)
+                    .meltingPoint(1085)
                     .delegate(ResourceForm.ORE, () -> Blocks.COPPER_ORE)
                     .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_COPPER_ORE)
                     .delegate(ResourceForm.RAW_ORE, () -> Items.RAW_COPPER)
@@ -97,7 +102,8 @@ public class ModMaterials {
                             ResourceForm.ROD,
                             ResourceForm.SCREW,
                             ResourceForm.WIRE,
-                            ResourceForm.GEAR
+                            ResourceForm.GEAR,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -109,6 +115,7 @@ public class ModMaterials {
                     .mapColor(MapColor.DIAMOND)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(5.0f, 6.0f)
+                    .meltingPoint(1700)
                     .delegate(ResourceForm.ORE, () -> Blocks.DIAMOND_ORE)
                     .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_DIAMOND_ORE)
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.DIAMOND_BLOCK)
@@ -119,7 +126,8 @@ public class ModMaterials {
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
                             ResourceForm.ROD,
-                            ResourceForm.GEAR
+                            ResourceForm.GEAR,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -131,6 +139,7 @@ public class ModMaterials {
                     .mapColor(MapColor.LAPIS)
                     .miningLevel(BlockTags.NEEDS_STONE_TOOL)
                     .hardness(3.0f, 3.0f)
+                    .meltingPoint(1200)
                     .delegate(ResourceForm.ORE, () -> Blocks.LAPIS_ORE)
                     .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_LAPIS_ORE)
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.LAPIS_BLOCK)
@@ -139,7 +148,8 @@ public class ModMaterials {
                             ResourceForm.NETHERRACK_ORE,
                             ResourceForm.END_STONE_ORE,
                             ResourceForm.DUST,
-                            ResourceForm.PLATE
+                            ResourceForm.PLATE,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -151,6 +161,7 @@ public class ModMaterials {
                     .mapColor(MapColor.EMERALD)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(5.0f, 6.0f)
+                    .meltingPoint(1600)
                     .delegate(ResourceForm.ORE, () -> Blocks.EMERALD_ORE)
                     .delegate(ResourceForm.DEEPSLATE_ORE, () -> Blocks.DEEPSLATE_EMERALD_ORE)
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.EMERALD_BLOCK)
@@ -161,7 +172,8 @@ public class ModMaterials {
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
                             ResourceForm.ROD,
-                            ResourceForm.GEAR
+                            ResourceForm.GEAR,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -173,11 +185,13 @@ public class ModMaterials {
                     .mapColor(MapColor.COLOR_PURPLE)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(4.0f, 5.0f)
+                    .meltingPoint(1650)
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.AMETHYST_BLOCK)
                     .delegate(ResourceForm.GEM, () -> Items.AMETHYST_SHARD)
                     .forms(
                             ResourceForm.DUST,
-                            ResourceForm.PLATE
+                            ResourceForm.PLATE,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -189,13 +203,15 @@ public class ModMaterials {
                     .mapColor(MapColor.COLOR_BLACK)
                     .miningLevel(BlockTags.NEEDS_DIAMOND_TOOL)
                     .hardness(50.0f, 1200.0f)
+                    .meltingPoint(1800)
                     .delegate(ResourceForm.STORAGE_BLOCK, () -> Blocks.NETHERITE_BLOCK)
                     .delegate(ResourceForm.INGOT, () -> Items.NETHERITE_INGOT)
                     .forms(
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
                             ResourceForm.ROD,
-                            ResourceForm.GEAR
+                            ResourceForm.GEAR,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -209,6 +225,7 @@ public class ModMaterials {
                     .miningLevel(BlockTags.NEEDS_STONE_TOOL)
                     .hardness(3.0f, 3.0f)
                     .smeltingXp(0.6f)
+                    .meltingPoint(232)
                     .oreDefaults()
                     .forms(ResourceForm.SCREW)
     );
@@ -222,6 +239,7 @@ public class ModMaterials {
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(3.5f, 3.5f)
                     .smeltingXp(0.8f)
+                    .meltingPoint(327)
                     .oreDefaults()
     );
 
@@ -234,6 +252,7 @@ public class ModMaterials {
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(3.0f, 3.0f)
                     .smeltingXp(0.9f)
+                    .meltingPoint(962)
                     .oreDefaults()
                     .forms(ResourceForm.WIRE)
     );
@@ -247,6 +266,7 @@ public class ModMaterials {
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(3.5f, 3.5f)
                     .smeltingXp(0.7f)
+                    .meltingPoint(1455)
                     .oreDefaults()
     );
 
@@ -259,6 +279,7 @@ public class ModMaterials {
                     .miningLevel(BlockTags.NEEDS_STONE_TOOL)
                     .hardness(3.0f, 3.0f)
                     .smeltingXp(0.6f)
+                    .meltingPoint(660)
                     .oreDefaults()
                     .forms(ResourceForm.WIRE)
     );
@@ -272,6 +293,7 @@ public class ModMaterials {
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(4.5f, 5.0f)
                     .smeltingXp(1.2f)
+                    .meltingPoint(1132)
                     .forms(
                             ResourceForm.ORE,
                             ResourceForm.DEEPSLATE_ORE,
@@ -284,7 +306,8 @@ public class ModMaterials {
                             ResourceForm.NUGGET,
                             ResourceForm.DUST,
                             ResourceForm.PLATE,
-                            ResourceForm.ROD
+                            ResourceForm.ROD,
+                            ResourceForm.MOLTEN
                     )
     );
 
@@ -297,6 +320,7 @@ public class ModMaterials {
                     .miningLevel(BlockTags.NEEDS_DIAMOND_TOOL)
                     .hardness(6.0f, 8.0f)
                     .smeltingXp(1.5f)
+                    .meltingPoint(1668)
                     .oreDefaults()
                     .forms(ResourceForm.SCREW)
     );
@@ -310,6 +334,7 @@ public class ModMaterials {
                     .mapColor(MapColor.COLOR_ORANGE)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(4.0f, 4.5f)
+                    .meltingPoint(950)
                     .alloyDefaults()
     );
 
@@ -321,6 +346,7 @@ public class ModMaterials {
                     .mapColor(MapColor.METAL)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(5.0f, 6.0f)
+                    .meltingPoint(1425)
                     .alloyDefaults()
                     .forms(ResourceForm.SCREW, ResourceForm.WIRE)
     );
@@ -333,6 +359,7 @@ public class ModMaterials {
                     .mapColor(MapColor.COLOR_GRAY)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(4.5f, 5.0f)
+                    .meltingPoint(1425)
                     .alloyDefaults()
     );
 
@@ -344,6 +371,7 @@ public class ModMaterials {
                     .mapColor(MapColor.GOLD)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(3.5f, 3.5f)
+                    .meltingPoint(1000)
                     .alloyDefaults()
                     .forms(ResourceForm.WIRE)
     );
@@ -356,6 +384,7 @@ public class ModMaterials {
                     .mapColor(MapColor.COLOR_ORANGE)
                     .miningLevel(BlockTags.NEEDS_IRON_TOOL)
                     .hardness(3.5f, 3.5f)
+                    .meltingPoint(1220)
                     .alloyDefaults()
                     .forms(ResourceForm.WIRE)
     );
@@ -369,6 +398,7 @@ public class ModMaterials {
                     .mapColor(MapColor.WOOD)
                     .miningLevel(BlockTags.MINEABLE_WITH_AXE)
                     .hardness(2.0f, 2.0f)
+                    .meltingPoint(0)
                     .delegate(ResourceForm.ROD, () -> Items.STICK)
                     .delegate(ResourceForm.INGOT, () -> Blocks.OAK_PLANKS)
     );
@@ -381,6 +411,7 @@ public class ModMaterials {
                     .mapColor(MapColor.STONE)
                     .miningLevel(BlockTags.MINEABLE_WITH_PICKAXE)
                     .hardness(2.0f, 6.0f)
+                    .meltingPoint(0)
                     .delegate(ResourceForm.INGOT, () -> Blocks.COBBLESTONE)
     );
 
@@ -392,6 +423,7 @@ public class ModMaterials {
                     .mapColor(MapColor.COLOR_GRAY)
                     .miningLevel(BlockTags.MINEABLE_WITH_SHOVEL)
                     .hardness(1.0f, 1.0f)
+                    .meltingPoint(0)
                     .delegate(ResourceForm.INGOT, () -> Items.FLINT)
     );
 
@@ -403,6 +435,7 @@ public class ModMaterials {
                     .mapColor(MapColor.SAND)
                     .miningLevel(BlockTags.MINEABLE_WITH_PICKAXE)
                     .hardness(2.0f, 2.0f)
+                    .meltingPoint(0)
                     .delegate(ResourceForm.ROD, () -> Items.BONE)
                     .delegate(ResourceForm.INGOT, () -> Items.BONE_MEAL)
     );

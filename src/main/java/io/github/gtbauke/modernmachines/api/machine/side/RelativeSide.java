@@ -2,6 +2,7 @@ package io.github.gtbauke.modernmachines.api.machine.side;
 
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import org.jspecify.annotations.NonNull;
 
 public enum RelativeSide implements StringRepresentable {
     FRONT("front"),
@@ -18,7 +19,7 @@ public enum RelativeSide implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NonNull String getSerializedName() {
         return this.name;
     }
 

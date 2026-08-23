@@ -132,6 +132,26 @@ public class ModCreativeTabs {
                     })
                     .build());
 
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> FLUIDS_TAB =
+            CREATIVE_MODE_TABS.register("fluids", () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.modernmachines.fluids"))
+                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+                    .icon(() -> {
+                        net.minecraft.world.item.Item copperBucket = ModMaterials.COPPER.getItem(ResourceForm.MOLTEN);
+                        return (copperBucket != null ? copperBucket : ModItems.ENGINEER_HAMMER.get()).getDefaultInstance();
+                    })
+                    .displayItems((parameters, output) -> {
+                        for (Material material : ModMaterials.getAllMaterials()) {
+                            if (material.isRegisteredLocally(ResourceForm.MOLTEN)) {
+                                DeferredItem<?> bucketItem = material.getDeferredItem(ResourceForm.MOLTEN);
+                                if (bucketItem != null) {
+                                    output.accept(bucketItem.get());
+                                }
+                            }
+                        }
+                    })
+                    .build());
+
     public static void register(IEventBus eventBus) {
         CREATIVE_MODE_TABS.register(eventBus);
     }

@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:lead",
-  "color": "#4D566B",
+  "color": "#6E7587",
+  "melting_point": 327,
   "head": {
     "durability": 220,
     "mining_speed": 4.5,

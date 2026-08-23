@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:titanium",
-  "color": "#7D8394",
+  "color": "#C4B8C6",
+  "melting_point": 1668,
   "head": {
     "durability": 1800,
     "mining_speed": 8.5,

@@ -3,6 +3,7 @@ package io.github.gtbauke.modernmachines.api.machine.capability;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import org.jspecify.annotations.NonNull;
 
 public enum MachineCapabilityType implements StringRepresentable {
     ITEM("item", "Items", 0xFF60A5FA, ChatFormatting.BLUE, 0, 96),
@@ -26,7 +27,7 @@ public enum MachineCapabilityType implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NonNull String getSerializedName() {
         return this.name;
     }
 

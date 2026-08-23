@@ -1,0 +1,16 @@
+{
+  "material": "modernmachines:lapis_lazuli",
+  "color": "#2649B2",
+  "melting_point": 1200,
+  "attachment": {
+    "bonus_durability": 60,
+    "attack_damage_bonus": 0.5,
+    "speed_bonus": 0.0
+  },
+  "traits": [
+    {
+      "id": "modernmachines:prosperity",
+      "level": 1
+    }
+  ]
+}

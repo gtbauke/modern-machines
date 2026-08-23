@@ -7,15 +7,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import io.github.gtbauke.modernmachines.ModernMachines;
+import io.github.gtbauke.modernmachines.core.registry.ModFluids;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,6 +40,7 @@ public class MaterialBuilder {
     private float hardness = 3.0f;
     private float resistance = 3.0f;
     private float smeltingXp = 0.7f;
+    private int meltingPoint = 1000;
     private int overlayIndex;
     private final Set<ResourceForm> forms = EnumSet.noneOf(ResourceForm.class);
     private final Map<ResourceForm, Supplier<? extends ItemLike>> delegates = new EnumMap<>(ResourceForm.class);
@@ -85,6 +96,11 @@ public class MaterialBuilder {
         return this;
     }
 
+    public MaterialBuilder meltingPoint(int meltingPoint) {
+        this.meltingPoint = meltingPoint;
+        return this;
+    }
+
     public MaterialBuilder forms(ResourceForm... forms) {
         this.forms.addAll(Arrays.asList(forms));
         return this;
@@ -110,7 +126,8 @@ public class MaterialBuilder {
                 ResourceForm.DUST,
                 ResourceForm.PLATE,
                 ResourceForm.ROD,
-                ResourceForm.GEAR
+                ResourceForm.GEAR,
+                ResourceForm.MOLTEN
         );
     }
 
@@ -123,13 +140,27 @@ public class MaterialBuilder {
                 ResourceForm.DUST,
                 ResourceForm.PLATE,
                 ResourceForm.ROD,
-                ResourceForm.GEAR
+                ResourceForm.GEAR,
+                ResourceForm.MOLTEN
         );
     }
 
     public Material buildAndRegister(DeferredRegister.Blocks blockRegister, DeferredRegister.Items itemRegister) {
+        return buildAndRegister(blockRegister, itemRegister, ModFluids.FLUID_TYPES, ModFluids.FLUIDS);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Material buildAndRegister(
+            DeferredRegister.Blocks blockRegister,
+            DeferredRegister.Items itemRegister,
+            DeferredRegister<FluidType> fluidTypeRegister,
+            DeferredRegister<Fluid> fluidRegister
+    ) {
         Map<ResourceForm, DeferredBlock<Block>> blockRegistry = new EnumMap<>(ResourceForm.class);
         Map<ResourceForm, DeferredItem<? extends Item>> itemRegistry = new EnumMap<>(ResourceForm.class);
+        Map<ResourceForm, Supplier<? extends FluidType>> fluidTypeRegistry = new EnumMap<>(ResourceForm.class);
+        Map<ResourceForm, Supplier<? extends FlowingFluid>> fluidSourceRegistry = new EnumMap<>(ResourceForm.class);
+        Map<ResourceForm, Supplier<? extends FlowingFluid>> fluidFlowingRegistry = new EnumMap<>(ResourceForm.class);
 
         for (ResourceForm form : this.forms) {
             if (this.delegates.containsKey(form)) {
@@ -138,7 +169,42 @@ public class MaterialBuilder {
 
             String registryName = form.getRegistryName(this.name);
 
-            if (form.isBlock()) {
+            if (form.isFluid()) {
+                Supplier<FluidType> fluidType = fluidTypeRegister.register(registryName, () ->
+                        new FluidType(FluidType.Properties.create()
+                                .density(3000)
+                                .temperature(this.meltingPoint + 273)
+                                .viscosity(6000)
+                                .descriptionId("fluid_type." + ModernMachines.MOD_ID + "." + registryName)));
+                fluidTypeRegistry.put(form, fluidType);
+
+                Supplier<FlowingFluid>[] sourceHolder = new Supplier[1];
+                Supplier<FlowingFluid>[] flowingHolder = new Supplier[1];
+                DeferredBlock<Block>[] blockHolder = new DeferredBlock[1];
+                DeferredItem<BucketItem>[] bucketHolder = new DeferredItem[1];
+
+                BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(
+                        fluidType,
+                        () -> sourceHolder[0].get(),
+                        () -> flowingHolder[0].get()
+                ).block(() -> (LiquidBlock) blockHolder[0].get()).bucket(() -> bucketHolder[0].get());
+
+                sourceHolder[0] = fluidRegister.register(registryName, () -> new BaseFlowingFluid.Source(properties));
+                fluidSourceRegistry.put(form, sourceHolder[0]);
+
+                flowingHolder[0] = fluidRegister.register(registryName + "_flowing", () -> new BaseFlowingFluid.Flowing(properties));
+                fluidFlowingRegistry.put(form, flowingHolder[0]);
+
+                blockHolder[0] = blockRegister.registerBlock(registryName,
+                        props -> new LiquidBlock(sourceHolder[0].get(), props),
+                        () -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA));
+                blockRegistry.put(form, blockHolder[0]);
+
+                bucketHolder[0] = itemRegister.registerItem(registryName + "_bucket",
+                        props -> new BucketItem(sourceHolder[0].get(), props),
+                        p -> p.craftRemainder(Items.BUCKET).stacksTo(1));
+                itemRegistry.put(form, (DeferredItem<? extends Item>) (DeferredItem<?>) bucketHolder[0]);
+            } else if (form.isBlock()) {
                 DeferredBlock<Block> deferredBlock = registerBlockForForm(form, registryName, blockRegister);
                 blockRegistry.put(form, deferredBlock);
                 DeferredItem<BlockItem> blockItem = itemRegister.registerSimpleBlockItem(registryName, deferredBlock);
@@ -159,10 +225,14 @@ public class MaterialBuilder {
                 this.hardness,
                 this.resistance,
                 this.smeltingXp,
+                this.meltingPoint,
                 this.overlayIndex,
                 this.forms,
                 blockRegistry,
                 itemRegistry,
+                fluidTypeRegistry,
+                fluidSourceRegistry,
+                fluidFlowingRegistry,
                 this.delegates
         );
     }

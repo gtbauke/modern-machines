@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:electrum",
-  "color": "#ECE072",
+  "color": "#F3DD60",
+  "melting_point": 1000,
   "head": {
     "durability": 120,
     "mining_speed": 10.0,

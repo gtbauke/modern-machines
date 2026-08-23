@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:tin",
-  "color": "#C0D3DD",
+  "color": "#D3DCDF",
+  "melting_point": 232,
   "head": {
     "durability": 180,
     "mining_speed": 5.0,

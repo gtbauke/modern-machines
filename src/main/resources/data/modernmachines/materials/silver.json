@@ -1,6 +1,7 @@
 {
   "material": "modernmachines:silver",
-  "color": "#DAE3EC",
+  "color": "#E3F1F4",
+  "melting_point": 962,
   "head": {
     "durability": 190,
     "mining_speed": 7.0,
