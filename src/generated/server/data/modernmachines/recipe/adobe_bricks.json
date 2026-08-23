@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.1,
+  "ingredient": "modernmachines:adobe_mixture",
+  "result": {
+    "id": "modernmachines:adobe_bricks"
+  }
+}

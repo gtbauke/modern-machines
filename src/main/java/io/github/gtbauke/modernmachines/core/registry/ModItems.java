@@ -36,30 +36,12 @@ public class ModItems {
     public static final DeferredItem<BlockItem> ADOBE_BRICK_BLOCK = ITEMS.registerSimpleBlockItem(ModBlocks.ADOBE_BRICK);
     public static final DeferredItem<BlockItem> COPPER_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.COPPER_PIPE);
     public static final DeferredItem<BlockItem> STEEL_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.STEEL_PIPE);
-//    public static final DeferredItem<BlockItem> BRONZE_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.BRONZE_CASING);
-//    public static final DeferredItem<BlockItem> SOLID_FUEL_BOILER = ITEMS.registerSimpleBlockItem(ModBlocks.SOLID_FUEL_BOILER);
-//    public static final DeferredItem<BlockItem> STEAM_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_TURBINE);
-//    public static final DeferredItem<BlockItem> STEAM_CRUSHER = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_CRUSHER);
-//    public static final DeferredItem<BlockItem> STEAM_ALLOY_SMELTER = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ALLOY_SMELTER);
-//    public static final DeferredItem<BlockItem> BRONZE_FLUID_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.BRONZE_FLUID_TANK);
-//    public static final DeferredItem<BlockItem> BRONZE_FLUID_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.BRONZE_FLUID_PIPE);
 
     // Steam Era Components
     public static final DeferredItem<Item> ADOBE_MIXTURE = ITEMS.registerItem("adobe_mixture", Item::new);
     public static final DeferredItem<Item> ADOBE_BRICKS = ITEMS.registerItem("adobe_bricks", Item::new);
-
-//    public static final DeferredItem<Item> STEAM_PISTON = ITEMS.registerItem("steam_piston",
-//            Item::new);
-//    public static final DeferredItem<Item> PRESSURE_GAUGE = ITEMS.registerItem("pressure_gauge",
-//            Item::new);
-//    public static final DeferredItem<Item> BRONZE_VALVE = ITEMS.registerItem("bronze_valve",
-//            Item::new);
-//    public static final DeferredItem<BucketItem> STEAM_BUCKET = ITEMS.registerItem("steam_bucket",
-//            p -> new BucketItem(ModFluids.STEAM_SOURCE.get(), p.stacksTo(1)));
-
-    // Engineer's Tablet Item
-    public static final DeferredItem<io.github.gtbauke.modernmachines.core.item.EngineersTabletItem> ENGINEERS_TABLET = ITEMS.registerItem("engineers_tablet",
-            io.github.gtbauke.modernmachines.core.item.EngineersTabletItem::new, p -> p.stacksTo(1));
+    public static final DeferredItem<Item> ENGINEERS_TABLET = ITEMS.registerItem("engineers_tablet",
+            Item::new, p -> p.stacksTo(1));
 
     // Machine Upgrades
     public static final DeferredItem<io.github.gtbauke.modernmachines.machine.upgrade.SpeedUpgradeItem> SPEED_UPGRADE =
@@ -128,7 +110,6 @@ public class ModItems {
     public static final DeferredItem<ModularHoeItem> MODULAR_HOE = ITEMS.registerItem("modular_hoe",
             ModularHoeItem::new);
 
-    // Tool Parts per Material & PartType
     private static final Map<String, DeferredItem<ToolPartItem>> TOOL_PARTS = new HashMap<>();
 
     public static void registerToolParts() {
@@ -142,9 +123,11 @@ public class ModItems {
                         continue;
                     }
                 }
+
                 String regName = partType.getSerializedName() + "_" + material.name();
                 DeferredItem<ToolPartItem> item = ITEMS.registerItem(regName,
                         p -> new ToolPartItem(partType, material, p));
+
                 TOOL_PARTS.put(regName, item);
             }
         }

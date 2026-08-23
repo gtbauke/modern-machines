@@ -27,11 +27,14 @@ public class ModFluidTagsProvider extends TagsProvider<Fluid> {
             if (material.hasForm(ResourceForm.MOLTEN) && material.isRegisteredLocally(ResourceForm.MOLTEN)) {
                 Fluid sourceFluid = material.getFluid(ResourceForm.MOLTEN);
                 Fluid flowingFluid = material.getFlowingFluid(ResourceForm.MOLTEN);
+
                 if (sourceFluid != null) {
                     ResourceKey<Fluid> sourceKey = BuiltInRegistries.FLUID.getResourceKey(sourceFluid).orElse(null);
                     ResourceKey<Fluid> flowingKey = flowingFluid != null ? BuiltInRegistries.FLUID.getResourceKey(flowingFluid).orElse(null) : null;
+
                     if (sourceKey != null) {
                         var fluidTag = tag(material.getFluidTag(ResourceForm.MOLTEN)).add(sourceKey);
+
                         if (flowingKey != null) {
                             fluidTag.add(flowingKey);
                         }

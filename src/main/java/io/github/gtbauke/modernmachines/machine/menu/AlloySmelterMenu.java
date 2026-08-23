@@ -167,7 +167,7 @@ public class AlloySmelterMenu extends BaseContainerMenu {
                 // 2. Try to move into machine inputs/fuel (0..3)
                 else if (!this.moveItemStackTo(stackInSlot, 0, 3, false)) {
                     // 3. Transfer between main inventory and hotbar
-                    if (!moveBetweenInventoryAndHotbar(stackInSlot, index)) {
+                    if (moveBetweenInventoryAndHotbar(stackInSlot, index)) {
                         return ItemStack.EMPTY;
                     }
                 }

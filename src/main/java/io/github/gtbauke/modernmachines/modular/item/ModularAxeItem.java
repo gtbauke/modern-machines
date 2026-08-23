@@ -35,7 +35,7 @@ public class ModularAxeItem extends ModularToolItem {
             if (!level.isClientSide()) {
                 level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
                 if (player != null) {
-                    stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+                    applyDamage(stack, 1, player);
                 }
             }
             return InteractionResult.SUCCESS;
@@ -49,7 +49,7 @@ public class ModularAxeItem extends ModularToolItem {
             if (!level.isClientSide()) {
                 level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
                 if (player != null) {
-                    stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+                    applyDamage(stack, 1, player);
                 }
             }
             return InteractionResult.SUCCESS;
@@ -63,7 +63,7 @@ public class ModularAxeItem extends ModularToolItem {
             if (!level.isClientSide()) {
                 level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
                 if (player != null) {
-                    stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+                    applyDamage(stack, 1, player);
                 }
             }
             return InteractionResult.SUCCESS;

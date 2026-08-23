@@ -75,11 +75,12 @@ public abstract class BaseContainerMenu extends AbstractContainerMenu {
      */
     protected boolean moveBetweenInventoryAndHotbar(ItemStack stack, int slotIndex) {
         if (slotIndex >= playerInventoryStart && slotIndex < hotbarStart) {
-            return this.moveItemStackTo(stack, hotbarStart, playerInventoryEnd, false);
+            return !this.moveItemStackTo(stack, hotbarStart, playerInventoryEnd, false);
         } else if (slotIndex >= hotbarStart && slotIndex < playerInventoryEnd) {
-            return this.moveItemStackTo(stack, playerInventoryStart, hotbarStart, false);
+            return !this.moveItemStackTo(stack, playerInventoryStart, hotbarStart, false);
         }
-        return false;
+
+        return true;
     }
 
     /**

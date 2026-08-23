@@ -29,67 +29,66 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.TINKERING_TABLE.get());
         dropSelf(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
         dropSelf(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
-        dropSelf(ModBlocks.ENGINEERS_TERMINAL.get());
         dropSelf(ModBlocks.ADOBE_BRICK.get());
 
         for (Material material : ModMaterials.getAllMaterials()) {
-            // Storage blocks
             if (material.isRegisteredLocally(ResourceForm.STORAGE_BLOCK)) {
                 dropSelf(Objects.requireNonNull(material.getBlock(ResourceForm.STORAGE_BLOCK)));
             }
+
             if (material.isRegisteredLocally(ResourceForm.RAW_STORAGE_BLOCK)) {
                 dropSelf(Objects.requireNonNull(material.getBlock(ResourceForm.RAW_STORAGE_BLOCK)));
             }
 
-            // Ores
             Item dropItem = material.getItem(ResourceForm.RAW_ORE);
             if (dropItem == null) {
                 dropItem = material.getItem(ResourceForm.GEM);
             }
+
             if (dropItem == null) {
                 dropItem = material.getItem(ResourceForm.INGOT);
             }
 
             if (material.isRegisteredLocally(ResourceForm.ORE)) {
                 Block oreBlock = material.getBlock(ResourceForm.ORE);
+
+                assert oreBlock != null;
                 if (dropItem != null) {
-                    assert oreBlock != null;
                     add(oreBlock, createOreDrop(oreBlock, dropItem));
                 } else {
-                    assert oreBlock != null;
                     dropSelf(oreBlock);
                 }
             }
 
             if (material.isRegisteredLocally(ResourceForm.DEEPSLATE_ORE)) {
                 Block deepslateOreBlock = material.getBlock(ResourceForm.DEEPSLATE_ORE);
+
+                assert deepslateOreBlock != null;
                 if (dropItem != null) {
-                    assert deepslateOreBlock != null;
                     add(deepslateOreBlock, createOreDrop(deepslateOreBlock, dropItem));
                 } else {
-                    assert deepslateOreBlock != null;
                     dropSelf(deepslateOreBlock);
                 }
             }
 
             if (material.isRegisteredLocally(ResourceForm.NETHERRACK_ORE)) {
                 Block netherrackOreBlock = material.getBlock(ResourceForm.NETHERRACK_ORE);
+
+                assert netherrackOreBlock != null;
                 if (dropItem != null) {
-                    assert netherrackOreBlock != null;
                     add(netherrackOreBlock, createOreDrop(netherrackOreBlock, dropItem));
                 } else {
-                    assert netherrackOreBlock != null;
                     dropSelf(netherrackOreBlock);
                 }
             }
 
             if (material.isRegisteredLocally(ResourceForm.END_STONE_ORE)) {
                 Block endStoneOreBlock = material.getBlock(ResourceForm.END_STONE_ORE);
+
+                assert endStoneOreBlock != null;
                 if (dropItem != null) {
-                    assert endStoneOreBlock != null;
                     add(endStoneOreBlock, createOreDrop(endStoneOreBlock, dropItem));
                 } else {
-                    assert endStoneOreBlock != null;
                     dropSelf(endStoneOreBlock);
                 }
             }
@@ -103,19 +102,20 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
         knownBlocks.add(ModBlocks.TINKERING_TABLE.get());
         knownBlocks.add(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
         knownBlocks.add(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
-        knownBlocks.add(ModBlocks.ENGINEERS_TERMINAL.get());
         knownBlocks.add(ModBlocks.ADOBE_BRICK.get());
 
         for (Material material : ModMaterials.getAllMaterials()) {
             for (ResourceForm form : material.supportedForms()) {
                 if (material.isRegisteredLocally(form) && form.isBlock()) {
                     Block block = material.getBlock(form);
+
                     if (block != null) {
                         knownBlocks.add(block);
                     }
                 }
             }
         }
+
         return knownBlocks;
     }
 }

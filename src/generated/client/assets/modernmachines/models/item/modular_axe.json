@@ -1,8 +1,9 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "modernmachines:item/template/part/handle",
-    "layer1": "modernmachines:item/template/part/binding",
-    "layer2": "modernmachines:item/template/part/axe_head"
+    "layer0": "modernmachines:item/template/assembled_tool_part/assembled_axe_handle",
+    "layer1": "modernmachines:item/template/assembled_tool_part/assembled_axe_head",
+    "layer2": "modernmachines:item/template/assembled_tool_part/assembled_axe_tip",
+    "layer3": "modernmachines:item/template/assembled_tool_part/assembled_axe_binding"
   }
 }

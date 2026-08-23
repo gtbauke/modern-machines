@@ -117,6 +117,34 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_steel_ingot", has(steelIngot))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "steel_pipe")));
 
+        // Adobe Mixture (Clay Ball + Sand + Wheat -> 2 Adobe Mixture)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.MISC, ModItems.ADOBE_MIXTURE.get(), 2)
+                .requires(Items.CLAY_BALL)
+                .requires(Items.SAND)
+                .requires(Items.WHEAT)
+                .unlockedBy("has_clay", has(Items.CLAY_BALL))
+                .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "adobe_mixture")));
+
+        // Adobe Bricks (Smelting Adobe Mixture -> Adobe Bricks)
+        SimpleCookingRecipeBuilder.smelting(
+                Ingredient.of(ModItems.ADOBE_MIXTURE.get()),
+                RecipeCategory.MISC,
+                CookingBookCategory.MISC,
+                ModItems.ADOBE_BRICKS.get(),
+                0.1F,
+                200
+        )
+        .unlockedBy("has_adobe_mixture", has(ModItems.ADOBE_MIXTURE.get()))
+        .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "adobe_bricks")));
+
+        // Adobe Brick Block (4 Adobe Bricks in 2x2 pattern -> 1 Adobe Brick Block)
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.BUILDING_BLOCKS, ModBlocks.ADOBE_BRICK.get())
+                .pattern("##")
+                .pattern("##")
+                .define('#', ModItems.ADOBE_BRICKS.get())
+                .unlockedBy("has_adobe_bricks", has(ModItems.ADOBE_BRICKS.get()))
+                .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "adobe_brick")));
+
         // Upgrades: Speed Upgrade
         ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModItems.SPEED_UPGRADE.get())
                 .pattern("PRP")
@@ -204,17 +232,6 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(Items.LEATHER)
                 .unlockedBy("has_blank_pattern", has(ModItems.BLANK_PATTERN.get()))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "grip_pattern")));
-
-        // Engineer's Tablet Recipe
-        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.TOOLS, ModItems.ENGINEERS_TABLET.get())
-                .pattern("IRI")
-                .pattern("IGI")
-                .pattern("III")
-                .define('I', Items.IRON_INGOT)
-                .define('R', Items.REDSTONE)
-                .define('G', Items.GLASS_PANE)
-                .unlockedBy("has_redstone", has(Items.REDSTONE))
-                .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "engineers_tablet")));
 
         // Engineer's Terminal Recipe
         ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, ModBlocks.ENGINEERS_TERMINAL.get())

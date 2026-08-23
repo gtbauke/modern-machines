@@ -36,7 +36,7 @@ public class ModularHoeItem extends ModularToolItem {
                 if (!level.isClientSide()) {
                     level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
                     if (player != null) {
-                        context.getItemInHand().hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+                        applyDamage(context.getItemInHand(), 1, player);
                     }
                 }
                 return InteractionResult.SUCCESS;

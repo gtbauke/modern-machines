@@ -35,8 +35,10 @@ public class ModItemTagsProvider extends BlockTagCopyingItemTagProvider {
                     copy(form.getPluralBlockTag(), form.getPluralItemTag());
                 } else {
                     Item item = material.getItem(form);
+
                     if (item != null) {
                         ResourceKey<Item> itemKey = BuiltInRegistries.ITEM.getResourceKey(item).orElse(null);
+
                         if (itemKey != null) {
                             tag(material.getItemTag(form)).add(itemKey);
                             tag(form.getPluralItemTag()).addTag(material.getItemTag(form));

@@ -37,7 +37,6 @@ public class ModLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER, "Basic Alloy Smelter Controller");
         addBlock(ModBlocks.BASIC_ALLOY_SMELTER_HEATER, "Basic Alloy Smelter Heater");
         addBlock(ModBlocks.ENGINEERS_TERMINAL, "Engineer's Terminal");
-        addItem(ModItems.ENGINEERS_TABLET, "Engineer's Tablet");
         add("container.modernmachines.part_builder", "Part Builder");
         add("container.modernmachines.tinkering_table", "Tinkering Table");
         add("container.modernmachines.basic_alloy_smelter", "Basic Alloy Smelter");
@@ -97,8 +96,10 @@ public class ModLanguageProvider extends LanguageProvider {
                         continue;
                     }
                 }
+
                 String regName = partType.getSerializedName() + "_" + material.name();
                 String partName = formatPartName(partType, material);
+
                 add("item.modernmachines." + regName, partName);
             }
         }
@@ -167,6 +168,7 @@ public class ModLanguageProvider extends LanguageProvider {
             for (ResourceForm form : material.supportedForms()) {
                 if (material.isRegisteredLocally(form)) {
                     String englishName = form.getEnglishName(material.displayName());
+
                     if (form.isBlock()) {
                         addBlock(material.getDeferredBlock(form), englishName);
                     } else if (form.isItem()) {
@@ -200,13 +202,16 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private String capitalize(String str) {
         if (str == null || str.isEmpty()) return str;
+
         String[] words = str.split(" ");
         StringBuilder sb = new StringBuilder();
+
         for (String w : words) {
             if (!w.isEmpty()) {
                 sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1).toLowerCase()).append(" ");
             }
         }
+
         return sb.toString().trim();
     }
 }

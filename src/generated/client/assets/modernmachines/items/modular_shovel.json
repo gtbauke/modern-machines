@@ -9,10 +9,6 @@
       },
       {
         "type": "modernmachines:modular_part_tint",
-        "slot": "binding"
-      },
-      {
-        "type": "modernmachines:modular_part_tint",
         "slot": "head"
       }
     ]

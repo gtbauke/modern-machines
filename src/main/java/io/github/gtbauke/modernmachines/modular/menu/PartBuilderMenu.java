@@ -172,14 +172,14 @@ public class PartBuilderMenu extends BaseContainerMenu {
                 // 1. If pattern item, try pattern slot (0)
                 if (stackInSlot.getItem() instanceof PatternItem) {
                     if (!this.moveItemStackTo(stackInSlot, 0, 1, false)) {
-                        if (!moveBetweenInventoryAndHotbar(stackInSlot, index)) {
+                        if (moveBetweenInventoryAndHotbar(stackInSlot, index)) {
                             return ItemStack.EMPTY;
                         }
                     }
                 } else {
                     // 2. Try material input slot (1)
                     if (!this.moveItemStackTo(stackInSlot, 1, 2, false)) {
-                        if (!moveBetweenInventoryAndHotbar(stackInSlot, index)) {
+                        if (moveBetweenInventoryAndHotbar(stackInSlot, index)) {
                             return ItemStack.EMPTY;
                         }
                     }

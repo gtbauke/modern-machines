@@ -27,18 +27,6 @@ public class ModFluids {
                     .viscosity(200)
                     .descriptionId("fluid_type.modernmachines.steam")));
 
-//    public static final Supplier<FlowingFluid> STEAM_SOURCE = FLUIDS.register("steam", () ->
-//            new BaseFlowingFluid.Source(ModFluids.STEAM_PROPERTIES));
-//
-//    public static final Supplier<FlowingFluid> STEAM_FLOWING = FLUIDS.register("steam_flowing", () ->
-//            new BaseFlowingFluid.Flowing(ModFluids.STEAM_PROPERTIES));
-
-//    public static final BaseFlowingFluid.Properties STEAM_PROPERTIES = new BaseFlowingFluid.Properties(
-//            STEAM_TYPE,
-//            STEAM_SOURCE,
-//            STEAM_FLOWING
-//    ).bucket(ModItems.STEAM_BUCKET);
-
     public static void register(IEventBus eventBus) {
         FLUID_TYPES.register(eventBus);
         FLUIDS.register(eventBus);

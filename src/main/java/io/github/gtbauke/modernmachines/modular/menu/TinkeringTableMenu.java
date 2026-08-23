@@ -91,7 +91,9 @@ public class TinkeringTableMenu extends BaseContainerMenu {
                 int tab = getActiveTab();
                 if (tab == 0) {
                     for (int i = 0; i < 4; i++) {
-                        inputContainer.removeItem(i, 1);
+                        if (!inputContainer.getItem(i).isEmpty()) {
+                            inputContainer.removeItem(i, 1);
+                        }
                     }
                 } else if (tab == 1) {
                     inputContainer.removeItem(0, 1);
@@ -138,21 +140,19 @@ public class TinkeringTableMenu extends BaseContainerMenu {
         ItemStack bindingStack = inputContainer.getItem(2);
         ItemStack attachStack = inputContainer.getItem(3);
 
-        if (headStack.isEmpty() || handleStack.isEmpty() || bindingStack.isEmpty()) {
+        if (headStack.isEmpty() || handleStack.isEmpty()) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
         if (!(headStack.getItem() instanceof ToolPartItem headPart) ||
-            !(handleStack.getItem() instanceof ToolPartItem handlePart) ||
-            !(bindingStack.getItem() instanceof ToolPartItem bindingPart)) {
+            !(handleStack.getItem() instanceof ToolPartItem handlePart)) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
         if (headPart.getPartType().getSlot() != PartSlot.HEAD ||
-            handlePart.getPartType().getSlot() != PartSlot.HANDLE ||
-            bindingPart.getPartType().getSlot() != PartSlot.BINDING) {
+            handlePart.getPartType().getSlot() != PartSlot.HANDLE) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
@@ -163,11 +163,27 @@ public class TinkeringTableMenu extends BaseContainerMenu {
             return;
         }
 
+        boolean requiresBinding = (headPart.getPartType() == ToolPartType.PICKAXE_HEAD ||
+                                    headPart.getPartType() == ToolPartType.AXE_HEAD ||
+                                    headPart.getPartType() == ToolPartType.SWORD_BLADE);
+
+        if (requiresBinding && bindingStack.isEmpty()) {
+            resultContainer.setItem(0, ItemStack.EMPTY);
+            return;
+        }
+
+        if (!bindingStack.isEmpty()) {
+            if (!(bindingStack.getItem() instanceof ToolPartItem bindingPart) ||
+                bindingPart.getPartType().getSlot() != PartSlot.BINDING) {
+                resultContainer.setItem(0, ItemStack.EMPTY);
+                return;
+            }
+        }
+
         Identifier headId = ToolPartItem.getMaterialId(headStack);
         Identifier handleId = ToolPartItem.getMaterialId(handleStack);
-        Identifier bindingId = ToolPartItem.getMaterialId(bindingStack);
 
-        if (headId == null || handleId == null || bindingId == null) {
+        if (headId == null || handleId == null) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
@@ -175,7 +191,13 @@ public class TinkeringTableMenu extends BaseContainerMenu {
         Map<PartSlot, Identifier> parts = new EnumMap<>(PartSlot.class);
         parts.put(PartSlot.HEAD, headId);
         parts.put(PartSlot.HANDLE, handleId);
-        parts.put(PartSlot.BINDING, bindingId);
+
+        if (!bindingStack.isEmpty()) {
+            Identifier bindingId = ToolPartItem.getMaterialId(bindingStack);
+            if (bindingId != null) {
+                parts.put(PartSlot.BINDING, bindingId);
+            }
+        }
 
         if (!attachStack.isEmpty() && attachStack.getItem() instanceof ToolPartItem attachPart) {
             Identifier attachId = ToolPartItem.getMaterialId(attachStack);
@@ -345,7 +367,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
                 // 1. Try to place into workstation inputs (0..4)
                 if (!this.moveItemStackTo(stackInSlot, 0, 4, false)) {
                     // 2. Transfer between main inventory and hotbar
-                    if (!moveBetweenInventoryAndHotbar(stackInSlot, index)) {
+                    if (moveBetweenInventoryAndHotbar(stackInSlot, index)) {
                         return ItemStack.EMPTY;
                     }
                 }

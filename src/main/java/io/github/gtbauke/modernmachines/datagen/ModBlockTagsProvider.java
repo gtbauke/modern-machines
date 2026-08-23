@@ -45,8 +45,10 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
             for (ResourceForm form : material.supportedForms()) {
                 if (form.isBlock()) {
                     Block block = material.getBlock(form);
+
                     if (block != null) {
                         ResourceKey<Block> blockKey = BuiltInRegistries.BLOCK.getResourceKey(block).orElse(null);
+
                         if (blockKey != null) {
                             if (material.isRegisteredLocally(form)) {
                                 tag(BlockTags.MINEABLE_WITH_PICKAXE).add(blockKey);
@@ -68,6 +70,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
                                 case END_STONE_ORE -> TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores_in_ground/end_stone"));
                                 default -> null;
                             };
+
                             if (inGroundTag != null) {
                                 tag(inGroundTag).add(blockKey);
                             }

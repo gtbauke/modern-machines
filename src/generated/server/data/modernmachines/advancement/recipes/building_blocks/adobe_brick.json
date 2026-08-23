@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_redstone": {
+    "has_adobe_bricks": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:redstone"
+            "items": "modernmachines:adobe_bricks"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "modernmachines:engineers_tablet"
+        "recipe": "modernmachines:adobe_brick"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_redstone"
+      "has_adobe_bricks"
     ]
   ],
   "rewards": {
     "recipes": [
-      "modernmachines:engineers_tablet"
+      "modernmachines:adobe_brick"
     ]
   }
 }
