@@ -33,6 +33,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.ADOBE_BRICKS);
                         output.accept(ModItems.ADOBE_MIXTURE);
                         output.accept(ModBlocks.ADOBE_BRICK);
+                        output.accept(ModBlocks.COPPER_PIPE.get());
 //                        output.accept(ModBlocks.BRONZE_CASING.get());
 //                        output.accept(ModBlocks.SOLID_FUEL_BOILER.get());
 //                        output.accept(ModBlocks.STEAM_TURBINE.get());

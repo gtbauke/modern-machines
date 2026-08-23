@@ -98,6 +98,15 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_furnace", has(Items.FURNACE))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "basic_alloy_smelter_heater")));
 
+        // Copper Pipe (6 Copper Ingots -> 6 Pipes)
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.BUILDING_BLOCKS, ModBlocks.COPPER_PIPE.get(), 6)
+                .pattern("CCC")
+                .pattern("   ")
+                .pattern("CCC")
+                .define('C', Items.COPPER_INGOT)
+                .unlockedBy("has_copper", has(Items.COPPER_INGOT))
+                .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "copper_pipe")));
+
         // Upgrades: Speed Upgrade
         ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModItems.SPEED_UPGRADE.get())
                 .pattern("PRP")

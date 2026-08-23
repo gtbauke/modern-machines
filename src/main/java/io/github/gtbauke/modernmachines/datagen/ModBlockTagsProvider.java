@@ -36,7 +36,8 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
                 BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get()).orElseThrow(),
                 BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get()).orElseThrow(),
-                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.ENGINEERS_TERMINAL.get()).orElseThrow()
+                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.ENGINEERS_TERMINAL.get()).orElseThrow(),
+                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.COPPER_PIPE.get()).orElseThrow()
         );
 
         for (Material material : ModMaterials.getAllMaterials()) {

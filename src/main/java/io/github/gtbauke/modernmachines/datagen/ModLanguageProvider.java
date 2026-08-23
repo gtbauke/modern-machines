@@ -25,6 +25,7 @@ public class ModLanguageProvider extends LanguageProvider {
         add("itemGroup.modernmachines.fluids", "Modern Machines: Fluids");
 
         addBlock(ModBlocks.ADOBE_BRICK, "Adobe Brick");
+        addBlock(ModBlocks.COPPER_PIPE, "Copper Pipe");
         addItem(ModItems.ADOBE_BRICKS, "Adobe Bricks");
         addItem(ModItems.ADOBE_MIXTURE, "Adobe Mixture");
 

@@ -34,6 +34,7 @@ public class ModItems {
 
     // Steam Era Block Items
     public static final DeferredItem<BlockItem> ADOBE_BRICK_BLOCK = ITEMS.registerSimpleBlockItem(ModBlocks.ADOBE_BRICK);
+    public static final DeferredItem<BlockItem> COPPER_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.COPPER_PIPE);
 //    public static final DeferredItem<BlockItem> BRONZE_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.BRONZE_CASING);
 //    public static final DeferredItem<BlockItem> SOLID_FUEL_BOILER = ITEMS.registerSimpleBlockItem(ModBlocks.SOLID_FUEL_BOILER);
 //    public static final DeferredItem<BlockItem> STEAM_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_TURBINE);
