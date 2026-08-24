@@ -1,7 +1,6 @@
 package io.github.gtbauke.modernmachines.modular.menu;
 
 import java.util.EnumMap;
-import java.util.Map;
 
 import io.github.gtbauke.modernmachines.ModernMachines;
 import io.github.gtbauke.modernmachines.api.modular.ModularToolData;
@@ -27,13 +26,76 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.NonNull;
 
 public class TinkeringTableMenu extends BaseContainerMenu {
+    private static class TinkeringTableSlot extends Slot {
+        private final TinkeringTableMenu menu;
+        private final Container inputContainer;
+
+        public TinkeringTableSlot(Container container, int slot, int x, int y, TinkeringTableMenu menu) {
+            super(container, slot, x, y);
+
+            this.menu = menu;
+            this.inputContainer = container;
+        }
+
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            this.menu.slotsChanged(inputContainer);
+        }
+    }
+
+    private static class TinkeringTableResultSlot extends Slot {
+        private final TinkeringTableMenu menu;
+        private final Container inputContainer;
+
+        public TinkeringTableResultSlot(Container container, int slot, int x, int y, TinkeringTableMenu menu) {
+            super(container, slot, x, y);
+            this.menu = menu;
+            this.inputContainer = container;
+        }
+
+        @Override
+        public boolean mayPlace(@NonNull ItemStack stack) {
+            return false;
+        }
+
+        @Override
+        public void onTake(@NonNull Player player, @NonNull ItemStack stack) {
+            int tab = this.menu.getActiveTab();
+            if (tab == 0) {
+                for (int i = 0; i < 4; i++) {
+                    if (!inputContainer.getItem(i).isEmpty()) {
+                        inputContainer.removeItem(i, 1);
+                    }
+                }
+            } else if (tab == 1) {
+                inputContainer.removeItem(0, 1);
+                inputContainer.removeItem(1, 1);
+                inputContainer.removeItem(2, 1);
+            } else if (tab == 2) {
+                inputContainer.removeItem(0, 1);
+                inputContainer.removeItem(1, 1);
+            }
+
+            super.onTake(player, stack);
+            this.menu.slotsChanged(inputContainer);
+        }
+    }
+
     private final ContainerLevelAccess access;
     private final ContainerData data;
 
     private final Container inputContainer = new SimpleContainer(4);
     private final Container resultContainer = new SimpleContainer(1);
+
+    private static final int HEAD_SLOT = 0;
+    private static final int HANDLE_SLOT = 1;
+    private static final int BINDING_SLOT = 2;
+    private static final int ATTACHMENT_SLOT = 3;
+    private static final int RESULT_SLOT = 4;
 
     public TinkeringTableMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, ContainerLevelAccess.NULL, new SimpleContainerData(1));
@@ -49,65 +111,25 @@ public class TinkeringTableMenu extends BaseContainerMenu {
         this.data = data;
         this.addDataSlots(data);
 
-        // Assembly slots: 0=Head (x=48, y=20), 1=Handle (x=48, y=48), 2=Binding (x=26, y=34), 3=Attachment (x=70, y=34)
-        this.addSlot(new Slot(inputContainer, 0, 48, 20) {
-            @Override
-            public void setChanged() {
-                super.setChanged();
-                TinkeringTableMenu.this.slotsChanged(inputContainer);
-            }
-        });
-        this.addSlot(new Slot(inputContainer, 1, 48, 48) {
-            @Override
-            public void setChanged() {
-                super.setChanged();
-                TinkeringTableMenu.this.slotsChanged(inputContainer);
-            }
-        });
-        this.addSlot(new Slot(inputContainer, 2, 26, 34) {
-            @Override
-            public void setChanged() {
-                super.setChanged();
-                TinkeringTableMenu.this.slotsChanged(inputContainer);
-            }
-        });
-        this.addSlot(new Slot(inputContainer, 3, 70, 34) {
-            @Override
-            public void setChanged() {
-                super.setChanged();
-                TinkeringTableMenu.this.slotsChanged(inputContainer);
-            }
-        });
+        for (var i = 0; i <= ATTACHMENT_SLOT; ++i) {
+            this.addSlot(new TinkeringTableSlot(
+                    inputContainer,
+                    i,
+                    48,
+                    20 + (i * 28),
+                    this
+            ));
+        }
 
-        // Output Slot 4: (x=134, y=34)
-        this.addSlot(new Slot(resultContainer, 0, 134, 34) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return false;
-            }
-
-            @Override
-            public void onTake(Player player, ItemStack stack) {
-                int tab = getActiveTab();
-                if (tab == 0) {
-                    for (int i = 0; i < 4; i++) {
-                        if (!inputContainer.getItem(i).isEmpty()) {
-                            inputContainer.removeItem(i, 1);
-                        }
-                    }
-                } else if (tab == 1) {
-                    inputContainer.removeItem(0, 1);
-                    inputContainer.removeItem(1, 1);
-                    inputContainer.removeItem(2, 1);
-                } else if (tab == 2) {
-                    inputContainer.removeItem(0, 1);
-                    inputContainer.removeItem(1, 1);
-                }
-
-                super.onTake(player, stack);
-                TinkeringTableMenu.this.slotsChanged(inputContainer);
-            }
-        });
+        this.addSlot(
+            new TinkeringTableResultSlot(
+                resultContainer,
+                RESULT_SLOT,
+                134,
+                34,
+                this
+            )
+        );
 
         addStandardPlayerInventory(playerInventory);
     }
@@ -122,7 +144,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     }
 
     @Override
-    public void slotsChanged(Container container) {
+    public void slotsChanged(@NonNull Container container) {
         int tab = getActiveTab();
         if (tab == 0) {
             updateAssemblyResult();
@@ -331,7 +353,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    public boolean clickMenuButton(@NonNull Player player, int id) {
         if (id >= 0 && id <= 2) {
             setActiveTab(id);
             return true;
@@ -341,15 +363,15 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NonNull Player player) {
         return isStillValid(this.access, player, ModBlocks.TINKERING_TABLE.get());
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
+    public @NonNull ItemStack quickMoveStack(@NonNull Player player, int index) {
         var itemstack = ItemStack.EMPTY;
         var slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             var stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
@@ -388,7 +410,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     }
 
     @Override
-    public void removed(Player player) {
+    public void removed(@NonNull Player player) {
         super.removed(player);
         this.access.execute((level, pos) -> this.clearContainer(player, this.inputContainer));
     }
