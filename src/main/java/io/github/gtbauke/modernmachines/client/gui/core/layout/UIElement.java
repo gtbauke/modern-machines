@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class UIElement {
     protected Bounds bounds;
@@ -20,6 +21,9 @@ public class UIElement {
     protected int flowWeight = 0;
     protected boolean fillParentWidth = false;
     protected boolean fillParentHeight = false;
+
+    protected boolean visible = true;
+    protected Supplier<Boolean> visibleSupplier = null;
 
     protected boolean dirty = true;
 
@@ -83,9 +87,11 @@ public class UIElement {
         return padding;
     }
 
-    public void setPadding(Padding padding) {
+    public UIElement setPadding(Padding padding) {
         this.padding = padding != null ? padding : new Padding(0);
         markDirty();
+
+        return this;
     }
 
     public int getBackgroundColor() {
@@ -143,7 +149,53 @@ public class UIElement {
     public UIElement setFillParentHeight(boolean fillParentHeight) {
         this.fillParentHeight = fillParentHeight;
         markDirty();
+
         return this;
+    }
+
+    public boolean isVisible() {
+        if (visibleSupplier != null) {
+            return visibleSupplier.get();
+        }
+
+        return visible;
+    }
+
+    public boolean isEffectivelyVisible() {
+        UIElement current = this;
+        while (current != null) {
+            if (!current.isVisible()) {
+                return false;
+            }
+
+            current = current.getParent();
+        }
+
+        return true;
+    }
+
+    public UIElement setVisible(boolean visible) {
+        if (this.visible != visible) {
+            this.visible = visible;
+            markDirty();
+        }
+
+        return this;
+    }
+
+    public UIElement setVisible(Supplier<Boolean> visibleSupplier) {
+        this.visibleSupplier = visibleSupplier;
+        markDirty();
+
+        return this;
+    }
+
+    public UIElement withVisibility(Supplier<Boolean> visibleSupplier) {
+        return setVisible(visibleSupplier);
+    }
+
+    public UIElement withVisibility(boolean visible) {
+        return setVisible(visible);
     }
 
     public UIElement getParent() {
@@ -239,6 +291,10 @@ public class UIElement {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!isVisible()) {
+            return false;
+        }
+
         for (var child : children) {
             if (child.mouseClicked(mouseX, mouseY, button)) {
                 return true;
@@ -249,6 +305,10 @@ public class UIElement {
     }
 
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (!isVisible()) {
+            return false;
+        }
+
         for (var child : children) {
             if (child.mouseReleased(mouseX, mouseY, button)) {
                 return true;
@@ -259,6 +319,10 @@ public class UIElement {
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
+        if (!isVisible()) {
+            return false;
+        }
+
         for (var child : children) {
             if (child.mouseDragged(mouseX, mouseY, button, dx, dy)) {
                 return true;
@@ -269,6 +333,10 @@ public class UIElement {
     }
 
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!isVisible()) {
+            return false;
+        }
+
         for (var child : children) {
             if (child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
                 return true;
@@ -310,12 +378,17 @@ public class UIElement {
      * @param partialTick Render partial tick
      */
     public void render(GuiGraphicsExtractor graphics, Position parentOrigin, int mouseX, int mouseY, float partialTick) {
+        if (!isVisible()) {
+            return;
+        }
+
         Position absPos = parentOrigin.offset(this.bounds.position());
         Bounds absBounds = new Bounds(absPos, this.bounds.size());
 
         if ((backgroundColor >>> 24) != 0) {
             GUIRenderHelper.drawRect(graphics, absBounds, backgroundColor);
         }
+
         if ((borderColor >>> 24) != 0) {
             GUIRenderHelper.drawRectOutline(graphics, absBounds, borderColor);
         }

@@ -7,6 +7,8 @@ import io.github.gtbauke.modernmachines.client.gui.core.layout.JustifyContent;
 import io.github.gtbauke.modernmachines.client.gui.core.layout.Padding;
 import io.github.gtbauke.modernmachines.client.gui.core.layout.UIElement;
 
+import java.util.stream.Stream;
+
 public class Row extends FlexContainer {
     public Row(int gap, AlignItems alignItems, JustifyContent justifyContent, Bounds bounds, Padding padding) {
         super(FlexDirection.ROW, gap, alignItems, justifyContent, bounds, padding);
@@ -67,5 +69,15 @@ public class Row extends FlexContainer {
 
     public static Row of(int gap, JustifyContent justifyContent, UIElement... children) {
         return of(gap, AlignItems.START, justifyContent, children);
+    }
+
+    public static Row of(int gap, Stream<UIElement> childrenStream) {
+        Row row = new Row(gap);
+
+        if (childrenStream != null) {
+            childrenStream.forEach(row::addChild);
+        }
+
+        return row;
     }
 }

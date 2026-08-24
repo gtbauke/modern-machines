@@ -1,16 +1,8 @@
 package io.github.gtbauke.modernmachines.modular.client;
 
-import io.github.gtbauke.modernmachines.client.gui.core.element.Column;
-import io.github.gtbauke.modernmachines.client.gui.core.element.PlayerInventoryElement;
-import io.github.gtbauke.modernmachines.client.gui.core.element.ProgressBarElement;
-import io.github.gtbauke.modernmachines.client.gui.core.element.Row;
-import io.github.gtbauke.modernmachines.client.gui.core.element.SideTabElement;
-import io.github.gtbauke.modernmachines.client.gui.core.element.SlotElement;
-import io.github.gtbauke.modernmachines.client.gui.core.element.Spacer;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.AlignItems;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.Position;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.Size;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.UIElement;
+import io.github.gtbauke.modernmachines.client.gui.core.element.*;
+import io.github.gtbauke.modernmachines.client.gui.core.layout.*;
+import io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper;
 import io.github.gtbauke.modernmachines.client.gui.screen.ModularContainerScreen;
 import io.github.gtbauke.modernmachines.core.registry.ModItems;
 import io.github.gtbauke.modernmachines.modular.menu.TinkeringTableMenu;
@@ -20,13 +12,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableMenu> {
-
     private UIElement currentContent;
     private final List<SideTabElement> modeTabs = new ArrayList<>();
     private TinkeringStatsWindow statsWindow;
+
+    private final TinkeringTableMenu.ActiveTool[] TOOL_TABS = TinkeringTableMenu.ActiveTool.values();
+    private final int SCREEN_WIDTH = 176;
+    private final int SCREEN_HEIGHT = 204;
 
     public TinkeringTableScreen(TinkeringTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -42,19 +38,46 @@ public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableM
         UIElement craftingSection;
 
         if (activeTab == 0) {
-            var headSlot = new SlotElement(this.menu.slots.get(0));
-            var handleSlot = new SlotElement(this.menu.slots.get(1));
-            var bindingSlot = new SlotElement(this.menu.slots.get(2));
-            var attachSlot = new SlotElement(this.menu.slots.get(3));
-            var resultSlot = new SlotElement(this.menu.slots.get(4));
+            var headSlot = new SlotElement(this.menu.slots.get(0)).withGhostIcon(() -> this.menu.getActiveTool().getHeadPattern());
+            var handleSlot = new SlotElement(this.menu.slots.get(1)).withGhostIcon(ModItems.HANDLE_PATTERN.get());
+            var bindingSlot = new SlotElement(this.menu.slots.get(2))
+                    .withGhostIcon(() -> this.menu.getActiveTool().getBindingPattern())
+                    .withVisibility(() -> this.menu.getActiveTool().requiresBinding());
+            var attachSlot = new SlotElement(this.menu.slots.get(3))
+                    .withGhostIcon(() -> this.menu.getActiveTool().getAttachmentPattern())
+                    .withVisibility(() -> this.menu.getActiveTool().acceptsAttachment());
+            var resultSlot = new SlotElement(this.menu.slots.get(4)).withGhostIcon(() -> this.menu.getActiveTool().getItem());
 
-            var middleRow = Row.of(2, AlignItems.CENTER, bindingSlot, attachSlot);
-            var diamondGrid = Column.of(2, AlignItems.CENTER, headSlot, middleRow, handleSlot);
+            var toolButtons = Arrays.stream(TOOL_TABS).map(
+                    tool -> (UIElement) new ButtonElement(new Size(16, 16),
+                            () -> null,
+                            () -> this.menu.getActiveTool() == tool,
+                            () -> {
+                                this.menu.setActiveTool(tool);
+                                this.windowManager.calculateSize();
+                                this.windowManager.calculateLayout();
+                            },
+                            () -> new IconElement(tool.getIcon())
+                    )
+            ).toArray(UIElement[]::new);
 
-            craftingSection = Row.of(12, AlignItems.CENTER,
-                    diamondGrid,
-                    ProgressBarElement.arrow(() -> 1.0),
-                    resultSlot
+            var toolSelectionRow = Row.of(4, toolButtons)
+                    .setAlignItems(AlignItems.CENTER)
+                    .setJustifyContent(JustifyContent.CENTER)
+                    .setPadding(new Padding(4));
+
+            var middleRow = Row.of(4, AlignItems.CENTER, bindingSlot, attachSlot)
+                    .withVisibility(() -> this.menu.getActiveTool().requiresBinding() || this.menu.getActiveTool().acceptsAttachment());
+
+            var toolCraftingGrid = Column.of(4, AlignItems.CENTER, headSlot, middleRow, handleSlot);
+
+            craftingSection = Column.of(
+                    toolSelectionRow,
+                    Row.of(12, AlignItems.CENTER,
+                            toolCraftingGrid,
+                            ProgressBarElement.arrow(() -> 1.0),
+                            resultSlot
+                    )
             );
         } else if (activeTab == 1) {
             var toolSlot = new SlotElement(this.menu.slots.get(0));
@@ -90,8 +113,8 @@ public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableM
                 new PlayerInventoryElement(this.menu, this.menu.getPlayerInventoryStart())
         );
 
-        root.setSize(new Size(this.imageWidth, this.imageHeight));
-        root.setBackground(io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper.ORE_BG_PRIMARY, io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper.ORE_BORDER_DARK);
+        root.setSize(new Size(SCREEN_WIDTH, SCREEN_HEIGHT));
+        root.setBackground(GUIRenderHelper.ORE_BG_PRIMARY, GUIRenderHelper.ORE_BORDER_DARK);
 
         this.currentContent = root;
         return root;
@@ -164,6 +187,8 @@ public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableM
             this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, newTab);
         }
         this.menu.setActiveTab(newTab);
+
+        hideAllSlots();
 
         if (this.currentContent != null) {
             this.mainWindow.removeChild(this.currentContent);

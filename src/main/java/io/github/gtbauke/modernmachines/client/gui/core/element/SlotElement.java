@@ -13,6 +13,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Supplier;
 
 public class SlotElement extends UIElement {
     public static final int SLOT_SIZE = 18;
@@ -27,8 +31,8 @@ public class SlotElement extends UIElement {
     private int slotIndex = -1;
     private boolean drawInsetWell = true;
     private SlotStyle slotStyle = SlotStyle.ORE_UI;
-    private int ghostIconU = -1;
-    private int ghostIconV = -1;
+    private IconElement icon = null;
+    private Supplier<Item> ghostIconSupplier = null;
 
     public SlotElement(Bounds bounds, Slot slot) {
         super(bounds);
@@ -85,18 +89,41 @@ public class SlotElement extends UIElement {
         return this;
     }
 
-    public SlotElement withGhostIcon(int u, int v) {
-        this.ghostIconU = u;
-        this.ghostIconV = v;
+    public SlotElement withGhostIcon(Supplier<Item> iconSupplier) {
+        this.ghostIconSupplier = iconSupplier;
+        this.icon = new IconElement(ItemStack.EMPTY).setColorMode(IconElement.ColorMode.GRAYSCALE).setOpacity(0.4f);
         return this;
     }
 
-    public int getGhostIconU() {
-        return ghostIconU;
+    public SlotElement withGhostIcon(Item icon) {
+        return withGhostIcon(() -> icon);
     }
 
-    public int getGhostIconV() {
-        return ghostIconV;
+    @Override
+    public SlotElement setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (!visible) {
+            setSlotCoords(-9999, -9999);
+        }
+
+        return this;
+    }
+
+    @Override
+    public SlotElement setVisible(Supplier<Boolean> visibleSupplier) {
+        super.setVisible(visibleSupplier);
+
+        return this;
+    }
+
+    @Override
+    public SlotElement withVisibility(Supplier<Boolean> visibleSupplier) {
+        return setVisible(visibleSupplier);
+    }
+
+    @Override
+    public SlotElement withVisibility(boolean visible) {
+        return setVisible(visible);
     }
 
     @Override
@@ -110,6 +137,11 @@ public class SlotElement extends UIElement {
      */
     public void syncSlotPosition() {
         if (this.slot == null) {
+            return;
+        }
+
+        if (!isEffectivelyVisible()) {
+            setSlotCoords(-9999, -9999);
             return;
         }
 
@@ -142,6 +174,11 @@ public class SlotElement extends UIElement {
             return;
         }
 
+        if (!isEffectivelyVisible()) {
+            setSlotCoords(-9999, -9999);
+            return;
+        }
+
         var win = findAncestorWindow();
         if (win != null && !win.isVisible()) {
             setSlotCoords(-9999, -9999);
@@ -164,19 +201,6 @@ public class SlotElement extends UIElement {
         }
     }
 
-    public Position getAbsolutePosition() {
-        int x = this.bounds.position().x();
-        int y = this.bounds.position().y();
-        var current = this.parent;
-        while (current != null) {
-            x += current.getPosition().x() + current.getPadding().left();
-            y += current.getPosition().y() + current.getPadding().top();
-            current = current.getParent();
-        }
-
-        return new Position(x, y);
-    }
-
     public Window findAncestorWindow() {
         var current = this.parent;
         while (current != null) {
@@ -188,6 +212,17 @@ public class SlotElement extends UIElement {
         }
 
         return null;
+    }
+
+    @Override
+    public void render(GuiGraphicsExtractor graphics, Position parentOrigin, int mouseX, int mouseY, float partialTick) {
+        if (!isEffectivelyVisible()) {
+            setSlotCoords(-9999, -9999);
+            return;
+        }
+
+        syncSlotPosition();
+        super.render(graphics, parentOrigin, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -207,19 +242,19 @@ public class SlotElement extends UIElement {
             }
         }
 
-        if (ghostIconU >= 0 && ghostIconV >= 0 && (slot == null || !slot.hasItem())) {
-            graphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                NineSliceRenderer.GUI_ATLAS,
-                absoluteBounds.position().x() + 1,
-                absoluteBounds.position().y() + 1,
-                (float) ghostIconU,
-                (float) ghostIconV,
-                16,
-                16,
-                256,
-                256
-            );
+        if (slot == null || !slot.hasItem()) {
+            if (ghostIconSupplier != null) {
+                var item = ghostIconSupplier.get();
+                if (icon == null) {
+                    icon = new IconElement(item).setColorMode(IconElement.ColorMode.GRAYSCALE).setOpacity(0.4f);
+                } else {
+                    icon.setItem(item);
+                }
+            }
+
+            if (icon != null && !icon.getItemStack().isEmpty()) {
+                icon.renderSelf(graphics, absoluteBounds, mouseX, mouseY, partialTick);
+            }
         }
     }
 }

@@ -16,19 +16,29 @@ import java.util.function.Supplier;
 public class ButtonElement extends UIElement {
     private final Supplier<Component> labelSupplier;
     private final Supplier<Boolean> activeSupplier;
+    private final Supplier<UIElement> contentSupplier;
     private final Runnable onClick;
     private boolean primaryGreen = false;
     private Component tooltip;
 
+    public ButtonElement(Size size, Supplier<Component> labelSupplier, Supplier<Boolean> activeSupplier, Runnable onClick, Supplier<UIElement> contentSupplier) {
+        super(new Bounds(Position.ZERO, size));
+        this.labelSupplier = labelSupplier != null ? labelSupplier : Component::empty;
+        this.activeSupplier = activeSupplier != null ? activeSupplier : () -> false;
+        this.contentSupplier = contentSupplier != null ? contentSupplier : () -> null;
+        this.onClick = onClick;
+    }
+
     public ButtonElement(Size size, Supplier<Component> labelSupplier, Supplier<Boolean> activeSupplier, Runnable onClick) {
         super(new Bounds(Position.ZERO, size));
-        this.labelSupplier = labelSupplier != null ? labelSupplier : () -> Component.empty();
+        this.labelSupplier = labelSupplier != null ? labelSupplier : Component::empty;
         this.activeSupplier = activeSupplier != null ? activeSupplier : () -> false;
+        this.contentSupplier = () -> null;
         this.onClick = onClick;
     }
 
     public ButtonElement(int width, int height, Component label, Runnable onClick) {
-        this(new Size(width, height), () -> label, () -> false, onClick);
+        this(new Size(width, height), () -> label, () -> false, onClick, () -> null);
     }
 
     public ButtonElement withTooltip(Component tooltip) {
@@ -68,11 +78,19 @@ public class ButtonElement extends UIElement {
 
         var font = Minecraft.getInstance().font;
         var label = labelSupplier.get();
+        var content = contentSupplier.get();
+
         int centerX = absoluteBounds.position().x() + absoluteBounds.size().width() / 2;
         int centerY = absoluteBounds.position().y() + (absoluteBounds.size().height() - 8) / 2;
 
-        int textColor = (primaryGreen || active) ? GUIRenderHelper.ORE_TEXT_TITLE : (hovered ? GUIRenderHelper.ORE_TEXT_TITLE : GUIRenderHelper.ORE_TEXT_MUTED);
-        GUIRenderHelper.drawCenteredString(graphics, font, label, new Position(centerX, centerY), textColor, true);
+        if (label != null) {
+            int textColor = (primaryGreen || active) ? GUIRenderHelper.ORE_TEXT_TITLE : (hovered ? GUIRenderHelper.ORE_TEXT_TITLE : GUIRenderHelper.ORE_TEXT_MUTED);
+            GUIRenderHelper.drawCenteredString(graphics, font, label, new Position(centerX, centerY), textColor, true);
+        }
+
+        if (content != null) {
+            content.render(graphics, absoluteBounds.position(), mouseX, mouseY, partialTick);
+        }
 
         if (tooltip != null && hovered) {
             GUIRenderHelper.drawTooltip(graphics, font, List.of(tooltip), new Position(mouseX, mouseY));

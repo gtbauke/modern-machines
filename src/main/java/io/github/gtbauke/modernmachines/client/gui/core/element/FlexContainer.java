@@ -108,6 +108,12 @@ public class FlexContainer extends UIElement {
     }
 
     @Override
+    public FlexContainer setPadding(Padding padding) {
+        super.setPadding(padding);
+        return this;
+    }
+
+    @Override
     public void calculateSize() {
         super.calculateSize();
 
@@ -115,18 +121,23 @@ public class FlexContainer extends UIElement {
             return;
         }
 
-        int count = children.size();
         if (direction == FlexDirection.ROW) {
             int totalW = 0;
             int maxH = 0;
+            int visibleCount = 0;
 
             for (UIElement child : children) {
+                if (!child.isVisible()) {
+                    continue;
+                }
+
                 totalW += child.getSize().width();
                 maxH = Math.max(maxH, child.getSize().height());
+                visibleCount++;
             }
 
-            if (count > 1) {
-                totalW += (count - 1) * gap;
+            if (visibleCount > 1) {
+                totalW += (visibleCount - 1) * gap;
             }
 
             int fullW = totalW + padding.left() + padding.right();
@@ -135,14 +146,20 @@ public class FlexContainer extends UIElement {
         } else {
             int maxW = 0;
             int totalH = 0;
+            int visibleCount = 0;
 
             for (UIElement child : children) {
+                if (!child.isVisible()) {
+                    continue;
+                }
+
                 maxW = Math.max(maxW, child.getSize().width());
                 totalH += child.getSize().height();
+                visibleCount++;
             }
 
-            if (count > 1) {
-                totalH += (count - 1) * gap;
+            if (visibleCount > 1) {
+                totalH += (visibleCount - 1) * gap;
             }
 
             int fullW = maxW + padding.left() + padding.right();
@@ -155,13 +172,19 @@ public class FlexContainer extends UIElement {
     public void calculateLayout() {
         int contentW = Math.max(0, this.bounds.size().width() - (padding.left() + padding.right()));
         int contentH = Math.max(0, this.bounds.size().height() - (padding.top() + padding.bottom()));
-        int count = children.size();
 
         if (direction == FlexDirection.ROW) {
             int totalFlow = 0;
             int fixedW = 0;
+            int visibleCount = 0;
 
             for (var child : children) {
+                if (!child.isVisible()) {
+                    child.setPosition(new Position(-9999, -9999));
+                    continue;
+                }
+
+                visibleCount++;
                 if (child.isFillParentHeight()) {
                     child.setSize(new Size(child.getSize().width(), contentH));
                 }
@@ -175,11 +198,15 @@ public class FlexContainer extends UIElement {
                 }
             }
 
-            int gaps = count > 1 ? (count - 1) * gap : 0;
+            int gaps = visibleCount > 1 ? (visibleCount - 1) * gap : 0;
             int availableW = Math.max(0, contentW - fixedW - gaps);
 
             int usedW = 0;
             for (var child : children) {
+                if (!child.isVisible()) {
+                    continue;
+                }
+
                 int flow = child.getFlowWeight() > 0 ? child.getFlowWeight() : (child.isFillParentWidth() ? 1 : 0);
                 if (flow > 0 && totalFlow > 0) {
                     int proportionalW = (int) Math.round(((double) flow / totalFlow) * availableW);
@@ -189,8 +216,8 @@ public class FlexContainer extends UIElement {
                 usedW += child.getSize().width();
             }
 
-            if (count > 1) {
-                usedW += (count - 1) * gap;
+            if (visibleCount > 1) {
+                usedW += (visibleCount - 1) * gap;
             }
 
             int remainingW = Math.max(0, contentW - usedW);
@@ -202,18 +229,22 @@ public class FlexContainer extends UIElement {
             } else if (justifyContent == JustifyContent.END) {
                 cursorX = remainingW;
             } else if (justifyContent == JustifyContent.SPACE_BETWEEN) {
-                extraGap = count > 1 ? remainingW / (count - 1) : 0;
+                extraGap = visibleCount > 1 ? remainingW / (visibleCount - 1) : 0;
             } else if (justifyContent == JustifyContent.SPACE_AROUND) {
-                int unit = count > 0 ? remainingW / (count * 2) : 0;
+                int unit = visibleCount > 0 ? remainingW / (visibleCount * 2) : 0;
                 cursorX = unit;
                 extraGap = unit * 2;
             } else if (justifyContent == JustifyContent.SPACE_EVENLY) {
-                int unit = count > 0 ? remainingW / (count + 1) : 0;
+                int unit = visibleCount > 0 ? remainingW / (visibleCount + 1) : 0;
                 cursorX = unit;
                 extraGap = unit;
             }
 
             for (var child : children) {
+                if (!child.isVisible()) {
+                    continue;
+                }
+
                 int childH = child.getSize().height();
                 int childY = 0;
 
@@ -229,8 +260,15 @@ public class FlexContainer extends UIElement {
         } else {
             int totalFlow = 0;
             int fixedH = 0;
+            int visibleCount = 0;
 
             for (var child : children) {
+                if (!child.isVisible()) {
+                    child.setPosition(new Position(-9999, -9999));
+                    continue;
+                }
+
+                visibleCount++;
                 if (child.isFillParentWidth()) {
                     child.setSize(new Size(contentW, child.getSize().height()));
                 }
@@ -244,11 +282,15 @@ public class FlexContainer extends UIElement {
                 }
             }
 
-            int gaps = count > 1 ? (count - 1) * gap : 0;
+            int gaps = visibleCount > 1 ? (visibleCount - 1) * gap : 0;
             int availableH = Math.max(0, contentH - fixedH - gaps);
 
             int usedH = 0;
             for (var child : children) {
+                if (!child.isVisible()) {
+                    continue;
+                }
+
                 int flow = child.getFlowWeight() > 0 ? child.getFlowWeight() : (child.isFillParentHeight() ? 1 : 0);
                 if (flow > 0 && totalFlow > 0) {
                     int proportionalH = (int) Math.round(((double) flow / totalFlow) * availableH);
@@ -258,8 +300,8 @@ public class FlexContainer extends UIElement {
                 usedH += child.getSize().height();
             }
 
-            if (count > 1) {
-                usedH += (count - 1) * gap;
+            if (visibleCount > 1) {
+                usedH += (visibleCount - 1) * gap;
             }
 
             int remainingH = Math.max(0, contentH - usedH);
@@ -271,18 +313,22 @@ public class FlexContainer extends UIElement {
             } else if (justifyContent == JustifyContent.END) {
                 cursorY = remainingH;
             } else if (justifyContent == JustifyContent.SPACE_BETWEEN) {
-                extraGap = count > 1 ? remainingH / (count - 1) : 0;
+                extraGap = visibleCount > 1 ? remainingH / (visibleCount - 1) : 0;
             } else if (justifyContent == JustifyContent.SPACE_AROUND) {
-                int unit = count > 0 ? remainingH / (count * 2) : 0;
+                int unit = visibleCount > 0 ? remainingH / (visibleCount * 2) : 0;
                 cursorY = unit;
                 extraGap = unit * 2;
             } else if (justifyContent == JustifyContent.SPACE_EVENLY) {
-                int unit = count > 0 ? remainingH / (count + 1) : 0;
+                int unit = visibleCount > 0 ? remainingH / (visibleCount + 1) : 0;
                 cursorY = unit;
                 extraGap = unit;
             }
 
             for (var child : children) {
+                if (!child.isVisible()) {
+                    continue;
+                }
+
                 int childW = child.getSize().width();
                 int childX = 0;
 

@@ -21,7 +21,6 @@ public class Window extends UIElement {
     protected boolean hasHeader = false;
     protected int headerHeight = DEFAULT_HEADER_HEIGHT;
     protected boolean draggable = false;
-    protected boolean visible = true;
     protected boolean isDragging = false;
     protected double dragOffsetX;
     protected double dragOffsetY;
@@ -90,18 +89,39 @@ public class Window extends UIElement {
         return this;
     }
 
+    @Override
     public boolean isVisible() {
-        return visible;
+        return super.isVisible();
     }
 
+    @Override
     public Window setVisible(boolean visible) {
         if (this.visible != visible) {
-            this.visible = visible;
-            markDirty();
+            super.setVisible(visible);
             calculateSize();
             calculateLayout();
         }
+
         return this;
+    }
+
+    @Override
+    public Window setVisible(java.util.function.Supplier<Boolean> visibleSupplier) {
+        super.setVisible(visibleSupplier);
+        calculateSize();
+        calculateLayout();
+
+        return this;
+    }
+
+    @Override
+    public Window withVisibility(java.util.function.Supplier<Boolean> visibleSupplier) {
+        return setVisible(visibleSupplier);
+    }
+
+    @Override
+    public Window withVisibility(boolean visible) {
+        return setVisible(visible);
     }
 
     public boolean isHasCloseButton() {
@@ -129,9 +149,11 @@ public class Window extends UIElement {
     }
 
     @Override
-    public void setPadding(Padding padding) {
+    public UIElement setPadding(Padding padding) {
         super.setPadding(padding);
         updateHeaderPadding();
+
+        return this;
     }
 
     private void updateHeaderPadding() {
@@ -160,7 +182,7 @@ public class Window extends UIElement {
     }
 
     public boolean handleChildClick(double mouseX, double mouseY, int button) {
-        if (!visible) {
+        if (!isVisible()) {
             return false;
         }
 
@@ -174,7 +196,7 @@ public class Window extends UIElement {
     }
 
     public boolean handleHeaderClick(double mouseX, double mouseY, int button) {
-        if (!visible || !hasHeader || button != 0) {
+        if (!isVisible() || !hasHeader || button != 0) {
             return false;
         }
 
@@ -200,7 +222,7 @@ public class Window extends UIElement {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!visible) {
+        if (!isVisible()) {
             return false;
         }
 
@@ -216,7 +238,7 @@ public class Window extends UIElement {
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
-        if (!visible) {
+        if (!isVisible()) {
             return false;
         }
 
@@ -242,7 +264,7 @@ public class Window extends UIElement {
 
     @Override
     public void render(GuiGraphicsExtractor graphics, Position parentOrigin, int mouseX, int mouseY, float partialTick) {
-        if (!visible) {
+        if (!isVisible()) {
             return;
         }
 
@@ -251,7 +273,7 @@ public class Window extends UIElement {
 
     @Override
     protected void renderSelf(GuiGraphicsExtractor graphics, Bounds absoluteBounds, int mouseX, int mouseY, float partialTick) {
-        if (!visible) {
+        if (!isVisible()) {
             return;
         }
 

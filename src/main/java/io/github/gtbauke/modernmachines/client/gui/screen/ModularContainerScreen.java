@@ -47,6 +47,18 @@ public abstract class ModularContainerScreen<T extends AbstractContainerMenu> ex
         return isEditorOpen;
     }
 
+    public void hideAllSlots() {
+        for (var slot : this.menu.slots) {
+            if (slot instanceof io.github.gtbauke.modernmachines.mixin.SlotAccessor accessor) {
+                try {
+                    accessor.setX(-9999);
+                    accessor.setY(-9999);
+                } catch (Throwable ignored) {
+                }
+            }
+        }
+    }
+
     public void toggleScreenEditor() {
         this.isEditorOpen = !this.isEditorOpen;
         if (this.isEditorOpen) {
@@ -55,16 +67,7 @@ public abstract class ModularContainerScreen<T extends AbstractContainerMenu> ex
             }
 
             this.screenEditor.recalculateLayoutBounds(this.width, this.height);
-
-            for (var slot : this.menu.slots) {
-                if (slot instanceof io.github.gtbauke.modernmachines.mixin.SlotAccessor accessor) {
-                    try {
-                        accessor.setX(-9999);
-                        accessor.setY(-9999);
-                    } catch (Throwable ignored) {
-                    }
-                }
-            }
+            hideAllSlots();
         } else {
             this.windowManager.calculateSize();
             this.windowManager.calculateLayout();
@@ -76,6 +79,8 @@ public abstract class ModularContainerScreen<T extends AbstractContainerMenu> ex
         super.init();
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
+
+        hideAllSlots();
 
         this.windowManager.clearWindows();
 

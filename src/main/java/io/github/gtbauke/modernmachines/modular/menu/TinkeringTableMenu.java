@@ -11,6 +11,7 @@ import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.core.registry.ModDataComponents;
 import io.github.gtbauke.modernmachines.core.registry.ModItems;
 import io.github.gtbauke.modernmachines.core.registry.ModMenuTypes;
+import io.github.gtbauke.modernmachines.modular.client.TinkeringTableScreen;
 import io.github.gtbauke.modernmachines.modular.item.ModularToolItem;
 import io.github.gtbauke.modernmachines.modular.item.ToolPartItem;
 import net.minecraft.core.component.DataComponents;
@@ -29,6 +30,73 @@ import net.minecraft.world.item.Items;
 import org.jspecify.annotations.NonNull;
 
 public class TinkeringTableMenu extends BaseContainerMenu {
+    public static enum ActiveTool {
+        PICKAXE,
+        AXE,
+        SHOVEL,
+        HOE,
+        SWORD,
+        ;
+
+        public ItemStack getIcon() {
+            return switch (this) {
+                case PICKAXE -> new ItemStack(ModItems.MODULAR_PICKAXE.get());
+                case AXE -> new ItemStack(ModItems.MODULAR_AXE.get());
+                case SHOVEL -> new ItemStack(ModItems.MODULAR_SHOVEL.get());
+                case HOE -> new ItemStack(ModItems.MODULAR_HOE.get());
+                case SWORD -> new ItemStack(ModItems.MODULAR_SWORD.get());
+            };
+        }
+
+        public Item getItem() {
+            return switch (this) {
+                case PICKAXE -> ModItems.MODULAR_PICKAXE.get();
+                case AXE -> ModItems.MODULAR_AXE.get();
+                case SHOVEL -> ModItems.MODULAR_SHOVEL.get();
+                case HOE -> ModItems.MODULAR_HOE.get();
+                case SWORD -> ModItems.MODULAR_SWORD.get();
+            };
+        }
+
+        public Item getHeadPattern() {
+            return switch (this) {
+                case PICKAXE -> ModItems.PICKAXE_HEAD_PATTERN.get();
+                case AXE -> ModItems.AXE_HEAD_PATTERN.get();
+                case SHOVEL -> ModItems.SHOVEL_HEAD_PATTERN.get();
+                case HOE -> ModItems.HOE_HEAD_PATTERN.get();
+                case SWORD -> ModItems.SWORD_BLADE_PATTERN.get();
+            };
+        }
+
+        public boolean requiresBinding() {
+            return switch (this) {
+                case PICKAXE, AXE, SWORD -> true;
+                case SHOVEL, HOE -> false;
+            };
+        }
+
+        public boolean acceptsAttachment() {
+            return switch (this) {
+                case PICKAXE, AXE, SWORD -> true;
+                case SHOVEL, HOE -> false;
+            };
+        }
+
+        public Item getBindingPattern() {
+            return switch (this) {
+                case SWORD -> ModItems.SWORD_GUARD_PATTERN.get();
+                default -> ModItems.BINDING_PATTERN.get();
+            };
+        }
+
+        public Item getAttachmentPattern() {
+            return switch (this) {
+                case SWORD -> ModItems.POMMEL_PATTERN.get();
+                default -> ModItems.TIP_PATTERN.get();
+            };
+        }
+    }
+
     private static class TinkeringTableSlot extends Slot {
         private final TinkeringTableMenu menu;
         private final Container inputContainer;
@@ -97,6 +165,8 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     private static final int ATTACHMENT_SLOT = 3;
     private static final int RESULT_SLOT = 4;
 
+    private ActiveTool activeTool = ActiveTool.PICKAXE;
+
     public TinkeringTableMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, ContainerLevelAccess.NULL, new SimpleContainerData(1));
     }
@@ -141,6 +211,15 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     public void setActiveTab(int tab) {
         this.data.set(0, tab);
         slotsChanged(inputContainer);
+    }
+
+    public void setActiveTool(ActiveTool activeTool) {
+        this.activeTool = activeTool;
+        slotsChanged(inputContainer);
+    }
+
+    public ActiveTool getActiveTool() {
+        return this.activeTool;
     }
 
     @Override
