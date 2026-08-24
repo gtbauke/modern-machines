@@ -51,10 +51,10 @@ public class TinkeringTableMenu extends BaseContainerMenu {
         private final TinkeringTableMenu menu;
         private final Container inputContainer;
 
-        public TinkeringTableResultSlot(Container container, int slot, int x, int y, TinkeringTableMenu menu) {
-            super(container, slot, x, y);
+        public TinkeringTableResultSlot(Container resultContainer, Container inputContainer, int x, int y, TinkeringTableMenu menu) {
+            super(resultContainer, 0, x, y);
             this.menu = menu;
-            this.inputContainer = container;
+            this.inputContainer = inputContainer;
         }
 
         @Override
@@ -124,7 +124,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
         this.addSlot(
             new TinkeringTableResultSlot(
                 resultContainer,
-                RESULT_SLOT,
+                inputContainer,
                 134,
                 34,
                 this
