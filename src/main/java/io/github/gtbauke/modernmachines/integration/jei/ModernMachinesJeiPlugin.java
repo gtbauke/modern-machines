@@ -1,6 +1,7 @@
 package io.github.gtbauke.modernmachines.integration.jei;
 
 import io.github.gtbauke.modernmachines.ModernMachines;
+import io.github.gtbauke.modernmachines.client.gui.screen.ModularContainerScreen;
 import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.core.registry.ModMenuTypes;
 import io.github.gtbauke.modernmachines.integration.jei.category.AlloySmelterCategory;
@@ -15,12 +16,16 @@ import io.github.gtbauke.modernmachines.modular.menu.PartBuilderMenu;
 import io.github.gtbauke.modernmachines.modular.menu.TinkeringTableMenu;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.Identifier;
+
+import java.util.List;
 
 @JeiPlugin
 public class ModernMachinesJeiPlugin implements IModPlugin {
@@ -57,9 +62,20 @@ public class ModernMachinesJeiPlugin implements IModPlugin {
         registration.addCraftingStation(JeiRecipeTypes.ALLOY_SMELTING, ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
         registration.addCraftingStation(JeiRecipeTypes.ALLOY_SMELTING, ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
     }
-
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        // Auto-hide JEI when Modern Machines Screen Editor overlay is active
+        registration.addGenericGuiContainerHandler(ModularContainerScreen.class, new IGuiContainerHandler<ModularContainerScreen<?>>() {
+            @Override
+            public List<Rect2i> getGuiExtraAreas(ModularContainerScreen<?> containerScreen) {
+                if (containerScreen.isEditorOpen()) {
+                    return List.of(new Rect2i(0, 0, containerScreen.width, containerScreen.height));
+                }
+
+                return List.of();
+            }
+        });
+
         // Part Builder click area (center arrow)
         registration.addRecipeClickArea(PartBuilderScreen.class, 88, 30, 24, 20, JeiRecipeTypes.PART_BUILDING);
 

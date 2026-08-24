@@ -57,8 +57,8 @@ public class BasicAlloySmelterControllerBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
+        var level = context.getLevel();
+        var pos = context.getClickedPos();
         boolean isHeaterBelow = level.getBlockState(pos.below()).is(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
         return this.defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
@@ -83,11 +83,12 @@ public class BasicAlloySmelterControllerBlock extends BaseEntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            var be = level.getBlockEntity(pos);
             if (be instanceof AlloySmelterBlockEntity smelterBe) {
                 player.openMenu(smelterBe, pos);
             }
         }
+
         return InteractionResult.SUCCESS;
     }
 
@@ -99,7 +100,8 @@ public class BasicAlloySmelterControllerBlock extends BaseEntityBlock {
             if (state.getValue(FORMED) != isHeaterBelow) {
                 level.setBlock(pos, state.setValue(FORMED, isHeaterBelow), 3);
             }
-            BlockEntity be = level.getBlockEntity(pos);
+
+            var be = level.getBlockEntity(pos);
             if (be instanceof AlloySmelterBlockEntity smelterBe) {
                 smelterBe.isFormed();
             }
@@ -108,10 +110,11 @@ public class BasicAlloySmelterControllerBlock extends BaseEntityBlock {
 
     @Override
     protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
+        var blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof AlloySmelterBlockEntity smelterBe) {
             Containers.dropContents(level, pos, smelterBe);
         }
+
         super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
     }
 

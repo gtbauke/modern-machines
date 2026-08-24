@@ -60,7 +60,7 @@ public record ModularToolData(
     }
 
     public ModularToolData withPart(PartSlot slot, Identifier materialId) {
-        Map<PartSlot, Identifier> newParts = new EnumMap<>(PartSlot.class);
+        var newParts = new EnumMap<PartSlot, Identifier>(PartSlot.class);
         newParts.putAll(this.parts);
         newParts.put(slot, materialId);
         return new ModularToolData(newParts, this.modifiers, this.damage, this.extraModifierSlots);
@@ -71,9 +71,9 @@ public record ModularToolData(
     }
 
     public ModularToolData withModifier(Identifier modifierId, int level) {
-        List<ModifierEntry> newModifiers = new ArrayList<>();
+        var newModifiers = new ArrayList<ModifierEntry>();
         boolean replaced = false;
-        for (ModifierEntry entry : this.modifiers) {
+        for (var entry : this.modifiers) {
             if (entry.id().equals(modifierId)) {
                 newModifiers.add(new ModifierEntry(modifierId, level));
                 replaced = true;
@@ -81,18 +81,21 @@ public record ModularToolData(
                 newModifiers.add(entry);
             }
         }
+
         if (!replaced) {
             newModifiers.add(new ModifierEntry(modifierId, level));
         }
+
         return new ModularToolData(this.parts, newModifiers, this.damage, this.extraModifierSlots);
     }
 
     public int getModifierLevel(Identifier modifierId) {
-        for (ModifierEntry entry : modifiers) {
+        for (var entry : modifiers) {
             if (entry.id().equals(modifierId)) {
                 return entry.level();
             }
         }
+
         return 0;
     }
 
@@ -102,9 +105,10 @@ public record ModularToolData(
 
     public int getUsedModifierSlots() {
         int total = 0;
-        for (ModifierEntry entry : modifiers) {
+        for (var entry : modifiers) {
             total += entry.level();
         }
+
         return total;
     }
 }

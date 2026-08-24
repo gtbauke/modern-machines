@@ -201,12 +201,14 @@ public class ModLanguageProvider extends LanguageProvider {
     }
 
     private String capitalize(String str) {
-        if (str == null || str.isEmpty()) return str;
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
 
-        String[] words = str.split(" ");
-        StringBuilder sb = new StringBuilder();
+        var words = str.split(" ");
+        var sb = new StringBuilder();
 
-        for (String w : words) {
+        for (var w : words) {
             if (!w.isEmpty()) {
                 sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1).toLowerCase()).append(" ");
             }

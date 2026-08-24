@@ -28,9 +28,9 @@ public record AlloySmeltingRecipe(List<SizedIngredient> inputs, ItemStackTemplat
 
     @Override
     public boolean matches(AlloySmelterInput input, @NonNull Level level) {
-        NonNullList<ItemStack> available = NonNullList.create();
+        var available = NonNullList.<ItemStack>create();
         for (int i = 0; i < input.size(); i++) {
-            ItemStack stack = input.getItem(i);
+            var stack = input.getItem(i);
             if (!stack.isEmpty()) {
                 available.add(stack.copy());
             }
@@ -40,16 +40,19 @@ public record AlloySmeltingRecipe(List<SizedIngredient> inputs, ItemStackTemplat
             return false;
         }
 
-        for (SizedIngredient sizedIngredient : inputs) {
+        for (var sizedIngredient : inputs) {
             int needed = sizedIngredient.count();
-            for (ItemStack stack : available) {
+            for (var stack : available) {
                 if (!stack.isEmpty() && sizedIngredient.ingredient().test(stack)) {
                     int take = Math.min(needed, stack.getCount());
                     stack.shrink(take);
                     needed -= take;
-                    if (needed <= 0) break;
+                    if (needed <= 0) {
+                        break;
+                    }
                 }
             }
+
             if (needed > 0) {
                 return false;
             }

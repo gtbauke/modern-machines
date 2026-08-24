@@ -50,44 +50,41 @@ public class BlockFaceElement extends UIElement {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        Position clickPos = new Position((int) mouseX, (int) mouseY);
+        var clickPos = new Position((int) mouseX, (int) mouseY);
         if (getAbsoluteBounds().contains(clickPos)) {
-            SideIoMode current = modeSupplier.get();
-            SideIoMode next = (button == 1) ? current.previous() : current.next();
+            var current = modeSupplier.get();
+            var next = (button == 1) ? current.previous() : current.next();
             if (onModeChanged != null) {
                 onModeChanged.accept(side, next);
             }
+
             markDirty();
             return true;
         }
+
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     protected void renderSelf(GuiGraphicsExtractor graphics, Bounds absoluteBounds, int mouseX, int mouseY, float partialTick) {
-        SideIoMode mode = modeSupplier.get();
-        if (mode == null) mode = SideIoMode.NONE;
+        var mode = modeSupplier.get();
+        if (mode == null) {
+            mode = SideIoMode.NONE;
+        }
 
         int fillColor = (0xFF << 24) | (mode.getColorRgb() & 0x00FFFFFF);
 
-        // 1. Draw face body fill
         GUIRenderHelper.drawRect(graphics, absoluteBounds, fillColor);
-
-        // 2. Outer dark border outline
         GUIRenderHelper.drawRectOutline(graphics, absoluteBounds, 0xFF222428);
-
-        // 3. Subtle 3D bevel highlight/shadow
         GUIRenderHelper.drawBevel(graphics, absoluteBounds, 0x40FFFFFF, 0x40000000);
 
-        // 4. Centered face side abbreviation
-        Font font = Minecraft.getInstance().font;
+        var font = Minecraft.getInstance().font;
         int centerX = absoluteBounds.position().x() + absoluteBounds.size().width() / 2;
         int centerY = absoluteBounds.position().y() + (absoluteBounds.size().height() - 8) / 2;
         GUIRenderHelper.drawCenteredString(graphics, font, Component.literal(label), new Position(centerX, centerY), 0xFFFFFFFF, true);
 
-        // 5. Tooltip on hover
         if (absoluteBounds.contains(new Position(mouseX, mouseY))) {
-            Component tooltip = Component.literal(side.name() + ": ")
+            var tooltip = Component.literal(side.name() + ": ")
                     .withStyle(ChatFormatting.WHITE)
                     .append(Component.literal(mode.name()).withStyle(mode.getFormatting(), ChatFormatting.BOLD))
                     .append(Component.literal(" (Click to toggle)").withStyle(ChatFormatting.DARK_GRAY));

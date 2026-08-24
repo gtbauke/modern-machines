@@ -128,6 +128,12 @@ public class Window extends UIElement {
         return this;
     }
 
+    @Override
+    public void setPadding(Padding padding) {
+        super.setPadding(padding);
+        updateHeaderPadding();
+    }
+
     private void updateHeaderPadding() {
         int topPad = hasHeader ? Math.max(headerHeight + 2, padding.top()) : padding.top();
         this.padding = new Padding(topPad, padding.right(), padding.bottom(), padding.left());
@@ -135,12 +141,18 @@ public class Window extends UIElement {
     }
 
     public Bounds getHeaderBounds() {
-        if (!hasHeader) return Bounds.EMPTY;
+        if (!hasHeader) {
+            return Bounds.EMPTY;
+        }
+
         return new Bounds(this.bounds.position(), new Size(this.bounds.size().width(), headerHeight));
     }
 
     public Bounds getCloseButtonBounds() {
-        if (!hasCloseButton || !hasHeader) return Bounds.EMPTY;
+        if (!hasCloseButton || !hasHeader) {
+            return Bounds.EMPTY;
+        }
+
         int btnSize = 12;
         int x = this.bounds.position().x() + this.bounds.size().width() - btnSize - 3;
         int y = this.bounds.position().y() + (headerHeight - btnSize) / 2;
@@ -148,21 +160,26 @@ public class Window extends UIElement {
     }
 
     public boolean handleChildClick(double mouseX, double mouseY, int button) {
-        if (!visible) return false;
-        for (UIElement child : children) {
+        if (!visible) {
+            return false;
+        }
+
+        for (var child : children) {
             if (child.mouseClicked(mouseX, mouseY, button)) {
                 return true;
             }
         }
+
         return false;
     }
 
     public boolean handleHeaderClick(double mouseX, double mouseY, int button) {
-        if (!visible || !hasHeader || button != 0) return false;
+        if (!visible || !hasHeader || button != 0) {
+            return false;
+        }
 
-        Position clickPos = new Position((int) mouseX, (int) mouseY);
+        var clickPos = new Position((int) mouseX, (int) mouseY);
 
-        // 1. Check close button
         if (hasCloseButton) {
             if (getCloseButtonBounds().contains(clickPos)) {
                 setVisible(false);
@@ -170,7 +187,6 @@ public class Window extends UIElement {
             }
         }
 
-        // 2. Check header drag
         if (draggable) {
             if (getHeaderBounds().contains(clickPos)) {
                 this.isDragging = true;
@@ -184,14 +200,25 @@ public class Window extends UIElement {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!visible) return false;
-        if (handleChildClick(mouseX, mouseY, button)) return true;
-        if (handleHeaderClick(mouseX, mouseY, button)) return true;
+        if (!visible) {
+            return false;
+        }
+
+        if (handleChildClick(mouseX, mouseY, button)) {
+            return true;
+        }
+
+        if (handleHeaderClick(mouseX, mouseY, button)) {
+            return true;
+        }
+
         return false;
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
-        if (!visible) return false;
+        if (!visible) {
+            return false;
+        }
 
         if (isDragging && button == 0) {
             int newX = (int) (mouseX - dragOffsetX);
@@ -200,6 +227,7 @@ public class Window extends UIElement {
             calculateLayout();
             return true;
         }
+
         return false;
     }
 
@@ -208,6 +236,7 @@ public class Window extends UIElement {
             this.isDragging = false;
             return true;
         }
+
         return false;
     }
 
@@ -216,57 +245,58 @@ public class Window extends UIElement {
         if (!visible) {
             return;
         }
+
         super.render(graphics, parentOrigin, mouseX, mouseY, partialTick);
     }
 
     @Override
     protected void renderSelf(GuiGraphicsExtractor graphics, Bounds absoluteBounds, int mouseX, int mouseY, float partialTick) {
-        if (!visible) return;
+        if (!visible) {
+            return;
+        }
 
         int x = absoluteBounds.position().x();
         int y = absoluteBounds.position().y();
         int w = absoluteBounds.size().width();
         int h = absoluteBounds.size().height();
 
-        // 1. Drop shadow for floating windows
         if (hasHeader || draggable) {
-            GUIRenderHelper.drawDropShadow(graphics, absoluteBounds, 0x50000000, 3);
+            GUIRenderHelper.drawDropShadow(graphics, absoluteBounds, 0x60000000, 4);
         }
 
-        // 2. Base window background fill and border
-        int bg = backgroundColor != 0 ? backgroundColor : 0xFFC6C6C6;
-        int border = borderColor != 0 ? borderColor : 0xFF373737;
+        int bg = backgroundColor != 0 ? backgroundColor : GUIRenderHelper.ORE_BG_PRIMARY;
+        int border = borderColor != 0 ? borderColor : GUIRenderHelper.ORE_BORDER_DARK;
         GUIRenderHelper.drawRect(graphics, absoluteBounds, bg);
         GUIRenderHelper.drawRectOutline(graphics, absoluteBounds, border);
+        graphics.fill(x + 1, y + 1, x + w - 1, y + 2, GUIRenderHelper.ORE_BORDER_LIGHT);
+        graphics.fill(x + 1, y + 1, x + 2, y + h - 1, GUIRenderHelper.ORE_BORDER_LIGHT);
 
-        // 3. Header bar (if present)
         if (hasHeader) {
-            // Header background
-            graphics.fill(x + 1, y + 1, x + w - 1, y + headerHeight, 0xFFB8B8B8);
-            // Header bottom border
+            graphics.fill(x + 1, y + 1, x + w - 1, y + headerHeight, GUIRenderHelper.ORE_BG_SECONDARY);
             graphics.fill(x, y + headerHeight, x + w, y + headerHeight + 1, border);
 
-            // Header Title text
             if (title != null) {
-                Font font = Minecraft.getInstance().font;
-                graphics.text(font, title, x + 5, y + (headerHeight - 8) / 2, 0xFF404040, false);
+                var font = Minecraft.getInstance().font;
+                graphics.text(font, title, x + 6, y + (headerHeight - 8) / 2, GUIRenderHelper.ORE_TEXT_TITLE, true);
             }
 
-            // Close button ('✕')
             if (hasCloseButton) {
-                Bounds btnBounds = new Bounds(new Position(x + w - 14, y + (headerHeight - 12) / 2), new Size(12, 12));
+                var btnBounds = new Bounds(new Position(x + w - 14, y + (headerHeight - 12) / 2), new Size(12, 12));
                 boolean hovered = mouseX >= btnBounds.position().x() && mouseX < btnBounds.right()
                                && mouseY >= btnBounds.position().y() && mouseY < btnBounds.bottom();
 
-                int btnBg = hovered ? 0xFFE81123 : 0xFFCCCCCC;
-                int btnTextColor = hovered ? 0xFFFFFFFF : 0xFF333333;
+                int btnBg = hovered ? 0xFFE81123 : GUIRenderHelper.ORE_BUTTON_BG;
+                int btnTextColor = hovered ? 0xFFFFFFFF : GUIRenderHelper.ORE_TEXT_MUTED;
 
                 graphics.fill(btnBounds.position().x(), btnBounds.position().y(), btnBounds.right(), btnBounds.bottom(), btnBg);
-                GUIRenderHelper.drawRectOutline(graphics, btnBounds, 0xFF555555);
+                GUIRenderHelper.drawRectOutline(graphics, btnBounds, GUIRenderHelper.ORE_BORDER_DARK);
 
-                Font font = Minecraft.getInstance().font;
+                var font = Minecraft.getInstance().font;
                 graphics.text(font, Component.literal("✕"), btnBounds.position().x() + 3, btnBounds.position().y() + 2, btnTextColor, false);
             }
+        } else if (title != null) {
+            var font = Minecraft.getInstance().font;
+            graphics.text(font, title, x + 8, y + 6, GUIRenderHelper.ORE_TEXT_TITLE, false);
         }
     }
 }

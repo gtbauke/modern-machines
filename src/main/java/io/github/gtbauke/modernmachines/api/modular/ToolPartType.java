@@ -37,12 +37,16 @@ public enum ToolPartType implements StringRepresentable {
     }
 
     public String getDisplayName() {
-        String[] words = name.split("_");
-        StringBuilder sb = new StringBuilder();
-        for (String word : words) {
-            if (!sb.isEmpty()) sb.append(" ");
+        var words = name.split("_");
+        var sb = new StringBuilder();
+        for (var word : words) {
+            if (!sb.isEmpty()) {
+                sb.append(" ");
+            }
+
             sb.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1));
         }
+
         return sb.toString();
     }
 

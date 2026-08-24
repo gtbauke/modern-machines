@@ -24,36 +24,40 @@ public class ModularShovelItem extends ModularToolItem {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        BlockState state = level.getBlockState(pos);
+        if (context.getClickedFace() == Direction.DOWN) {
+            return super.useOn(context);
+        }
 
-        if (context.getClickedFace() != Direction.DOWN) {
-            Player player = context.getPlayer();
-            BlockState modifiedState = state.getToolModifiedState(context, ItemAbilities.SHOVEL_FLATTEN, false);
+        var level = context.getLevel();
+        var pos = context.getClickedPos();
+        var state = level.getBlockState(pos);
+        var player = context.getPlayer();
+        var modifiedState = state.getToolModifiedState(context, ItemAbilities.SHOVEL_FLATTEN, false);
 
-            if (modifiedState != null && level.getBlockState(pos.above()).isAir()) {
-                level.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-                if (!level.isClientSide()) {
-                    level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
-                    if (player != null) {
-                        applyDamage(context.getItemInHand(), 1, player);
-                    }
+        if (modifiedState != null && level.getBlockState(pos.above()).isAir()) {
+            level.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+            if (!level.isClientSide()) {
+                level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
+                if (player != null) {
+                    applyDamage(context.getItemInHand(), 1, player);
                 }
-                return InteractionResult.SUCCESS;
-            } else if (state.getBlock() instanceof CampfireBlock && state.getValue(CampfireBlock.LIT)) {
-                if (!level.isClientSide()) {
-                    level.levelEvent(null, 1009, pos, 0);
-                }
-                CampfireBlock.dowse(context.getPlayer(), level, pos, state);
-                if (!level.isClientSide()) {
-                    level.setBlock(pos, state.setValue(CampfireBlock.LIT, false), Block.UPDATE_ALL_IMMEDIATE);
-                    if (player != null) {
-                        applyDamage(context.getItemInHand(), 1, player);
-                    }
-                }
-                return InteractionResult.SUCCESS;
             }
+
+            return InteractionResult.SUCCESS;
+        } else if (state.getBlock() instanceof CampfireBlock && state.getValue(CampfireBlock.LIT)) {
+            if (!level.isClientSide()) {
+                level.levelEvent(null, 1009, pos, 0);
+            }
+
+            CampfireBlock.dowse(context.getPlayer(), level, pos, state);
+            if (!level.isClientSide()) {
+                level.setBlock(pos, state.setValue(CampfireBlock.LIT, false), Block.UPDATE_ALL_IMMEDIATE);
+                if (player != null) {
+                    applyDamage(context.getItemInHand(), 1, player);
+                }
+            }
+
+            return InteractionResult.SUCCESS;
         }
 
         return super.useOn(context);

@@ -51,78 +51,69 @@ public class TinkeringStatsWindow extends Window {
 
         @Override
         protected void renderSelf(GuiGraphicsExtractor graphics, Bounds absoluteBounds, int mouseX, int mouseY, float partialTick) {
-            Font font = Minecraft.getInstance().font;
+            var font = Minecraft.getInstance().font;
             int x = absoluteBounds.position().x() + 6;
             int y = absoluteBounds.position().y() + 4;
             int right = absoluteBounds.right() - 6;
 
-            ItemStack outputStack = menu.slots.size() > 4 ? menu.slots.get(4).getItem() : ItemStack.EMPTY;
-            ItemStack inputTool = menu.slots.size() > 0 ? menu.slots.get(0).getItem() : ItemStack.EMPTY;
+            var outputStack = menu.slots.size() > 4 ? menu.slots.get(4).getItem() : ItemStack.EMPTY;
+            var inputTool = menu.slots.size() > 0 ? menu.slots.get(0).getItem() : ItemStack.EMPTY;
 
-            ItemStack targetStack = !outputStack.isEmpty() ? outputStack
+            var targetStack = !outputStack.isEmpty() ? outputStack
                     : (inputTool.getItem() instanceof ModularToolItem ? inputTool : ItemStack.EMPTY);
 
             if (targetStack.isEmpty() || !(targetStack.getItem() instanceof ModularToolItem toolItem)) {
-                // Empty state guidance
-                graphics.text(font, Component.literal("No Tool Active"), x, y, 0xFF888888, false);
-                graphics.text(font, Component.literal("Insert parts to"), x, y + 14, 0xFFAAAAAA, false);
-                graphics.text(font, Component.literal("preview stats."), x, y + 26, 0xFFAAAAAA, false);
+                graphics.text(font, Component.literal("No Tool Active"), x, y, GUIRenderHelper.ORE_TEXT_MUTED, false);
+                graphics.text(font, Component.literal("Insert parts to"), x, y + 14, GUIRenderHelper.ORE_TEXT_DARK, false);
+                graphics.text(font, Component.literal("preview stats."), x, y + 26, GUIRenderHelper.ORE_TEXT_DARK, false);
                 return;
             }
 
-            ModularToolData data = ModularToolItem.getData(targetStack);
+            var data = ModularToolItem.getData(targetStack);
 
-            // 1. Tool Name Header
-            Component name = targetStack.getHoverName();
-            graphics.text(font, name, x, y, 0xFFFFFFFF, false);
+            var name = targetStack.getHoverName();
+            graphics.text(font, name, x, y, GUIRenderHelper.ORE_TEXT_TITLE, true);
             y += 12;
 
-            // Horizontal Separator Line
-            GUIRenderHelper.drawLine(graphics, new Position(x, y), new Position(right, y + 1), 0xFF555555);
+            GUIRenderHelper.drawLine(graphics, new Position(x, y), new Position(right, y + 1), GUIRenderHelper.ORE_BORDER_LIGHT);
             y += 4;
 
-            // 2. Durability
             int maxDurability = ModularToolItem.getMaxDurability(targetStack);
             int currentDurability = maxDurability - ModularToolItem.getData(targetStack).damage();
-            graphics.text(font, Component.literal("Durability:"), x, y, 0xFFAAAAAA, false);
-            graphics.text(font, Component.literal(currentDurability + "/" + maxDurability), right - font.width(currentDurability + "/" + maxDurability), y, 0xFF55FF55, false);
+            graphics.text(font, Component.literal("Durability:"), x, y, GUIRenderHelper.ORE_TEXT_MUTED, false);
+            graphics.text(font, Component.literal(currentDurability + "/" + maxDurability), right - font.width(currentDurability + "/" + maxDurability), y, GUIRenderHelper.ORE_GREEN_HOVER, false);
             y += 10;
 
-            // Mini Durability Bar
             int barWidth = right - x;
             int fillWidth = Math.max(1, (int) ((float) currentDurability / maxDurability * barWidth));
-            GUIRenderHelper.drawRect(graphics, new Bounds(new Position(x, y), new Size(barWidth, 3)), 0xFF333333);
-            GUIRenderHelper.drawRect(graphics, new Bounds(new Position(x, y), new Size(fillWidth, 3)), 0xFF55FF55);
+            GUIRenderHelper.drawRect(graphics, new Bounds(new Position(x, y), new Size(barWidth, 3)), GUIRenderHelper.ORE_SLOT_BG);
+            GUIRenderHelper.drawRect(graphics, new Bounds(new Position(x, y), new Size(fillWidth, 3)), GUIRenderHelper.ORE_GREEN_PRIMARY);
             y += 6;
 
-            // 3. Mining Speed & Damage
             float speed = ModularToolItem.getMiningSpeed(targetStack);
-            graphics.text(font, Component.literal("Speed:"), x, y, 0xFFAAAAAA, false);
+            graphics.text(font, Component.literal("Speed:"), x, y, GUIRenderHelper.ORE_TEXT_MUTED, false);
             graphics.text(font, Component.literal(String.format("%.1f", speed)), right - font.width(String.format("%.1f", speed)), y, 0xFF55FFFF, false);
             y += 11;
 
             float damage = ModularToolItem.getAttackDamage(targetStack, 1.0f);
-            graphics.text(font, Component.literal("Damage:"), x, y, 0xFFAAAAAA, false);
+            graphics.text(font, Component.literal("Damage:"), x, y, GUIRenderHelper.ORE_TEXT_MUTED, false);
             graphics.text(font, Component.literal(String.format("%.1f", damage)), right - font.width(String.format("%.1f", damage)), y, 0xFFFF5555, false);
             y += 11;
 
-            // 4. Harvest Tier
-            String tier = ModularToolItem.getHarvestTier(targetStack);
-            graphics.text(font, Component.literal("Tier:"), x, y, 0xFFAAAAAA, false);
-            String capitalizedTier = tier.isEmpty() ? "None" : Character.toUpperCase(tier.charAt(0)) + tier.substring(1);
+            var tier = ModularToolItem.getHarvestTier(targetStack);
+            graphics.text(font, Component.literal("Tier:"), x, y, GUIRenderHelper.ORE_TEXT_MUTED, false);
+            var capitalizedTier = tier.isEmpty() ? "None" : Character.toUpperCase(tier.charAt(0)) + tier.substring(1);
             graphics.text(font, Component.literal(capitalizedTier), right - font.width(capitalizedTier), y, 0xFFFFAA00, false);
             y += 11;
 
-            // 5. Modifier Slots
             int usedMods = data.getUsedModifierSlots();
             int maxMods = data.getMaxModifierSlots();
-            graphics.text(font, Component.literal("Slots:"), x, y, 0xFFAAAAAA, false);
+            graphics.text(font, Component.literal("Slots:"), x, y, GUIRenderHelper.ORE_TEXT_MUTED, false);
             graphics.text(font, Component.literal(usedMods + "/" + maxMods), right - font.width(usedMods + "/" + maxMods), y, 0xFFFF55FF, false);
             y += 12;
 
-            // 6. Traits list preview
-            List<MaterialTrait> traits = new ArrayList<>();
-            for (Identifier matId : data.parts().values()) {
+            var traits = new ArrayList<MaterialTrait>();
+            for (var matId : data.parts().values()) {
                 MaterialStatsManager.getStats(matId).ifPresent(s -> traits.addAll(s.traits()));
             }
 
@@ -130,7 +121,7 @@ public class TinkeringStatsWindow extends Window {
                 graphics.text(font, Component.literal("Traits:"), x, y, 0xFFFFFF55, false);
                 y += 10;
                 for (int i = 0; i < Math.min(2, traits.size()); i++) {
-                    MaterialTrait trait = traits.get(i);
+                    var trait = traits.get(i);
                     graphics.text(font, Component.literal("• ").append(trait.getDisplayName()), x + 2, y, 0xFF55FFFF, false);
                     y += 9;
                 }

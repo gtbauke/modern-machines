@@ -72,27 +72,47 @@ public abstract class AbstractPipeBlock extends Block implements SimpleWaterlogg
     }
 
     protected VoxelShape[] makeShapes() {
-        VoxelShape[] shapes = new VoxelShape[64];
+        var shapes = new VoxelShape[64];
         for (int i = 0; i < 64; ++i) {
-            VoxelShape shape = CORE_SHAPE;
-            if ((i & (1 << Direction.DOWN.get3DDataValue())) != 0) shape = Shapes.or(shape, DOWN_SHAPE);
-            if ((i & (1 << Direction.UP.get3DDataValue())) != 0) shape = Shapes.or(shape, UP_SHAPE);
-            if ((i & (1 << Direction.NORTH.get3DDataValue())) != 0) shape = Shapes.or(shape, NORTH_SHAPE);
-            if ((i & (1 << Direction.SOUTH.get3DDataValue())) != 0) shape = Shapes.or(shape, SOUTH_SHAPE);
-            if ((i & (1 << Direction.WEST.get3DDataValue())) != 0) shape = Shapes.or(shape, WEST_SHAPE);
-            if ((i & (1 << Direction.EAST.get3DDataValue())) != 0) shape = Shapes.or(shape, EAST_SHAPE);
+            var shape = CORE_SHAPE;
+            if ((i & (1 << Direction.DOWN.get3DDataValue())) != 0) {
+                shape = Shapes.or(shape, DOWN_SHAPE);
+            }
+
+            if ((i & (1 << Direction.UP.get3DDataValue())) != 0) {
+                shape = Shapes.or(shape, UP_SHAPE);
+            }
+
+            if ((i & (1 << Direction.NORTH.get3DDataValue())) != 0) {
+                shape = Shapes.or(shape, NORTH_SHAPE);
+            }
+
+            if ((i & (1 << Direction.SOUTH.get3DDataValue())) != 0) {
+                shape = Shapes.or(shape, SOUTH_SHAPE);
+            }
+
+            if ((i & (1 << Direction.WEST.get3DDataValue())) != 0) {
+                shape = Shapes.or(shape, WEST_SHAPE);
+            }
+
+            if ((i & (1 << Direction.EAST.get3DDataValue())) != 0) {
+                shape = Shapes.or(shape, EAST_SHAPE);
+            }
+
             shapes[i] = shape;
         }
+
         return shapes;
     }
 
     protected int getShapeIndex(BlockState state) {
         int index = 0;
-        for (Direction direction : Direction.values()) {
+        for (var direction : Direction.values()) {
             if (state.getValue(PROPERTY_BY_DIRECTION.get(direction))) {
                 index |= 1 << direction.get3DDataValue();
             }
         }
+
         return index;
     }
 
@@ -103,19 +123,19 @@ public abstract class AbstractPipeBlock extends Block implements SimpleWaterlogg
     }
 
     public boolean canConnectTo(BlockGetter level, BlockPos pos, Direction direction) {
-        BlockPos targetPos = pos.relative(direction);
-        BlockState targetState = level.getBlockState(targetPos);
+        var targetPos = pos.relative(direction);
+        var targetState = level.getBlockState(targetPos);
         return targetState.is(this);
     }
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockGetter level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        FluidState fluidState = level.getFluidState(pos);
+        var level = context.getLevel();
+        var pos = context.getClickedPos();
+        var fluidState = level.getFluidState(pos);
 
-        BlockState state = this.defaultBlockState();
-        for (Direction direction : Direction.values()) {
+        var state = this.defaultBlockState();
+        for (var direction : Direction.values()) {
             state = state.setValue(PROPERTY_BY_DIRECTION.get(direction), this.canConnectTo(level, pos, direction));
         }
 
@@ -137,7 +157,7 @@ public abstract class AbstractPipeBlock extends Block implements SimpleWaterlogg
             ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        BooleanProperty property = PROPERTY_BY_DIRECTION.get(directionToNeighbour);
+        var property = PROPERTY_BY_DIRECTION.get(directionToNeighbour);
         if (property != null) {
             return state.setValue(property, this.canConnectTo(level, pos, directionToNeighbour));
         }

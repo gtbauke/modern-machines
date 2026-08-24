@@ -6,8 +6,10 @@ import io.github.gtbauke.modernmachines.client.gui.core.layout.Size;
 import io.github.gtbauke.modernmachines.client.gui.core.layout.UIElement;
 import io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper;
 import io.github.gtbauke.modernmachines.client.gui.core.render.NineSliceRenderer;
+import io.github.gtbauke.modernmachines.client.gui.screen.ModularContainerScreen;
 import io.github.gtbauke.modernmachines.client.gui.windows.Window;
 import io.github.gtbauke.modernmachines.mixin.SlotAccessor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.inventory.Slot;
@@ -16,6 +18,7 @@ public class SlotElement extends UIElement {
     public static final int SLOT_SIZE = 18;
 
     public enum SlotStyle {
+        ORE_UI,
         VANILLA,
         TEXTURE_NINE_SLICE
     }
@@ -23,7 +26,7 @@ public class SlotElement extends UIElement {
     private Slot slot;
     private int slotIndex = -1;
     private boolean drawInsetWell = true;
-    private SlotStyle slotStyle = SlotStyle.VANILLA;
+    private SlotStyle slotStyle = SlotStyle.ORE_UI;
     private int ghostIconU = -1;
     private int ghostIconV = -1;
 
@@ -77,7 +80,7 @@ public class SlotElement extends UIElement {
     }
 
     public SlotElement setSlotStyle(SlotStyle slotStyle) {
-        this.slotStyle = slotStyle != null ? slotStyle : SlotStyle.VANILLA;
+        this.slotStyle = slotStyle != null ? slotStyle : SlotStyle.ORE_UI;
         markDirty();
         return this;
     }
@@ -106,44 +109,49 @@ public class SlotElement extends UIElement {
      * Synchronizes backend Slot coordinates with this element's position relative to the main Screen.
      */
     public void syncSlotPosition() {
-        if (this.slot != null) {
-            Window win = findAncestorWindow();
-            if (win != null && !win.isVisible()) {
-                setSlotCoords(-9999, -9999);
-                return;
-            }
-
-            int screenLeft = 0;
-            int screenTop = 0;
-            if (win != null) {
-                UIElement root = win;
-                while (root.getParent() != null) {
-                    root = root.getParent();
-                }
-                screenLeft = root.getPosition().x();
-                screenTop = root.getPosition().y();
-            }
-
-            Position absPos = getAbsolutePosition();
-            int targetX = absPos.x() + 1 - screenLeft;
-            int targetY = absPos.y() + 1 - screenTop;
-            setSlotCoords(targetX, targetY);
+        if (this.slot == null) {
+            return;
         }
+
+        var win = findAncestorWindow();
+        if (win != null && !win.isVisible()) {
+            setSlotCoords(-9999, -9999);
+            return;
+        }
+
+        int screenLeft = 0;
+        int screenTop = 0;
+        if (win != null) {
+            UIElement root = win;
+            while (root.getParent() != null) {
+                root = root.getParent();
+            }
+
+            screenLeft = root.getPosition().x();
+            screenTop = root.getPosition().y();
+        }
+
+        var absPos = getAbsolutePosition();
+        int targetX = absPos.x() + 1 - screenLeft;
+        int targetY = absPos.y() + 1 - screenTop;
+        setSlotCoords(targetX, targetY);
     }
 
     public void syncSlotPosition(int screenLeft, int screenTop) {
-        if (this.slot != null) {
-            Window win = findAncestorWindow();
-            if (win != null && !win.isVisible()) {
-                setSlotCoords(-9999, -9999);
-                return;
-            }
-
-            Position absPos = getAbsolutePosition();
-            int targetX = absPos.x() + 1 - screenLeft;
-            int targetY = absPos.y() + 1 - screenTop;
-            setSlotCoords(targetX, targetY);
+        if (this.slot == null) {
+            return;
         }
+
+        var win = findAncestorWindow();
+        if (win != null && !win.isVisible()) {
+            setSlotCoords(-9999, -9999);
+            return;
+        }
+
+        var absPos = getAbsolutePosition();
+        int targetX = absPos.x() + 1 - screenLeft;
+        int targetY = absPos.y() + 1 - screenTop;
+        setSlotCoords(targetX, targetY);
     }
 
     private void setSlotCoords(int x, int y) {
@@ -151,42 +159,48 @@ public class SlotElement extends UIElement {
             try {
                 accessor.setX(x);
                 accessor.setY(y);
-            } catch (Throwable ignored) {}
+            } catch (Throwable ignored) {
+            }
         }
     }
 
     public Position getAbsolutePosition() {
         int x = this.bounds.position().x();
         int y = this.bounds.position().y();
-        UIElement current = this.parent;
+        var current = this.parent;
         while (current != null) {
             x += current.getPosition().x() + current.getPadding().left();
             y += current.getPosition().y() + current.getPadding().top();
             current = current.getParent();
         }
+
         return new Position(x, y);
     }
 
     public Window findAncestorWindow() {
-        UIElement current = this.parent;
+        var current = this.parent;
         while (current != null) {
             if (current instanceof Window win) {
                 return win;
             }
+
             current = current.getParent();
         }
+
         return null;
     }
 
     @Override
     protected void renderSelf(GuiGraphicsExtractor graphics, Bounds absoluteBounds, int mouseX, int mouseY, float partialTick) {
-        Window win = findAncestorWindow();
+        var win = findAncestorWindow();
         if (win != null && !win.isVisible()) {
             return;
         }
 
         if (drawInsetWell) {
-            if (slotStyle == SlotStyle.VANILLA) {
+            if (slotStyle == SlotStyle.ORE_UI) {
+                GUIRenderHelper.drawOreUISlot(graphics, absoluteBounds);
+            } else if (slotStyle == SlotStyle.VANILLA) {
                 GUIRenderHelper.drawVanillaSlot(graphics, absoluteBounds);
             } else {
                 NineSliceRenderer.drawNineSlice(graphics, NineSliceRenderer.SLOT, absoluteBounds);

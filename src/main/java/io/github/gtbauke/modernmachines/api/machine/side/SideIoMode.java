@@ -56,18 +56,21 @@ public enum SideIoMode implements StringRepresentable {
     }
 
     public SideIoMode next() {
-        SideIoMode[] values = values();
+        var values = values();
         return values[(this.ordinal() + 1) % values.length];
     }
 
     public SideIoMode previous() {
-        SideIoMode[] values = values();
+        var values = values();
         return values[(this.ordinal() - 1 + values.length) % values.length];
     }
 
     public static SideIoMode fromIndex(int index) {
-        SideIoMode[] values = values();
-        if (index < 0 || index >= values.length) return NONE;
+        var values = values();
+        if (index < 0 || index >= values.length) {
+            return NONE;
+        }
+
         return values[index];
     }
 }

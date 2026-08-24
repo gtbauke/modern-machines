@@ -22,14 +22,13 @@ public class ModularAxeItem extends ModularToolItem {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        Player player = context.getPlayer();
-        BlockState state = level.getBlockState(pos);
-        ItemStack stack = context.getItemInHand();
+        var level = context.getLevel();
+        var pos = context.getClickedPos();
+        var player = context.getPlayer();
+        var state = level.getBlockState(pos);
+        var stack = context.getItemInHand();
 
-        // 1. Try stripping block
-        BlockState modifiedState = state.getToolModifiedState(context, ItemAbilities.AXE_STRIP, false);
+        var modifiedState = state.getToolModifiedState(context, ItemAbilities.AXE_STRIP, false);
         if (modifiedState != null) {
             level.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
             if (!level.isClientSide()) {
@@ -38,10 +37,10 @@ public class ModularAxeItem extends ModularToolItem {
                     applyDamage(stack, 1, player);
                 }
             }
+
             return InteractionResult.SUCCESS;
         }
 
-        // 2. Try scraping copper
         modifiedState = state.getToolModifiedState(context, ItemAbilities.AXE_SCRAPE, false);
         if (modifiedState != null) {
             level.playSound(player, pos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -52,10 +51,10 @@ public class ModularAxeItem extends ModularToolItem {
                     applyDamage(stack, 1, player);
                 }
             }
+
             return InteractionResult.SUCCESS;
         }
 
-        // 3. Try removing wax
         modifiedState = state.getToolModifiedState(context, ItemAbilities.AXE_WAX_OFF, false);
         if (modifiedState != null) {
             level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -66,6 +65,7 @@ public class ModularAxeItem extends ModularToolItem {
                     applyDamage(stack, 1, player);
                 }
             }
+
             return InteractionResult.SUCCESS;
         }
 

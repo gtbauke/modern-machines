@@ -45,16 +45,33 @@ public enum RelativeSide implements StringRepresentable {
      * Converts a world Direction to a relative side given the machine's front horizontal facing.
      */
     public static RelativeSide fromAbsolute(Direction facing, Direction side) {
-        if (side == Direction.UP) return TOP;
-        if (side == Direction.DOWN) return BOTTOM;
+        if (side == Direction.UP) {
+            return TOP;
+        }
+
+        if (side == Direction.DOWN) {
+            return BOTTOM;
+        }
+
         if (facing == null || facing.getAxis() == Direction.Axis.Y) {
             facing = Direction.NORTH;
         }
 
-        if (side == facing) return FRONT;
-        if (side == facing.getOpposite()) return BACK;
-        if (side == facing.getCounterClockWise()) return LEFT;
-        if (side == facing.getClockWise()) return RIGHT;
+        if (side == facing) {
+            return FRONT;
+        }
+
+        if (side == facing.getOpposite()) {
+            return BACK;
+        }
+
+        if (side == facing.getCounterClockWise()) {
+            return LEFT;
+        }
+
+        if (side == facing.getClockWise()) {
+            return RIGHT;
+        }
 
         return FRONT;
     }

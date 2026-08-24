@@ -44,16 +44,16 @@ public class ModernMachinesClient {
     }
 
     private void registerFluidModels(RegisterFluidModelsEvent event) {
-        net.minecraft.client.resources.model.sprite.Material stillMat = new net.minecraft.client.resources.model.sprite.Material(FLUID_STILL);
-        net.minecraft.client.resources.model.sprite.Material flowingMat = new net.minecraft.client.resources.model.sprite.Material(FLUID_FLOWING);
-        for (Material material : ModMaterials.getAllMaterials()) {
+        var stillMat = new net.minecraft.client.resources.model.sprite.Material(FLUID_STILL);
+        var flowingMat = new net.minecraft.client.resources.model.sprite.Material(FLUID_FLOWING);
+        for (var material : ModMaterials.getAllMaterials()) {
             if (material.hasForm(ResourceForm.MOLTEN) && material.isRegisteredLocally(ResourceForm.MOLTEN)) {
-                FlowingFluid stillFluid = material.getFluid(ResourceForm.MOLTEN);
-                FlowingFluid flowingFluid = material.getFlowingFluid(ResourceForm.MOLTEN);
+                var stillFluid = material.getFluid(ResourceForm.MOLTEN);
+                var flowingFluid = material.getFlowingFluid(ResourceForm.MOLTEN);
                 if (stillFluid != null && flowingFluid != null) {
                     int tintColor = 0xFF000000 | material.colorHex();
-                    FluidTintSource tintSource = FluidTintSources.constant(tintColor);
-                    FluidModel.Unbaked unbaked = new FluidModel.Unbaked(stillMat, flowingMat, null, tintSource);
+                    var tintSource = FluidTintSources.constant(tintColor);
+                    var unbaked = new FluidModel.Unbaked(stillMat, flowingMat, null, tintSource);
                     event.register(unbaked, stillFluid, flowingFluid);
                 }
             }
@@ -79,13 +79,13 @@ public class ModernMachinesClient {
         int steelTint = 0xFF000000 | ModMaterials.STEEL.colorHex();
         event.getBlockColors().register(List.of((BlockTintSource) state -> steelTint), io.github.gtbauke.modernmachines.core.registry.ModBlocks.STEEL_PIPE.get());
 
-        for (Material material : ModMaterials.getAllMaterials()) {
+        for (var material : ModMaterials.getAllMaterials()) {
             int tintColor = 0xFF000000 | material.colorHex();
             BlockTintSource tintSource = state -> tintColor;
 
-            for (ResourceForm form : material.supportedForms()) {
+            for (var form : material.supportedForms()) {
                 if (material.isRegisteredLocally(form) && form.isBlock()) {
-                    Block block = material.getBlock(form);
+                    var block = material.getBlock(form);
                     if (block != null) {
                         event.getBlockColors().register(List.of(tintSource), block);
                     }

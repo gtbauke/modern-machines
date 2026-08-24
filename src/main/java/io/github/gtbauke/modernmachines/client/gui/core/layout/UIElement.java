@@ -17,6 +17,10 @@ public class UIElement {
     protected int backgroundColor = 0;
     protected int borderColor = 0;
 
+    protected int flowWeight = 0;
+    protected boolean fillParentWidth = false;
+    protected boolean fillParentHeight = false;
+
     protected boolean dirty = true;
 
     public UIElement(Bounds bounds, Padding padding, UIElement parent, List<UIElement> children) {
@@ -65,9 +69,14 @@ public class UIElement {
         return bounds.size();
     }
 
-    public void setSize(Size size) {
+    public UIElement setSize(Size size) {
         this.bounds = new Bounds(this.bounds.position(), size);
         markDirty();
+        return this;
+    }
+
+    public UIElement setSize(int width, int height) {
+        return setSize(new Size(width, height));
     }
 
     public Padding getPadding() {
@@ -105,6 +114,36 @@ public class UIElement {
 
     public UIElement setBackground(int backgroundColor) {
         return setBackground(backgroundColor, 0);
+    }
+
+    public int getFlowWeight() {
+        return flowWeight;
+    }
+
+    public UIElement setFlowWeight(int flowWeight) {
+        this.flowWeight = Math.max(0, flowWeight);
+        markDirty();
+        return this;
+    }
+
+    public boolean isFillParentWidth() {
+        return fillParentWidth;
+    }
+
+    public UIElement setFillParentWidth(boolean fillParentWidth) {
+        this.fillParentWidth = fillParentWidth;
+        markDirty();
+        return this;
+    }
+
+    public boolean isFillParentHeight() {
+        return fillParentHeight;
+    }
+
+    public UIElement setFillParentHeight(boolean fillParentHeight) {
+        this.fillParentHeight = fillParentHeight;
+        markDirty();
+        return this;
     }
 
     public UIElement getParent() {
@@ -200,11 +239,42 @@ public class UIElement {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (UIElement child : children) {
+        for (var child : children) {
             if (child.mouseClicked(mouseX, mouseY, button)) {
                 return true;
             }
         }
+
+        return false;
+    }
+
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        for (var child : children) {
+            if (child.mouseReleased(mouseX, mouseY, button)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
+        for (var child : children) {
+            if (child.mouseDragged(mouseX, mouseY, button, dx, dy)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        for (var child : children) {
+            if (child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+                return true;
+            }
+        }
+
         return false;
     }
 

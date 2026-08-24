@@ -8,12 +8,8 @@ import io.github.gtbauke.modernmachines.client.gui.core.element.Row;
 import io.github.gtbauke.modernmachines.client.gui.core.element.SideTabElement;
 import io.github.gtbauke.modernmachines.client.gui.core.element.SlotElement;
 import io.github.gtbauke.modernmachines.client.gui.core.element.Spacer;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.AlignItems;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.Bounds;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.Padding;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.Position;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.Size;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.UIElement;
+import io.github.gtbauke.modernmachines.client.gui.core.layout.*;
+import io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper;
 import io.github.gtbauke.modernmachines.client.gui.screen.ModularContainerScreen;
 import io.github.gtbauke.modernmachines.client.gui.windows.SideConfigWindow;
 import io.github.gtbauke.modernmachines.client.gui.windows.Window;
@@ -24,131 +20,110 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 public class AlloySmelterScreen extends ModularContainerScreen<AlloySmelterMenu> {
-    public static final int VANILLA_BG = 0xFFC6C6C6;
-    public static final int VANILLA_BORDER = 0xFF373737;
 
     public AlloySmelterScreen(AlloySmelterMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+        super(menu, playerInventory, title, 176, 176);
     }
 
     @Override
     protected UIElement buildContent() {
-        if (this.menu.slots.size() < 4) {
-            return null;
-        }
-
-        // Left crafting column: Dual inputs -> Flame burn indicator -> Fuel slot
-        Column inputAndFuelColumn = Column.of(2, AlignItems.CENTER,
-            Row.of(2,
-                new SlotElement(this.menu.slots.get(0)),
-                new SlotElement(this.menu.slots.get(1))
-            ),
-            BurningElement.flame(() -> (double) this.menu.getBurnProgressScaled(100) / 100.0),
-            new SlotElement(this.menu.slots.get(2))
-        );
-
-        // Crafting section Row: [Inputs+Flame+Fuel] -> [Progress Arrow] -> [Output Slot]
-        Row craftingSection = Row.of(12, AlignItems.CENTER,
-            inputAndFuelColumn,
-            ProgressBarElement.arrow(() -> (double) this.menu.getProgressScaled(100) / 100.0),
-            new SlotElement(this.menu.slots.get(3))
-        );
-
-        // Top-level Column covering the full window with vanilla-styled background
-        Column root = Column.of(0, AlignItems.CENTER,
-            // Top margin spacer
-            Spacer.vertical(17),
-
-            // Machine Crafting Section
-            craftingSection,
-
-            // Vertical spacing between crafting section and player inventory (17 + 53 + 14 = 84px)
-            Spacer.vertical(14),
-
-            // Player Inventory & Hotbar (36 slots, perfectly centered)
-            new PlayerInventoryElement(this.menu, this.menu.getPlayerInventoryStart())
+        var root = Column.of(0, AlignItems.CENTER,
+                Spacer.vertical(16),
+                Row.of(2, AlignItems.CENTER,
+                        Column.of(2, AlignItems.CENTER, JustifyContent.CENTER,
+                                Row.of(2, AlignItems.CENTER, JustifyContent.CENTER,
+                                        new SlotElement(this.menu.slots.get(0)),
+                                        new SlotElement(this.menu.slots.get(1))
+                                ).setFillParentWidth(true),
+                                Row.of(2, AlignItems.CENTER, JustifyContent.CENTER,
+                                        BurningElement.flame(() -> (double) this.menu.getBurnProgressScaled(100) / 100.0)
+                                ).setFillParentWidth(true),
+                                Row.of(2, AlignItems.CENTER, JustifyContent.CENTER,
+                                        new SlotElement(this.menu.slots.get(2))
+                                ).setFillParentWidth(true)
+                        ).setFlowWeight(1).setFillParentHeight(true),
+                        Column.of(2, AlignItems.CENTER, JustifyContent.CENTER,
+                                ProgressBarElement.arrow(() -> (double) this.menu.getProgressScaled(100) / 100.0)
+                        ).setFlowWeight(1).setFillParentHeight(true),
+                        Column.of(2, AlignItems.CENTER, JustifyContent.CENTER,
+                                new SlotElement(this.menu.slots.get(3))
+                        ).setFlowWeight(1).setFillParentHeight(true)
+                ).setSize(new Size(162, 68)),
+                new PlayerInventoryElement(this.menu, this.menu.getPlayerInventoryStart())
         );
 
         root.setSize(new Size(this.imageWidth, this.imageHeight));
-        root.setBackground(VANILLA_BG, VANILLA_BORDER);
 
         return root;
     }
 
     @Override
     protected void initWindows() {
-        // 1. Upgrade Window & Tab
+        // Upgrade Window & Tab
         if (this.menu.slots.size() >= 8) {
             int winWidth = 80;
             int winHeight = 72;
-
-            // 2x2 Upgrade Slots Grid (40x40 px)
-            Column upgradeGrid = Column.of(4, AlignItems.CENTER,
-                Row.of(4,
-                    new SlotElement(this.menu.slots.get(4)),
-                    new SlotElement(this.menu.slots.get(5))
-                ),
-                Row.of(4,
-                    new SlotElement(this.menu.slots.get(6)),
-                    new SlotElement(this.menu.slots.get(7))
-                )
-            );
-
-            // Centered content column filling window body
-            Column winContent = Column.of(0, AlignItems.CENTER,
-                Spacer.vertical(4),
-                upgradeGrid
-            );
-            winContent.setSize(new Size(winWidth, winHeight - 18));
-
-            // Floating Draggable Upgrade Window (80 x 72 px, positioned on left of main screen)
-            Window upgradeWindow = new Window(
-                Component.literal("Upgrades"),
-                new Bounds(
-                    new Position(this.mainWindow.getPosition().x() - winWidth - 4, this.mainWindow.getPosition().y()),
-                    new Size(winWidth, winHeight)
-                ),
-                new Padding(0)
+            var upgradeWindow = new Window(
+                    Component.literal("Upgrades"),
+                    new Bounds(
+                            new Position(this.mainWindow.getPosition().x() - winWidth - 4, this.mainWindow.getPosition().y()),
+                            new Size(winWidth, winHeight)
+                    ),
+                    new Padding(0)
             );
             upgradeWindow.setHasHeader(true);
             upgradeWindow.setHeaderHeight(18);
             upgradeWindow.setDraggable(true);
             upgradeWindow.setHasCloseButton(true);
-            upgradeWindow.setVisible(false); // Closed initially
-            upgradeWindow.setContent(winContent);
+            upgradeWindow.setVisible(false);
+
+            var upgradeContent = Column.of(0, AlignItems.CENTER,
+                    Spacer.vertical(4),
+                    Column.of(4, AlignItems.CENTER,
+                            Row.of(4,
+                                    new SlotElement(this.menu.slots.get(4)),
+                                    new SlotElement(this.menu.slots.get(5))
+                            ),
+                            Row.of(4,
+                                    new SlotElement(this.menu.slots.get(6)),
+                                    new SlotElement(this.menu.slots.get(7))
+                            )
+                    )
+            );
+            upgradeContent.setSize(new Size(winWidth, winHeight - 18));
+            upgradeWindow.setContent(upgradeContent);
 
             this.windowManager.addWindow(upgradeWindow);
 
-            // Left-sided Tab docked at the very top of the main window (0 gap)
-            SideTabElement tab = new SideTabElement(
-                this.mainWindow,
-                upgradeWindow,
-                new ItemStack(ModItems.SPEED_UPGRADE.get()),
-                Component.literal("Upgrades"),
-                true
+            var tab = new SideTabElement(
+                    this.mainWindow,
+                    upgradeWindow,
+                    new ItemStack(ModItems.SPEED_UPGRADE.get()),
+                    Component.literal("Upgrades"),
+                    true
             );
             tab.updateDockedPosition(0);
             this.mainWindow.addChild(tab);
         }
 
-        // 2. Side Configuration Window & Tab
+        // Side Configuration Window & Tab
         if (this.menu.getSideConfigurable() != null) {
-            Position sideConfigPos = new Position(
-                this.mainWindow.getPosition().x() - SideConfigWindow.WINDOW_WIDTH - 4,
-                this.mainWindow.getPosition().y()
+            var sideConfigPos = new Position(
+                    this.mainWindow.getPosition().x() - SideConfigWindow.WINDOW_WIDTH - 4,
+                    this.mainWindow.getPosition().y()
             );
-            SideConfigWindow sideConfigWindow = new SideConfigWindow(this.menu.getSideConfigurable(), sideConfigPos);
+            var sideConfigWindow = new SideConfigWindow(this.menu.getSideConfigurable(), sideConfigPos);
             this.windowManager.addWindow(sideConfigWindow);
 
-            SideTabElement configTab = new SideTabElement(
-                this.mainWindow,
-                sideConfigWindow,
-                new ItemStack(ModItems.ENGINEERS_TABLET.get()),
-                Component.literal("Side Configuration"),
-                true
+            var sideConfigTab = new SideTabElement(
+                    this.mainWindow,
+                    sideConfigWindow,
+                    new ItemStack(ModItems.ENGINEERS_TABLET.get()),
+                    Component.literal("Side Configuration"),
+                    true
             );
-            configTab.updateDockedPosition(28); // Docked beneath Upgrades tab at 28px
-            this.mainWindow.addChild(configTab);
+            sideConfigTab.updateDockedPosition(28);
+            this.mainWindow.addChild(sideConfigTab);
         }
     }
 }

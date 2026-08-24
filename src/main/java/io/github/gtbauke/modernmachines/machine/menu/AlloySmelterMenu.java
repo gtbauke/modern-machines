@@ -109,7 +109,10 @@ public class AlloySmelterMenu extends BaseContainerMenu {
     public int getBurnProgressScaled(int pixels) {
         int litTime = this.data.get(2);
         int litDuration = this.data.get(3);
-        if (litDuration == 0) litDuration = 200;
+        if (litDuration == 0) {
+            litDuration = 200;
+        }
+
         return litTime * pixels / litDuration;
     }
 
@@ -142,31 +145,28 @@ public class AlloySmelterMenu extends BaseContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
+        var itemstack = ItemStack.EMPTY;
+        var slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
-            ItemStack stackInSlot = slot.getItem();
+            var stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
-            if (index == 3) { // Output slot -> move to player inventory (hotbar first)
+            if (index == 3) {
                 if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, playerInventoryEnd, true)) {
                     return ItemStack.EMPTY;
                 }
+
                 slot.onQuickCraft(stackInSlot, itemstack);
-            } else if (index >= 0 && index < containerSlotCount) { // Machine or Upgrade slots (0..7) -> player inventory
+            } else if (index >= 0 && index < containerSlotCount) {
                 if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, playerInventoryEnd, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else { // Player inventory / hotbar (8..43)
-                // 1. If it's an upgrade item -> try to move to upgrade slots (4..7)
+            } else {
                 if (stackInSlot.getItem() instanceof IUpgradeItem) {
                     if (!this.moveItemStackTo(stackInSlot, 4, 8, false)) {
                         return ItemStack.EMPTY;
                     }
-                }
-                // 2. Try to move into machine inputs/fuel (0..3)
-                else if (!this.moveItemStackTo(stackInSlot, 0, 3, false)) {
-                    // 3. Transfer between main inventory and hotbar
+                } else if (!this.moveItemStackTo(stackInSlot, 0, 3, false)) {
                     if (moveBetweenInventoryAndHotbar(stackInSlot, index)) {
                         return ItemStack.EMPTY;
                     }
@@ -185,6 +185,7 @@ public class AlloySmelterMenu extends BaseContainerMenu {
 
             slot.onTake(player, stackInSlot);
         }
+
         return itemstack;
     }
 }

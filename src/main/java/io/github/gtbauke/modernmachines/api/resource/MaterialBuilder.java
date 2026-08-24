@@ -156,21 +156,21 @@ public class MaterialBuilder {
             DeferredRegister<FluidType> fluidTypeRegister,
             DeferredRegister<Fluid> fluidRegister
     ) {
-        Map<ResourceForm, DeferredBlock<Block>> blockRegistry = new EnumMap<>(ResourceForm.class);
-        Map<ResourceForm, DeferredItem<? extends Item>> itemRegistry = new EnumMap<>(ResourceForm.class);
-        Map<ResourceForm, Supplier<? extends FluidType>> fluidTypeRegistry = new EnumMap<>(ResourceForm.class);
-        Map<ResourceForm, Supplier<? extends FlowingFluid>> fluidSourceRegistry = new EnumMap<>(ResourceForm.class);
-        Map<ResourceForm, Supplier<? extends FlowingFluid>> fluidFlowingRegistry = new EnumMap<>(ResourceForm.class);
+        var blockRegistry = new EnumMap<ResourceForm, DeferredBlock<Block>>(ResourceForm.class);
+        var itemRegistry = new EnumMap<ResourceForm, DeferredItem<? extends Item>>(ResourceForm.class);
+        var fluidTypeRegistry = new EnumMap<ResourceForm, Supplier<? extends FluidType>>(ResourceForm.class);
+        var fluidSourceRegistry = new EnumMap<ResourceForm, Supplier<? extends FlowingFluid>>(ResourceForm.class);
+        var fluidFlowingRegistry = new EnumMap<ResourceForm, Supplier<? extends FlowingFluid>>(ResourceForm.class);
 
-        for (ResourceForm form : this.forms) {
+        for (var form : this.forms) {
             if (this.delegates.containsKey(form)) {
                 continue;
             }
 
-            String registryName = form.getRegistryName(this.name);
+            var registryName = form.getRegistryName(this.name);
 
             if (form.isFluid()) {
-                Supplier<FluidType> fluidType = fluidTypeRegister.register(registryName, () ->
+                var fluidType = fluidTypeRegister.register(registryName, () ->
                         new FluidType(FluidType.Properties.create()
                                 .density(3000)
                                 .temperature(this.meltingPoint + 273)
@@ -178,12 +178,16 @@ public class MaterialBuilder {
                                 .descriptionId("fluid_type." + ModernMachines.MOD_ID + "." + registryName)));
                 fluidTypeRegistry.put(form, fluidType);
 
+                @SuppressWarnings("unchecked")
                 Supplier<FlowingFluid>[] sourceHolder = new Supplier[1];
+                @SuppressWarnings("unchecked")
                 Supplier<FlowingFluid>[] flowingHolder = new Supplier[1];
+                @SuppressWarnings("unchecked")
                 DeferredBlock<Block>[] blockHolder = new DeferredBlock[1];
+                @SuppressWarnings("unchecked")
                 DeferredItem<BucketItem>[] bucketHolder = new DeferredItem[1];
 
-                BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(
+                var properties = new BaseFlowingFluid.Properties(
                         fluidType,
                         () -> sourceHolder[0].get(),
                         () -> flowingHolder[0].get()
@@ -205,12 +209,12 @@ public class MaterialBuilder {
                         p -> p.craftRemainder(Items.BUCKET).stacksTo(1));
                 itemRegistry.put(form, (DeferredItem<? extends Item>) (DeferredItem<?>) bucketHolder[0]);
             } else if (form.isBlock()) {
-                DeferredBlock<Block> deferredBlock = registerBlockForForm(form, registryName, blockRegister);
+                var deferredBlock = registerBlockForForm(form, registryName, blockRegister);
                 blockRegistry.put(form, deferredBlock);
-                DeferredItem<BlockItem> blockItem = itemRegister.registerSimpleBlockItem(registryName, deferredBlock);
+                var blockItem = itemRegister.registerSimpleBlockItem(registryName, deferredBlock);
                 itemRegistry.put(form, blockItem);
             } else if (form.isItem()) {
-                DeferredItem<Item> deferredItem = itemRegister.registerSimpleItem(registryName);
+                var deferredItem = itemRegister.registerSimpleItem(registryName);
                 itemRegistry.put(form, deferredItem);
             }
         }
@@ -282,6 +286,7 @@ public class MaterialBuilder {
         if (str == null || str.isEmpty()) {
             return str;
         }
+
         return Character.toUpperCase(str.charAt(0)) + str.substring(1);
     }
 }

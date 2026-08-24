@@ -76,8 +76,11 @@ public record MaterialToolStats(
         if (displayName.isPresent() && !displayName.get().isEmpty()) {
             return displayName.get();
         }
-        String path = materialId.getPath();
-        if (path.isEmpty()) return "Unknown";
+        var path = materialId.getPath();
+        if (path.isEmpty()) {
+            return "Unknown";
+        }
+
         return Character.toUpperCase(path.charAt(0)) + path.substring(1).replace("_", " ");
     }
 

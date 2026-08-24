@@ -69,7 +69,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     public static ModularToolData getData(ItemStack stack) {
-        ModularToolData data = stack.get(ModDataComponents.MODULAR_TOOL_DATA.get());
+        var data = stack.get(ModDataComponents.MODULAR_TOOL_DATA.get());
         return data != null ? data : ModularToolData.EMPTY;
     }
 
@@ -79,9 +79,11 @@ public abstract class ModularToolItem extends Item {
     }
 
     public static int getMaxDurability(ItemStack stack) {
-        ModularToolData data = getData(stack);
-        Identifier headMat = data.getPartMaterial(PartSlot.HEAD);
-        if (headMat == null) return 100;
+        var data = getData(stack);
+        var headMat = data.getPartMaterial(PartSlot.HEAD);
+        if (headMat == null) {
+            return 100;
+        }
 
         int baseDurability = MaterialStatsManager.getStats(headMat)
                 .flatMap(MaterialToolStats::head)
@@ -89,7 +91,7 @@ public abstract class ModularToolItem extends Item {
                 .orElse(100);
 
         float handleMultiplier = 1.0f;
-        Identifier handleMat = data.getPartMaterial(PartSlot.HANDLE);
+        var handleMat = data.getPartMaterial(PartSlot.HANDLE);
         if (handleMat != null) {
             handleMultiplier = MaterialStatsManager.getStats(handleMat)
                     .flatMap(MaterialToolStats::handle)
@@ -98,7 +100,7 @@ public abstract class ModularToolItem extends Item {
         }
 
         int bindingBonus = 0;
-        Identifier bindingMat = data.getPartMaterial(PartSlot.BINDING);
+        var bindingMat = data.getPartMaterial(PartSlot.BINDING);
         if (bindingMat != null) {
             bindingBonus = MaterialStatsManager.getStats(bindingMat)
                     .flatMap(MaterialToolStats::binding)
@@ -107,14 +109,15 @@ public abstract class ModularToolItem extends Item {
         }
 
         int attachmentBonus = 0;
-        Identifier tipMat = data.getPartMaterial(PartSlot.TIP);
+        var tipMat = data.getPartMaterial(PartSlot.TIP);
         if (tipMat != null) {
             attachmentBonus += MaterialStatsManager.getStats(tipMat)
                     .flatMap(MaterialToolStats::attachment)
                     .map(MaterialToolStats.AttachmentStats::bonusDurability)
                     .orElse(0);
         }
-        Identifier pommelMat = data.getPartMaterial(PartSlot.POMMEL);
+
+        var pommelMat = data.getPartMaterial(PartSlot.POMMEL);
         if (pommelMat != null) {
             attachmentBonus += MaterialStatsManager.getStats(pommelMat)
                     .flatMap(MaterialToolStats::attachment)
@@ -128,9 +131,11 @@ public abstract class ModularToolItem extends Item {
     }
 
     public static float getMiningSpeed(ItemStack stack) {
-        ModularToolData data = getData(stack);
-        Identifier headMat = data.getPartMaterial(PartSlot.HEAD);
-        if (headMat == null) return 1.0f;
+        var data = getData(stack);
+        var headMat = data.getPartMaterial(PartSlot.HEAD);
+        if (headMat == null) {
+            return 1.0f;
+        }
 
         float baseSpeed = MaterialStatsManager.getStats(headMat)
                 .flatMap(MaterialToolStats::head)
@@ -138,7 +143,7 @@ public abstract class ModularToolItem extends Item {
                 .orElse(1.0f);
 
         float handleMultiplier = 1.0f;
-        Identifier handleMat = data.getPartMaterial(PartSlot.HANDLE);
+        var handleMat = data.getPartMaterial(PartSlot.HANDLE);
         if (handleMat != null) {
             handleMultiplier = MaterialStatsManager.getStats(handleMat)
                     .flatMap(MaterialToolStats::handle)
@@ -152,9 +157,11 @@ public abstract class ModularToolItem extends Item {
     }
 
     public static float getAttackDamage(ItemStack stack, float baseDamage) {
-        ModularToolData data = getData(stack);
-        Identifier headMat = data.getPartMaterial(PartSlot.HEAD);
-        if (headMat == null) return baseDamage;
+        var data = getData(stack);
+        var headMat = data.getPartMaterial(PartSlot.HEAD);
+        if (headMat == null) {
+            return baseDamage;
+        }
 
         float headDamage = MaterialStatsManager.getStats(headMat)
                 .flatMap(MaterialToolStats::head)
@@ -162,14 +169,15 @@ public abstract class ModularToolItem extends Item {
                 .orElse(1.0f);
 
         float attachmentBonus = 0.0f;
-        Identifier tipMat = data.getPartMaterial(PartSlot.TIP);
+        var tipMat = data.getPartMaterial(PartSlot.TIP);
         if (tipMat != null) {
             attachmentBonus += MaterialStatsManager.getStats(tipMat)
                     .flatMap(MaterialToolStats::attachment)
                     .map(MaterialToolStats.AttachmentStats::attackDamageBonus)
                     .orElse(0.0f);
         }
-        Identifier pommelMat = data.getPartMaterial(PartSlot.POMMEL);
+
+        var pommelMat = data.getPartMaterial(PartSlot.POMMEL);
         if (pommelMat != null) {
             attachmentBonus += MaterialStatsManager.getStats(pommelMat)
                     .flatMap(MaterialToolStats::attachment)
@@ -183,10 +191,10 @@ public abstract class ModularToolItem extends Item {
     }
 
     public static float getAttackSpeed(ItemStack stack, float baseSpeed) {
-        ModularToolData data = getData(stack);
+        var data = getData(stack);
         float speedBonus = 0.0f;
 
-        Identifier pommelMat = data.getPartMaterial(PartSlot.POMMEL);
+        var pommelMat = data.getPartMaterial(PartSlot.POMMEL);
         if (pommelMat != null) {
             speedBonus += MaterialStatsManager.getStats(pommelMat)
                     .flatMap(MaterialToolStats::attachment)
@@ -200,10 +208,10 @@ public abstract class ModularToolItem extends Item {
     }
 
     public static String getHarvestTier(ItemStack stack) {
-        ModularToolData data = getData(stack);
-        Identifier tipMat = data.getPartMaterial(PartSlot.TIP);
+        var data = getData(stack);
+        var tipMat = data.getPartMaterial(PartSlot.TIP);
         if (tipMat != null) {
-            Optional<String> override = MaterialStatsManager.getStats(tipMat)
+            var override = MaterialStatsManager.getStats(tipMat)
                     .flatMap(MaterialToolStats::attachment)
                     .flatMap(MaterialToolStats.AttachmentStats::tierOverride);
             if (override.isPresent()) {
@@ -211,33 +219,37 @@ public abstract class ModularToolItem extends Item {
             }
         }
 
-        Identifier headMat = data.getPartMaterial(PartSlot.HEAD);
+        var headMat = data.getPartMaterial(PartSlot.HEAD);
         if (headMat != null) {
             return MaterialStatsManager.getStats(headMat)
                     .flatMap(MaterialToolStats::head)
                     .map(MaterialToolStats.HeadStats::harvestTier)
                     .orElse("iron");
         }
+
         return "wood";
     }
 
     public static void recalculateComponents(ItemStack stack) {
-        if (!(stack.getItem() instanceof ModularToolItem toolItem)) return;
-        ModularToolData data = getData(stack);
-        if (data.parts().isEmpty()) return;
+        if (!(stack.getItem() instanceof ModularToolItem toolItem)) {
+            return;
+        }
 
-        // 1. Durability Components
+        var data = getData(stack);
+        if (data.parts().isEmpty()) {
+            return;
+        }
+
         int maxDurability = getMaxDurability(stack);
         stack.set(DataComponents.MAX_DAMAGE, maxDurability);
         if (!stack.has(DataComponents.DAMAGE)) {
             stack.set(DataComponents.DAMAGE, data.damage());
         }
 
-        // 2. Attribute Modifiers Component
         float totalDamage = getAttackDamage(stack, toolItem.baseAttackDamage);
         float totalSpeed = getAttackSpeed(stack, toolItem.baseAttackSpeed);
 
-        ItemAttributeModifiers.Builder attrBuilder = ItemAttributeModifiers.builder();
+        var attrBuilder = ItemAttributeModifiers.builder();
         attrBuilder.add(
                 Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(BASE_ATTACK_DAMAGE_ID, totalDamage, AttributeModifier.Operation.ADD_VALUE),
@@ -250,14 +262,14 @@ public abstract class ModularToolItem extends Item {
         );
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, attrBuilder.build());
 
-        // 3. Tool Component (Mining Speed & Harvest Rule)
         float miningSpeed = getMiningSpeed(stack);
-        List<Tool.Rule> rules = new ArrayList<>();
+        var rules = new ArrayList<Tool.Rule>();
         if (toolItem.mineableTag != null) {
             BuiltInRegistries.BLOCK.get(toolItem.mineableTag).ifPresent(tag -> {
                 rules.add(Tool.Rule.minesAndDrops(tag, miningSpeed));
             });
         }
+
         if (toolItem instanceof ModularSwordItem) {
             rules.add(Tool.Rule.minesAndDrops(HolderSet.direct(Blocks.COBWEB.builtInRegistryHolder()), 15.0F));
             BuiltInRegistries.BLOCK.get(BlockTags.SWORD_EFFICIENT).ifPresent(tag -> {
@@ -273,6 +285,7 @@ public abstract class ModularToolItem extends Item {
         if (!stack.has(DataComponents.MAX_DAMAGE) || !stack.has(DataComponents.ATTRIBUTE_MODIFIERS)) {
             recalculateComponents(stack);
         }
+
         super.inventoryTick(stack, level, entity, slot);
     }
 
@@ -291,7 +304,7 @@ public abstract class ModularToolItem extends Item {
         int max = getMaxDamage(stack);
         int clamped = Math.min(Math.max(0, damage), max);
         stack.set(DataComponents.DAMAGE, clamped);
-        ModularToolData data = getData(stack);
+        var data = getData(stack);
         if (data.damage() != clamped) {
             stack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data.withDamage(clamped));
         }
@@ -322,13 +335,14 @@ public abstract class ModularToolItem extends Item {
         if (mineableTag != null && state.is(mineableTag)) {
             return getMiningSpeed(stack);
         }
+
         return super.getDestroySpeed(stack, state);
     }
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
         if (mineableTag != null && state.is(mineableTag)) {
-            String tier = getHarvestTier(stack);
+            var tier = getHarvestTier(stack);
             if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
                 return tier.equalsIgnoreCase("diamond") || tier.equalsIgnoreCase("netherite") || tier.equalsIgnoreCase("titanium");
             } else if (state.is(BlockTags.NEEDS_IRON_TOOL)) {
@@ -336,8 +350,10 @@ public abstract class ModularToolItem extends Item {
             } else if (state.is(BlockTags.NEEDS_STONE_TOOL)) {
                 return !tier.equalsIgnoreCase("wood");
             }
+
             return true;
         }
+
         return super.isCorrectToolForDrops(stack, state);
     }
 
@@ -351,15 +367,17 @@ public abstract class ModularToolItem extends Item {
         if (!level.isClientSide() && state.getDestroySpeed(level, pos) != 0.0F) {
             applyDamage(stack, 1, entity);
         }
+
         return true;
     }
 
     public void applyDamage(ItemStack stack, int amount, LivingEntity entity) {
-        ModularToolData data = getData(stack);
+        var data = getData(stack);
         int unbreaking = data.getModifierLevel(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "reinforced"));
         if (unbreaking > 0 && entity.getRandom().nextInt(1 + unbreaking) > 0) {
-            return; // Durability saved
+            return;
         }
+
         stack.hurtAndBreak(amount, entity, EquipmentSlot.MAINHAND);
         int newDmg = stack.getOrDefault(DataComponents.DAMAGE, 0);
         if (data.damage() != newDmg) {
@@ -369,13 +387,12 @@ public abstract class ModularToolItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
-        ModularToolData data = getData(stack);
+        var data = getData(stack);
         if (data.parts().isEmpty()) {
             tooltip.accept(Component.translatable("tooltip.modernmachines.unassembled_tool").withStyle(ChatFormatting.RED));
             return;
         }
 
-        // Parts Breakdown
         tooltip.accept(Component.translatable("tooltip.modernmachines.parts_header").withStyle(ChatFormatting.GOLD));
         data.parts().forEach((slot, matId) -> {
             tooltip.accept(Component.literal("  ")
@@ -384,7 +401,6 @@ public abstract class ModularToolItem extends Item {
                     .append(Component.translatable("material." + matId.getNamespace() + "." + matId.getPath()).withStyle(ChatFormatting.WHITE)));
         });
 
-        // Stats Breakdown
         tooltip.accept(Component.translatable("tooltip.modernmachines.stats_header").withStyle(ChatFormatting.GOLD));
         int currentDurability = getMaxDamage(stack) - getDamage(stack);
         tooltip.accept(Component.literal("  ")
@@ -396,11 +412,10 @@ public abstract class ModularToolItem extends Item {
         tooltip.accept(Component.literal("  ")
                 .append(Component.translatable("tooltip.modernmachines.stat.harvest_tier", getHarvestTier(stack)).withStyle(ChatFormatting.YELLOW)));
 
-        // Modifiers & Upgrade Slots
         int usedSlots = data.getUsedModifierSlots();
         int maxSlots = data.getMaxModifierSlots();
         tooltip.accept(Component.translatable("tooltip.modernmachines.modifiers_header", usedSlots, maxSlots).withStyle(ChatFormatting.AQUA));
-        for (ModifierEntry mod : data.modifiers()) {
+        for (var mod : data.modifiers()) {
             tooltip.accept(Component.literal("  - ")
                     .append(Component.translatable("modifier." + mod.id().getNamespace() + "." + mod.id().getPath()))
                     .append(" " + mod.level()).withStyle(ChatFormatting.LIGHT_PURPLE));
@@ -411,20 +426,21 @@ public abstract class ModularToolItem extends Item {
 
     @Override
     public Component getName(ItemStack stack) {
-        ModularToolData data = getData(stack);
-        Identifier headMat = data.getPartMaterial(PartSlot.HEAD);
+        var data = getData(stack);
+        var headMat = data.getPartMaterial(PartSlot.HEAD);
         if (headMat != null) {
-            String matName = MaterialStatsManager.getStats(headMat)
+            var matName = MaterialStatsManager.getStats(headMat)
                     .map(MaterialToolStats::getEffectiveDisplayName)
                     .orElse(headMat.getPath());
             return Component.translatable(this.getDescriptionId() + ".named", matName);
         }
+
         return super.getName(stack);
     }
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        ModularToolData data = getData(stack);
+        var data = getData(stack);
         return !data.modifiers().isEmpty() || super.isFoil(stack);
     }
 }

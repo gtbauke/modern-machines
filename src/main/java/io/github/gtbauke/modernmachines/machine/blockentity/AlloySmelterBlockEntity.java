@@ -111,9 +111,10 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
 
     public boolean isFormed() {
         if (this.level != null) {
-            BlockPos heaterPos = this.worldPosition.below();
+            var heaterPos = this.worldPosition.below();
             this.formed = this.level.getBlockState(heaterPos).is(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
         }
+
         return this.formed;
     }
 
@@ -122,16 +123,14 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, AlloySmelterBlockEntity blockEntity) {
-        // Client particles
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, AlloySmelterBlockEntity blockEntity) {
         boolean wasLit = blockEntity.isLit();
         boolean changed = false;
 
-        // 1. Multiblock Formation Check (Heater must be directly below)
-        BlockPos heaterPos = pos.below();
-        BlockState heaterState = level.getBlockState(heaterPos);
+        var heaterPos = pos.below();
+        var heaterState = level.getBlockState(heaterPos);
         boolean isHeaterBelow = heaterState.is(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
 
         if (blockEntity.formed != isHeaterBelow) {
@@ -140,51 +139,49 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
             if (state.hasProperty(BasicAlloySmelterControllerBlock.FORMED) && state.getValue(BasicAlloySmelterControllerBlock.FORMED) != isHeaterBelow) {
                 level.setBlock(pos, state.setValue(BasicAlloySmelterControllerBlock.FORMED, isHeaterBelow), 3);
             }
+
             if (isHeaterBelow && heaterState.hasProperty(BasicAlloySmelterHeaterBlock.FORMED) && !heaterState.getValue(BasicAlloySmelterHeaterBlock.FORMED)) {
                 level.setBlock(heaterPos, heaterState.setValue(BasicAlloySmelterHeaterBlock.FORMED, true), 3);
             }
         }
 
-        // 2. Consume Lit Time (Accelerated during active smelting under speed upgrades)
         if (blockEntity.litTime > 0) {
             int burnRate = (blockEntity.progress > 0) ? Math.max(1, (int) Math.round(blockEntity.stats.getSpeedMultiplier())) : 1;
             blockEntity.litTime = Math.max(0, blockEntity.litTime - burnRate);
         }
 
-        // 3. Process Smelting if formed
         if (blockEntity.isFormed() && level instanceof ServerLevel serverLevel) {
-            AlloySmelterInput recipeInput = new AlloySmelterInput(List.of(
+            var recipeInput = new AlloySmelterInput(List.of(
                     blockEntity.items.get(SLOT_INPUT_A),
                     blockEntity.items.get(SLOT_INPUT_B)
             ));
 
-            Optional<RecipeHolder<AlloySmeltingRecipe>> optionalRecipe = blockEntity.quickCheck.getRecipeFor(recipeInput, serverLevel);
+            var optionalRecipe = blockEntity.quickCheck.getRecipeFor(recipeInput, serverLevel);
 
             if (optionalRecipe.isPresent()) {
-                AlloySmeltingRecipe recipe = optionalRecipe.get().value();
+                var recipe = optionalRecipe.get().value();
 
                 if (blockEntity.canCraft(recipe, recipeInput)) {
-                    // Ignite fuel if not lit
                     if (blockEntity.litTime <= 0) {
-                        ItemStack fuelStack = blockEntity.items.get(SLOT_FUEL);
+                        var fuelStack = blockEntity.items.get(SLOT_FUEL);
                         if (!fuelStack.isEmpty()) {
                             int rawBurnDuration = level.fuelValues().burnDuration(fuelStack);
                             if (rawBurnDuration > 0) {
                                 int effectiveBurnDuration = (int) Math.round(rawBurnDuration * blockEntity.stats.getEfficiencyMultiplier());
                                 blockEntity.litDuration = effectiveBurnDuration;
                                 blockEntity.litTime = effectiveBurnDuration;
-                                net.minecraft.world.item.ItemStackTemplate remainderTemplate = fuelStack.getItem().getCraftingRemainder();
-                                ItemStack remainder = remainderTemplate != null ? remainderTemplate.create() : ItemStack.EMPTY;
+                                var remainderTemplate = fuelStack.getItem().getCraftingRemainder();
+                                var remainder = remainderTemplate != null ? remainderTemplate.create() : ItemStack.EMPTY;
                                 fuelStack.shrink(1);
                                 if (fuelStack.isEmpty()) {
                                     blockEntity.items.set(SLOT_FUEL, remainder);
                                 }
+
                                 changed = true;
                             }
                         }
                     }
 
-                    // Progress cooking if active fire
                     if (blockEntity.litTime > 0) {
                         blockEntity.progress++;
                         int baseCookTime = recipe.cookingTime() > 0 ? recipe.cookingTime() : 200;
@@ -197,7 +194,6 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
                             changed = true;
                         }
                     } else {
-                        // Cooldown slowly if no fire
                         if (blockEntity.progress > 0) {
                             blockEntity.progress = Math.max(0, blockEntity.progress - 2);
                         }
@@ -209,17 +205,16 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
                 blockEntity.progress = 0;
             }
         } else {
-            // Unformed or broken -> reset progress
             blockEntity.progress = 0;
         }
 
-        // 4. Update LIT blockstate properties on both controller and heater
         boolean isNowLit = blockEntity.isLit();
         if (wasLit != isNowLit) {
             changed = true;
             if (state.hasProperty(BasicAlloySmelterControllerBlock.LIT)) {
                 level.setBlock(pos, state.setValue(BasicAlloySmelterControllerBlock.LIT, isNowLit), 3);
             }
+
             if (blockEntity.isFormed() && heaterState.hasProperty(BasicAlloySmelterHeaterBlock.LIT)) {
                 level.setBlock(heaterPos, heaterState.setValue(BasicAlloySmelterHeaterBlock.LIT, isNowLit), 3);
             }
@@ -229,43 +224,51 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
             blockEntity.setChanged();
         }
 
-        // 4. Auto-Eject and Auto-Pull Transfer
         blockEntity.tickAutoTransfer(level, pos, state);
     }
 
     private boolean canCraft(AlloySmeltingRecipe recipe, AlloySmelterInput input) {
-        ItemStack outputSlot = this.items.get(SLOT_OUTPUT);
-        ItemStack recipeResult = recipe.assemble(input);
+        var outputSlot = this.items.get(SLOT_OUTPUT);
+        var recipeResult = recipe.assemble(input);
 
-        if (recipeResult.isEmpty()) return false;
-        if (outputSlot.isEmpty()) return true;
-        if (!ItemStack.isSameItemSameComponents(outputSlot, recipeResult)) return false;
+        if (recipeResult.isEmpty()) {
+            return false;
+        }
+
+        if (outputSlot.isEmpty()) {
+            return true;
+        }
+
+        if (!ItemStack.isSameItemSameComponents(outputSlot, recipeResult)) {
+            return false;
+        }
 
         return outputSlot.getCount() + recipeResult.getCount() <= outputSlot.getMaxStackSize();
     }
 
     private void craftRecipe(AlloySmeltingRecipe recipe, AlloySmelterInput input) {
-        ItemStack recipeResult = recipe.assemble(input);
+        var recipeResult = recipe.assemble(input);
 
-        // Consume required ingredient counts
-        for (SizedIngredient sizedIngredient : recipe.inputs()) {
+        for (var sizedIngredient : recipe.inputs()) {
             int needed = sizedIngredient.count();
             for (int slotIdx : SLOTS_INPUT) {
-                ItemStack stack = this.items.get(slotIdx);
+                var stack = this.items.get(slotIdx);
                 if (!stack.isEmpty() && sizedIngredient.ingredient().test(stack)) {
                     int take = Math.min(needed, stack.getCount());
                     stack.shrink(take);
                     if (stack.isEmpty()) {
                         this.items.set(slotIdx, ItemStack.EMPTY);
                     }
+
                     needed -= take;
-                    if (needed <= 0) break;
+                    if (needed <= 0) {
+                        break;
+                    }
                 }
             }
         }
 
-        // Output result
-        ItemStack outputSlot = this.items.get(SLOT_OUTPUT);
+        var outputSlot = this.items.get(SLOT_OUTPUT);
         if (outputSlot.isEmpty()) {
             this.items.set(SLOT_OUTPUT, recipeResult.copy());
         } else {
@@ -280,9 +283,12 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     public boolean isEmpty() {
-        for (ItemStack stack : this.items) {
-            if (!stack.isEmpty()) return false;
+        for (var stack : this.items) {
+            if (!stack.isEmpty()) {
+                return false;
+            }
         }
+
         return true;
     }
 
@@ -307,6 +313,7 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
         if (stack.getCount() > this.getMaxStackSize()) {
             stack.setCount(this.getMaxStackSize());
         }
+
         setChanged();
     }
 
@@ -348,7 +355,10 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
         ContainerHelper.loadAllItems(input, this.items);
         this.progress = input.getIntOr("progress", 0);
         this.maxProgress = input.getIntOr("max_progress", 200);
-        if (this.maxProgress == 0) this.maxProgress = 200;
+        if (this.maxProgress == 0) {
+            this.maxProgress = 200;
+        }
+
         this.litTime = input.getIntOr("lit_time", 0);
         this.litDuration = input.getIntOr("lit_duration", 0);
         this.formed = input.getBooleanOr("formed", false);
@@ -373,7 +383,7 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
     @Override
     public int[] getSlotsForFace(Direction side) {
         if (side != null) {
-            SideIoMode mode = this.sideConfig.getModeAbsolute(MachineCapabilityType.ITEM, getMachineFacing(), side);
+            var mode = this.sideConfig.getModeAbsolute(MachineCapabilityType.ITEM, getMachineFacing(), side);
             return switch (mode) {
                 case INPUT -> new int[]{SLOT_INPUT_A, SLOT_INPUT_B, SLOT_FUEL};
                 case OUTPUT -> SLOTS_OUTPUT;
@@ -381,28 +391,39 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity {
                 case NONE -> SLOTS_NONE;
             };
         }
+
         return SLOTS_ALL;
     }
 
     @Override
     public boolean canPlaceItemThroughFace(int index, ItemStack itemStack, @Nullable Direction direction) {
         if (direction != null) {
-            SideIoMode mode = this.sideConfig.getModeAbsolute(MachineCapabilityType.ITEM, getMachineFacing(), direction);
-            if (!mode.allowsInput()) return false;
+            var mode = this.sideConfig.getModeAbsolute(MachineCapabilityType.ITEM, getMachineFacing(), direction);
+            if (!mode.allowsInput()) {
+                return false;
+            }
         }
-        if (index == SLOT_OUTPUT) return false;
+
+        if (index == SLOT_OUTPUT) {
+            return false;
+        }
+
         if (index == SLOT_FUEL) {
             return this.level != null && this.level.fuelValues().burnDuration(itemStack) > 0;
         }
+
         return true;
     }
 
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
         if (direction != null) {
-            SideIoMode mode = this.sideConfig.getModeAbsolute(MachineCapabilityType.ITEM, getMachineFacing(), direction);
-            if (!mode.allowsOutput()) return false;
+            var mode = this.sideConfig.getModeAbsolute(MachineCapabilityType.ITEM, getMachineFacing(), direction);
+            if (!mode.allowsOutput()) {
+                return false;
+            }
         }
+
         return index == SLOT_OUTPUT;
     }
 }

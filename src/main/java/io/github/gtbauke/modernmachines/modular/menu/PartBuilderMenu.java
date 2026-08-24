@@ -60,7 +60,7 @@ public class PartBuilderMenu extends BaseContainerMenu {
             }
         });
 
-        // Output Slot 2: (x=124, y=34 - Strictly Read-Only)
+        // Output Slot 2: (x=124, y=34)
         this.addSlot(new Slot(resultContainer, 0, 124, 34) {
             @Override
             public boolean mayPlace(ItemStack stack) {
@@ -69,8 +69,8 @@ public class PartBuilderMenu extends BaseContainerMenu {
 
             @Override
             public void onTake(Player player, ItemStack stack) {
-                ItemStack patternStack = inputContainer.getItem(0);
-                ItemStack matStack = inputContainer.getItem(1);
+                var patternStack = inputContainer.getItem(0);
+                var matStack = inputContainer.getItem(1);
 
                 if (patternStack.getItem() instanceof PatternItem pattern) {
                     pattern.getTargetPart().ifPresent(partType -> {
@@ -83,49 +83,46 @@ public class PartBuilderMenu extends BaseContainerMenu {
             }
         });
 
-        // Add 36-slot player inventory & hotbar
         addStandardPlayerInventory(playerInventory);
     }
 
     @Override
     public void slotsChanged(Container container) {
-        ItemStack patternStack = inputContainer.getItem(0);
-        ItemStack matStack = inputContainer.getItem(1);
+        var patternStack = inputContainer.getItem(0);
+        var matStack = inputContainer.getItem(1);
 
         if (patternStack.isEmpty() || matStack.isEmpty() || !(patternStack.getItem() instanceof PatternItem pattern)) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
-        Optional<ToolPartType> optPart = pattern.getTargetPart();
+        var optPart = pattern.getTargetPart();
         if (optPart.isEmpty()) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
-        ToolPartType partType = optPart.get();
+        var partType = optPart.get();
         if (matStack.getCount() < partType.getMaterialCost()) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
-        // 1. Check built-in Java materials
-        Material matchedMaterial = findMaterialFromItem(matStack.getItem());
+        var matchedMaterial = findMaterialFromItem(matStack.getItem());
         if (matchedMaterial != null) {
-            ToolPartItem partItem = ModItems.getToolPart(partType, matchedMaterial);
+            var partItem = ModItems.getToolPart(partType, matchedMaterial);
             if (partItem != null) {
                 resultContainer.setItem(0, new ItemStack(partItem));
                 return;
             }
         }
 
-        // 2. Check dynamic datapack materials
-        Optional<MaterialToolStats> optDatapackStats = MaterialStatsManager.getMaterialForIngredient(matStack);
+        var optDatapackStats = MaterialStatsManager.getMaterialForIngredient(matStack);
         if (optDatapackStats.isPresent()) {
-            MaterialToolStats stats = optDatapackStats.get();
-            ToolPartItem basePartItem = ModItems.getToolPart(partType, ModMaterials.IRON);
+            var stats = optDatapackStats.get();
+            var basePartItem = ModItems.getToolPart(partType, ModMaterials.IRON);
             if (basePartItem != null) {
-                ItemStack dynamicPartStack = new ItemStack(basePartItem);
+                var dynamicPartStack = new ItemStack(basePartItem);
                 dynamicPartStack.set(ModDataComponents.MATERIAL_ID.get(), stats.materialId());
                 resultContainer.setItem(0, dynamicPartStack);
                 return;
@@ -136,13 +133,14 @@ public class PartBuilderMenu extends BaseContainerMenu {
     }
 
     private Material findMaterialFromItem(Item item) {
-        for (Material material : ModMaterials.getAllMaterials()) {
-            for (ResourceForm form : material.supportedForms()) {
+        for (var material : ModMaterials.getAllMaterials()) {
+            for (var form : material.supportedForms()) {
                 if (material.isForm(form, item)) {
                     return material;
                 }
             }
         }
+
         return null;
     }
 
@@ -153,23 +151,23 @@ public class PartBuilderMenu extends BaseContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
+        var itemstack = ItemStack.EMPTY;
+        var slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
-            ItemStack stackInSlot = slot.getItem();
+            var stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
-            if (index == 2) { // Output slot -> move to player inventory (hotbar first)
+            if (index == 2) {
                 if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, playerInventoryEnd, true)) {
                     return ItemStack.EMPTY;
                 }
+
                 slot.onQuickCraft(stackInSlot, itemstack);
-            } else if (index == 0 || index == 1) { // Machine inputs -> move to player inventory
+            } else if (index == 0 || index == 1) {
                 if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, playerInventoryEnd, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else { // Player inventory / hotbar (3..38)
-                // 1. If pattern item, try pattern slot (0)
+            } else {
                 if (stackInSlot.getItem() instanceof PatternItem) {
                     if (!this.moveItemStackTo(stackInSlot, 0, 1, false)) {
                         if (moveBetweenInventoryAndHotbar(stackInSlot, index)) {
@@ -177,7 +175,6 @@ public class PartBuilderMenu extends BaseContainerMenu {
                         }
                     }
                 } else {
-                    // 2. Try material input slot (1)
                     if (!this.moveItemStackTo(stackInSlot, 1, 2, false)) {
                         if (moveBetweenInventoryAndHotbar(stackInSlot, index)) {
                             return ItemStack.EMPTY;
@@ -198,6 +195,7 @@ public class PartBuilderMenu extends BaseContainerMenu {
 
             slot.onTake(player, stackInSlot);
         }
+
         return itemstack;
     }
 

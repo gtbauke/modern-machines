@@ -23,24 +23,26 @@ public class ModularHoeItem extends ModularToolItem {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        BlockState state = level.getBlockState(pos);
+        if (context.getClickedFace() == Direction.DOWN) {
+            return super.useOn(context);
+        }
 
-        if (context.getClickedFace() != Direction.DOWN) {
-            Player player = context.getPlayer();
-            BlockState modifiedState = state.getToolModifiedState(context, ItemAbilities.HOE_TILL, false);
+        var level = context.getLevel();
+        var pos = context.getClickedPos();
+        var state = level.getBlockState(pos);
+        var player = context.getPlayer();
+        var modifiedState = state.getToolModifiedState(context, ItemAbilities.HOE_TILL, false);
 
-            if (modifiedState != null && level.getBlockState(pos.above()).isAir()) {
-                level.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                if (!level.isClientSide()) {
-                    level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
-                    if (player != null) {
-                        applyDamage(context.getItemInHand(), 1, player);
-                    }
+        if (modifiedState != null && level.getBlockState(pos.above()).isAir()) {
+            level.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            if (!level.isClientSide()) {
+                level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
+                if (player != null) {
+                    applyDamage(context.getItemInHand(), 1, player);
                 }
-                return InteractionResult.SUCCESS;
             }
+
+            return InteractionResult.SUCCESS;
         }
 
         return super.useOn(context);

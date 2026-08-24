@@ -17,16 +17,17 @@ public class SpeedUpgradeItem extends UpgradeItem {
 
     @Override
     public void applyUpgrade(MachineStats stats, ItemStack stack, int count) {
-        if (count <= 0) return;
-        // +25% Speed per upgrade
+        if (count <= 0) {
+            return;
+        }
+
         stats.addModifier(MachineStatType.SPEED, MachineStatModifier.multiplyBase("speed_upgrade", 0.25 * count));
-        // +10% Energy / Fuel Consumption penalty per upgrade
         stats.addModifier(MachineStatType.ENERGY_EFFICIENCY, MachineStatModifier.multiplyBase("speed_upgrade_penalty", -0.08 * count));
     }
 
     @Override
     public List<Component> getUpgradeTooltips(ItemStack stack) {
-        List<Component> list = new ArrayList<>();
+        var list = new ArrayList<Component>();
         list.add(Component.translatable("tooltip.modernmachines.upgrade.speed_boost", "+25%").withStyle(ChatFormatting.GREEN));
         list.add(Component.translatable("tooltip.modernmachines.upgrade.energy_cost_penalty", "+8%").withStyle(ChatFormatting.RED));
         list.add(Component.translatable("tooltip.modernmachines.upgrade.max_stack", MAX_UPGRADE_STACK).withStyle(ChatFormatting.DARK_GRAY));

@@ -17,14 +17,16 @@ public class EnergyEfficiencyUpgradeItem extends UpgradeItem {
 
     @Override
     public void applyUpgrade(MachineStats stats, ItemStack stack, int count) {
-        if (count <= 0) return;
-        // +20% Efficiency per upgrade (reduces energy/fuel cost)
+        if (count <= 0) {
+            return;
+        }
+
         stats.addModifier(MachineStatType.ENERGY_EFFICIENCY, MachineStatModifier.multiplyBase("efficiency_upgrade", 0.20 * count));
     }
 
     @Override
     public List<Component> getUpgradeTooltips(ItemStack stack) {
-        List<Component> list = new ArrayList<>();
+        var list = new ArrayList<Component>();
         list.add(Component.translatable("tooltip.modernmachines.upgrade.energy_efficiency_boost", "+20%").withStyle(ChatFormatting.GREEN));
         list.add(Component.translatable("tooltip.modernmachines.upgrade.max_stack", MAX_UPGRADE_STACK).withStyle(ChatFormatting.DARK_GRAY));
         return list;

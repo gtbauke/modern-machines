@@ -79,7 +79,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
             }
         });
 
-        // Output Slot 4: (x=134, y=34 - Strictly Read-Only)
+        // Output Slot 4: (x=134, y=34)
         this.addSlot(new Slot(resultContainer, 0, 134, 34) {
             @Override
             public boolean mayPlace(ItemStack stack) {
@@ -109,7 +109,6 @@ public class TinkeringTableMenu extends BaseContainerMenu {
             }
         });
 
-        // Add 36-slot player inventory & hotbar
         addStandardPlayerInventory(playerInventory);
     }
 
@@ -135,10 +134,10 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     }
 
     private void updateAssemblyResult() {
-        ItemStack headStack = inputContainer.getItem(0);
-        ItemStack handleStack = inputContainer.getItem(1);
-        ItemStack bindingStack = inputContainer.getItem(2);
-        ItemStack attachStack = inputContainer.getItem(3);
+        var headStack = inputContainer.getItem(0);
+        var handleStack = inputContainer.getItem(1);
+        var bindingStack = inputContainer.getItem(2);
+        var attachStack = inputContainer.getItem(3);
 
         if (headStack.isEmpty() || handleStack.isEmpty()) {
             resultContainer.setItem(0, ItemStack.EMPTY);
@@ -157,7 +156,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
             return;
         }
 
-        Item targetTool = determineToolItem(headPart.getPartType());
+        var targetTool = determineToolItem(headPart.getPartType());
         if (targetTool == null) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
@@ -180,34 +179,34 @@ public class TinkeringTableMenu extends BaseContainerMenu {
             }
         }
 
-        Identifier headId = ToolPartItem.getMaterialId(headStack);
-        Identifier handleId = ToolPartItem.getMaterialId(handleStack);
+        var headId = ToolPartItem.getMaterialId(headStack);
+        var handleId = ToolPartItem.getMaterialId(handleStack);
 
         if (headId == null || handleId == null) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
-        Map<PartSlot, Identifier> parts = new EnumMap<>(PartSlot.class);
+        var parts = new EnumMap<PartSlot, Identifier>(PartSlot.class);
         parts.put(PartSlot.HEAD, headId);
         parts.put(PartSlot.HANDLE, handleId);
 
         if (!bindingStack.isEmpty()) {
-            Identifier bindingId = ToolPartItem.getMaterialId(bindingStack);
+            var bindingId = ToolPartItem.getMaterialId(bindingStack);
             if (bindingId != null) {
                 parts.put(PartSlot.BINDING, bindingId);
             }
         }
 
         if (!attachStack.isEmpty() && attachStack.getItem() instanceof ToolPartItem attachPart) {
-            Identifier attachId = ToolPartItem.getMaterialId(attachStack);
+            var attachId = ToolPartItem.getMaterialId(attachStack);
             if (attachId != null) {
                 parts.put(attachPart.getPartType().getSlot(), attachId);
             }
         }
 
-        ModularToolData toolData = new ModularToolData(parts, java.util.Collections.emptyList(), 0, 0);
-        ItemStack resultStack = new ItemStack(targetTool);
+        var toolData = new ModularToolData(parts, java.util.Collections.emptyList(), 0, 0);
+        var resultStack = new ItemStack(targetTool);
         resultStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), toolData);
         ModularToolItem.recalculateComponents(resultStack);
 
@@ -215,39 +214,38 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     }
 
     private void updateUpgradeResult() {
-        ItemStack toolStack = inputContainer.getItem(0);
+        var toolStack = inputContainer.getItem(0);
         if (toolStack.isEmpty() || !(toolStack.getItem() instanceof ModularToolItem)) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
-        ModularToolData data = toolStack.get(ModDataComponents.MODULAR_TOOL_DATA.get());
+        var data = toolStack.get(ModDataComponents.MODULAR_TOOL_DATA.get());
         if (data == null) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
-        ItemStack mod1 = inputContainer.getItem(1);
-        ItemStack mod2 = inputContainer.getItem(2);
+        var mod1 = inputContainer.getItem(1);
+        var mod2 = inputContainer.getItem(2);
 
         if (mod1.isEmpty() && mod2.isEmpty()) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
-        ModularToolData modifiedData = data;
+        var modifiedData = data;
 
-        // Process Mod 1
         if (!mod1.isEmpty()) {
             modifiedData = applyModifierItem(modifiedData, mod1.getItem());
         }
-        // Process Mod 2
+
         if (!mod2.isEmpty() && modifiedData != null) {
             modifiedData = applyModifierItem(modifiedData, mod2.getItem());
         }
 
         if (modifiedData != null && modifiedData != data) {
-            ItemStack resultStack = toolStack.copy();
+            var resultStack = toolStack.copy();
             resultStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), modifiedData);
             ModularToolItem.recalculateComponents(resultStack);
             resultContainer.setItem(0, resultStack);
@@ -281,25 +279,25 @@ public class TinkeringTableMenu extends BaseContainerMenu {
     }
 
     private void updateRepairResult() {
-        ItemStack toolStack = inputContainer.getItem(0);
-        ItemStack matStack = inputContainer.getItem(1);
+        var toolStack = inputContainer.getItem(0);
+        var matStack = inputContainer.getItem(1);
 
         if (toolStack.isEmpty() || matStack.isEmpty() || !(toolStack.getItem() instanceof ModularToolItem)) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
-        ModularToolData data = toolStack.get(ModDataComponents.MODULAR_TOOL_DATA.get());
+        var data = toolStack.get(ModDataComponents.MODULAR_TOOL_DATA.get());
         if (data == null) {
             resultContainer.setItem(0, ItemStack.EMPTY);
             return;
         }
 
         if (matStack.getItem() instanceof ToolPartItem newPart) {
-            Identifier newMatId = ToolPartItem.getMaterialId(matStack);
+            var newMatId = ToolPartItem.getMaterialId(matStack);
             if (newMatId != null) {
-                ModularToolData swappedData = data.withPart(newPart.getPartType().getSlot(), newMatId);
-                ItemStack resultStack = toolStack.copy();
+                var swappedData = data.withPart(newPart.getPartType().getSlot(), newMatId);
+                var resultStack = toolStack.copy();
                 resultStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), swappedData);
                 ModularToolItem.recalculateComponents(resultStack);
                 resultContainer.setItem(0, resultStack);
@@ -311,7 +309,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
         if (curDmg > 0) {
             int repairAmount = (int) (ModularToolItem.getMaxDurability(toolStack) * 0.35f);
             int newDamage = Math.max(0, curDmg - repairAmount);
-            ItemStack resultStack = toolStack.copy();
+            var resultStack = toolStack.copy();
             resultStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data.withDamage(newDamage));
             resultStack.set(DataComponents.DAMAGE, newDamage);
             ModularToolItem.recalculateComponents(resultStack);
@@ -338,6 +336,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
             setActiveTab(id);
             return true;
         }
+
         return false;
     }
 
@@ -348,25 +347,24 @@ public class TinkeringTableMenu extends BaseContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
+        var itemstack = ItemStack.EMPTY;
+        var slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
-            ItemStack stackInSlot = slot.getItem();
+            var stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
-            if (index == 4) { // Output slot -> move to player inventory (hotbar first)
+            if (index == 4) {
                 if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, playerInventoryEnd, true)) {
                     return ItemStack.EMPTY;
                 }
+
                 slot.onQuickCraft(stackInSlot, itemstack);
-            } else if (index >= 0 && index < containerSlotCount) { // Workstation inputs -> move to player inventory
+            } else if (index >= 0 && index < containerSlotCount) {
                 if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, playerInventoryEnd, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else { // Player inventory / hotbar (5..40)
-                // 1. Try to place into workstation inputs (0..4)
+            } else {
                 if (!this.moveItemStackTo(stackInSlot, 0, 4, false)) {
-                    // 2. Transfer between main inventory and hotbar
                     if (moveBetweenInventoryAndHotbar(stackInSlot, index)) {
                         return ItemStack.EMPTY;
                     }
@@ -385,6 +383,7 @@ public class TinkeringTableMenu extends BaseContainerMenu {
 
             slot.onTake(player, stackInSlot);
         }
+
         return itemstack;
     }
 

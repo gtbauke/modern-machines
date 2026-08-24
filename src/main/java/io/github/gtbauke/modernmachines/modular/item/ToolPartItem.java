@@ -46,18 +46,19 @@ public class ToolPartItem extends Item {
     @Override
     public Component getName(ItemStack stack) {
         if (stack.has(ModDataComponents.MATERIAL_ID.get())) {
-            Identifier matId = stack.get(ModDataComponents.MATERIAL_ID.get());
-            String matName = MaterialStatsManager.getStats(matId)
+            var matId = stack.get(ModDataComponents.MATERIAL_ID.get());
+            var matName = MaterialStatsManager.getStats(matId)
                     .map(s -> s.getEffectiveDisplayName())
                     .orElse(matId.getPath());
             return Component.literal(matName + " " + partType.getDisplayName());
         }
+
         return super.getName(stack);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
-        Identifier matId = getMaterialId(stack);
+        var matId = getMaterialId(stack);
         if (matId == null) {
             super.appendHoverText(stack, context, display, tooltip, flag);
             return;
@@ -88,7 +89,7 @@ public class ToolPartItem extends Item {
 
             if (!stats.traits().isEmpty()) {
                 tooltip.accept(Component.translatable("tooltip.modernmachines.traits_header").withStyle(ChatFormatting.YELLOW));
-                for (MaterialTrait trait : stats.traits()) {
+                for (var trait : stats.traits()) {
                     tooltip.accept(Component.literal(" • ").append(trait.getDisplayName()).withStyle(ChatFormatting.AQUA));
                 }
             }

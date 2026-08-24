@@ -15,8 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class PartBuilderScreen extends ModularContainerScreen<PartBuilderMenu> {
-    public static final int VANILLA_BG = 0xFFC6C6C6;
-    public static final int VANILLA_BORDER = 0xFF373737;
 
     public PartBuilderScreen(PartBuilderMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -28,8 +26,7 @@ public class PartBuilderScreen extends ModularContainerScreen<PartBuilderMenu> {
             return null;
         }
 
-        // Crafting section: [Pattern Slot] + [Material Slot] -> [Arrow] -> [Output Part Slot]
-        Row craftingSection = Row.of(12, AlignItems.CENTER,
+        var craftingSection = Row.of(12, AlignItems.CENTER,
                 Row.of(4, AlignItems.CENTER,
                         new SlotElement(this.menu.slots.get(0)),
                         new SlotElement(this.menu.slots.get(1))
@@ -38,8 +35,7 @@ public class PartBuilderScreen extends ModularContainerScreen<PartBuilderMenu> {
                 new SlotElement(this.menu.slots.get(2))
         );
 
-        // Root container with player inventory
-        Column root = Column.of(0, AlignItems.CENTER,
+        var root = Column.of(0, AlignItems.CENTER,
                 Spacer.vertical(20),
                 craftingSection,
                 Spacer.vertical(20),
@@ -47,7 +43,7 @@ public class PartBuilderScreen extends ModularContainerScreen<PartBuilderMenu> {
         );
 
         root.setSize(new Size(this.imageWidth, this.imageHeight));
-        root.setBackground(VANILLA_BG, VANILLA_BORDER);
+        root.setBackground(io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper.ORE_BG_PRIMARY, io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper.ORE_BORDER_DARK);
 
         return root;
     }

@@ -20,6 +20,7 @@ public class SideTabElement extends UIElement {
     public static final int TAB_HEIGHT = 28;
 
     public enum TabStyle {
+        ORE_UI,
         VANILLA,
         TEXTURE_NINE_SLICE
     }
@@ -31,7 +32,7 @@ public class SideTabElement extends UIElement {
     private int iconV = -1;
     private Component tooltip;
     private boolean leftSided = true;
-    private TabStyle tabStyle = TabStyle.VANILLA;
+    private TabStyle tabStyle = TabStyle.ORE_UI;
     private Runnable onClickAction;
     private boolean active = false;
 
@@ -75,6 +76,10 @@ public class SideTabElement extends UIElement {
     }
 
     public boolean isActive() {
+        if (targetWindow != null) {
+            return targetWindow.isVisible();
+        }
+
         return active;
     }
 
@@ -93,6 +98,14 @@ public class SideTabElement extends UIElement {
         return targetWindow;
     }
 
+    public ItemStack getIconItem() {
+        return iconItem;
+    }
+
+    public Component getTooltip() {
+        return tooltip;
+    }
+
     public boolean isLeftSided() {
         return leftSided;
     }
@@ -102,16 +115,14 @@ public class SideTabElement extends UIElement {
     }
 
     public SideTabElement setTabStyle(TabStyle tabStyle) {
-        this.tabStyle = tabStyle != null ? tabStyle : TabStyle.VANILLA;
+        this.tabStyle = tabStyle != null ? tabStyle : TabStyle.ORE_UI;
         markDirty();
         return this;
     }
 
     public void updateDockedPosition(int yOffset) {
         if (parentWindow != null) {
-            // Local offset relative to parentWindow's top-left corner
-            int x = leftSided ? (-TAB_WIDTH + 1)
-                              : (parentWindow.getSize().width() - 1);
+            int x = leftSided ? (-TAB_WIDTH + 1) : (parentWindow.getSize().width() - 1);
             int y = yOffset;
             setPosition(new Position(x, y));
         }
@@ -124,11 +135,12 @@ public class SideTabElement extends UIElement {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            Position clickPos = new Position((int) mouseX, (int) mouseY);
+            var clickPos = new Position((int) mouseX, (int) mouseY);
             if (getAbsoluteBounds().contains(clickPos)) {
                 if (onClickAction != null) {
                     onClickAction.run();
                 }
+
                 if (targetWindow != null) {
                     boolean opening = !targetWindow.isVisible();
                     targetWindow.setVisible(opening);
@@ -142,34 +154,37 @@ public class SideTabElement extends UIElement {
                         targetWindow.calculateLayout();
                     }
                 }
+
                 return true;
             }
         }
+
         return false;
     }
 
     @Override
     protected void renderSelf(GuiGraphicsExtractor graphics, Bounds absoluteBounds, int mouseX, int mouseY, float partialTick) {
-        // 1. Draw tab background frame
-        if (tabStyle == TabStyle.VANILLA) {
+        boolean hovered = absoluteBounds.contains(new Position(mouseX, mouseY));
+        boolean currentActive = isActive();
+
+        if (tabStyle == TabStyle.ORE_UI) {
+            GUIRenderHelper.drawOreUITab(graphics, absoluteBounds, leftSided, currentActive, hovered);
+        } else if (tabStyle == TabStyle.VANILLA) {
             GUIRenderHelper.drawVanillaTab(graphics, absoluteBounds, leftSided);
         } else {
             NineSliceRenderer.drawNineSlice(graphics, leftSided ? NineSliceRenderer.TAB_LEFT : NineSliceRenderer.TAB_RIGHT, absoluteBounds);
         }
 
-        // 2. Centered 16x16 icon position (matching standard inventory slot item dimensions)
         int iconX = absoluteBounds.position().x() + (leftSided ? 6 : 6);
         int iconY = absoluteBounds.position().y() + (absoluteBounds.size().height() - 16) / 2;
 
-        // 3. Draw icon item or atlas sprite
         if (!iconItem.isEmpty()) {
             graphics.fakeItem(iconItem, iconX, iconY);
         } else if (iconU >= 0 && iconV >= 0) {
             graphics.blit(RenderPipelines.GUI_TEXTURED, NineSliceRenderer.GUI_ATLAS, iconX, iconY, (float) iconU, (float) iconV, 16, 16, 256, 256);
         }
 
-        // 4. Draw tooltip on hover
-        if (tooltip != null && absoluteBounds.contains(new Position(mouseX, mouseY))) {
+        if (tooltip != null && hovered) {
             GUIRenderHelper.drawTooltip(graphics, Minecraft.getInstance().font, List.of(tooltip), new Position(mouseX, mouseY));
         }
     }

@@ -37,21 +37,26 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
     public static void initDefaults() {
         STATS.clear();
         for (Material mat : ModMaterials.getAllMaterials()) {
-            Identifier id = mat.getId();
+            var id = mat.getId();
             int durability = Math.max(100, (int) (mat.hardness() * 120));
             float speed = Math.max(2.0f, mat.hardness() * 1.5f);
             float damage = Math.max(1.0f, mat.hardness() * 0.8f);
-            String tier = mat.hardness() >= 6.0f ? "diamond" : mat.hardness() >= 4.0f ? "iron" : "stone";
+            var tier = mat.hardness() >= 6.0f ? "diamond" : mat.hardness() >= 4.0f ? "iron" : "stone";
 
-            Item mainItem = mat.getItem(ResourceForm.INGOT);
-            if (mainItem == null) mainItem = mat.getItem(ResourceForm.GEM);
-            if (mainItem == null) mainItem = mat.getItem(ResourceForm.RAW_ORE);
+            var mainItem = mat.getItem(ResourceForm.INGOT);
+            if (mainItem == null) {
+                mainItem = mat.getItem(ResourceForm.GEM);
+            }
 
-            Optional<Ingredient> ingredient = mainItem != null
+            if (mainItem == null) {
+                mainItem = mat.getItem(ResourceForm.RAW_ORE);
+            }
+
+            var ingredient = mainItem != null
                     ? Optional.of(Ingredient.of(mainItem))
-                    : Optional.empty();
+                    : Optional.<Ingredient>empty();
 
-            List<MaterialTrait> traits = new java.util.ArrayList<>();
+            var traits = new java.util.ArrayList<MaterialTrait>();
             MaterialToolStats.AttachmentStats attachmentStats;
 
             if (mat == ModMaterials.LAPIS_LAZULI) {
@@ -70,7 +75,7 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
                 attachmentStats = new MaterialToolStats.AttachmentStats((int) (durability * 0.1f), damage * 0.3f, 0.2f, Optional.empty());
             }
 
-            MaterialToolStats stats = new MaterialToolStats(
+            var stats = new MaterialToolStats(
                     id,
                     Optional.of(mat.displayName()),
                     mat.colorHex(),
@@ -104,9 +109,11 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
     }
 
     public static Optional<MaterialToolStats> getMaterialForIngredient(ItemStack stack) {
-        if (stack.isEmpty()) return Optional.empty();
+        if (stack.isEmpty()) {
+            return Optional.empty();
+        }
 
-        for (MaterialToolStats stats : STATS.values()) {
+        for (var stats : STATS.values()) {
             if (stats.ingredient().isPresent() && stats.ingredient().get().test(stack)) {
                 return Optional.of(stats);
             }

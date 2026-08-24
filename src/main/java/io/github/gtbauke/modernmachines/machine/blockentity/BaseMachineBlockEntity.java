@@ -70,6 +70,7 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
         if (this.getBlockState().hasProperty(HorizontalDirectionalBlock.FACING)) {
             return this.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
         }
+
         return Direction.NORTH;
     }
 
@@ -96,36 +97,43 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
      */
     protected void tickAutoTransfer(Level level, BlockPos pos, BlockState state) {
         transferCooldown++;
-        if (transferCooldown < 4) return;
+        if (transferCooldown < 4) {
+            return;
+        }
+
         transferCooldown = 0;
 
-        if (level.isClientSide()) return;
+        if (level.isClientSide()) {
+            return;
+        }
 
-        Direction facing = getMachineFacing();
+        var facing = getMachineFacing();
 
-        // 1. Auto-Eject Items
         if (sideConfig.isAutoEject(MachineCapabilityType.ITEM)) {
-            for (RelativeSide relSide : RelativeSide.values()) {
-                SideIoMode mode = sideConfig.getMode(MachineCapabilityType.ITEM, relSide);
+            for (var relSide : RelativeSide.values()) {
+                var mode = sideConfig.getMode(MachineCapabilityType.ITEM, relSide);
                 if (mode.allowsOutput()) {
-                    Direction worldDir = relSide.toAbsolute(facing);
+                    var worldDir = relSide.toAbsolute(facing);
                     int[] outputSlots = getSlotsForFace(worldDir);
-                    if (outputSlots.length == 0) continue;
+                    if (outputSlots.length == 0) {
+                        continue;
+                    }
 
-                    BlockPos targetPos = pos.relative(worldDir);
-                    ResourceHandler<ItemResource> targetHandler = level.getCapability(Capabilities.Item.BLOCK, targetPos, worldDir.getOpposite());
+                    var targetPos = pos.relative(worldDir);
+                    var targetHandler = level.getCapability(Capabilities.Item.BLOCK, targetPos, worldDir.getOpposite());
                     if (targetHandler != null) {
                         for (int slot : outputSlots) {
-                            ItemStack inSlot = getItem(slot);
+                            var inSlot = getItem(slot);
                             if (!inSlot.isEmpty() && canTakeItemThroughFace(slot, inSlot, worldDir)) {
-                                ItemStack toTransfer = inSlot.copyWithCount(Math.min(inSlot.getCount(), 8));
-                                ItemStack remainder = ItemUtil.insertItemReturnRemaining(targetHandler, toTransfer, false, null);
+                                var toTransfer = inSlot.copyWithCount(Math.min(inSlot.getCount(), 8));
+                                var remainder = ItemUtil.insertItemReturnRemaining(targetHandler, toTransfer, false, null);
                                 int transferred = toTransfer.getCount() - remainder.getCount();
                                 if (transferred > 0) {
                                     inSlot.shrink(transferred);
                                     if (inSlot.isEmpty()) {
                                         setItem(slot, ItemStack.EMPTY);
                                     }
+
                                     setChanged();
                                     break;
                                 }
@@ -136,29 +144,31 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
             }
         }
 
-        // 2. Auto-Pull Items
         if (sideConfig.isAutoPull(MachineCapabilityType.ITEM)) {
-            for (RelativeSide relSide : RelativeSide.values()) {
-                SideIoMode mode = sideConfig.getMode(MachineCapabilityType.ITEM, relSide);
+            for (var relSide : RelativeSide.values()) {
+                var mode = sideConfig.getMode(MachineCapabilityType.ITEM, relSide);
                 if (mode.allowsInput()) {
-                    Direction worldDir = relSide.toAbsolute(facing);
+                    var worldDir = relSide.toAbsolute(facing);
                     int[] inputSlots = getSlotsForFace(worldDir);
-                    if (inputSlots.length == 0) continue;
+                    if (inputSlots.length == 0) {
+                        continue;
+                    }
 
-                    BlockPos targetPos = pos.relative(worldDir);
-                    ResourceHandler<ItemResource> targetHandler = level.getCapability(Capabilities.Item.BLOCK, targetPos, worldDir.getOpposite());
+                    var targetPos = pos.relative(worldDir);
+                    var targetHandler = level.getCapability(Capabilities.Item.BLOCK, targetPos, worldDir.getOpposite());
                     if (targetHandler != null) {
                         for (int targetSlot = 0; targetSlot < targetHandler.size(); targetSlot++) {
-                            ItemStack extracted = ItemUtil.getStack(targetHandler, targetSlot);
+                            var extracted = ItemUtil.getStack(targetHandler, targetSlot);
                             if (!extracted.isEmpty()) {
                                 for (int slot : inputSlots) {
                                     if (canPlaceItemThroughFace(slot, extracted, worldDir)) {
-                                        ItemStack existing = getItem(slot);
+                                        var existing = getItem(slot);
                                         int maxToTake = Math.min(extracted.getCount(), 8);
                                         if (existing.isEmpty() || (ItemStack.isSameItemSameComponents(existing, extracted) && existing.getCount() < existing.getMaxStackSize())) {
                                             if (!existing.isEmpty()) {
                                                 maxToTake = Math.min(maxToTake, existing.getMaxStackSize() - existing.getCount());
                                             }
+
                                             if (maxToTake > 0) {
                                                 try (var tx = Transaction.open(null)) {
                                                     int reallyExtracted = targetHandler.extract(targetSlot, ItemResource.of(extracted), maxToTake, tx);
@@ -169,6 +179,7 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
                                                         } else {
                                                             existing.grow(reallyExtracted);
                                                         }
+
                                                         setChanged();
                                                         return;
                                                     }

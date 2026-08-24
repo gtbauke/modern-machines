@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableMenu> {
-    public static final int VANILLA_BG = 0xFFC6C6C6;
-    public static final int VANILLA_BORDER = 0xFF373737;
 
     private UIElement currentContent;
     private final List<SideTabElement> modeTabs = new ArrayList<>();
@@ -44,15 +42,14 @@ public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableM
         UIElement craftingSection;
 
         if (activeTab == 0) {
-            // Tab 0: Assembly (Diamond/Cross Formation: Head=0, Handle=1, Binding=2, Attachment=3 -> Result=4)
-            SlotElement headSlot = new SlotElement(this.menu.slots.get(0));
-            SlotElement handleSlot = new SlotElement(this.menu.slots.get(1));
-            SlotElement bindingSlot = new SlotElement(this.menu.slots.get(2));
-            SlotElement attachSlot = new SlotElement(this.menu.slots.get(3));
-            SlotElement resultSlot = new SlotElement(this.menu.slots.get(4));
+            var headSlot = new SlotElement(this.menu.slots.get(0));
+            var handleSlot = new SlotElement(this.menu.slots.get(1));
+            var bindingSlot = new SlotElement(this.menu.slots.get(2));
+            var attachSlot = new SlotElement(this.menu.slots.get(3));
+            var resultSlot = new SlotElement(this.menu.slots.get(4));
 
-            Row middleRow = Row.of(2, AlignItems.CENTER, bindingSlot, attachSlot);
-            Column diamondGrid = Column.of(2, AlignItems.CENTER, headSlot, middleRow, handleSlot);
+            var middleRow = Row.of(2, AlignItems.CENTER, bindingSlot, attachSlot);
+            var diamondGrid = Column.of(2, AlignItems.CENTER, headSlot, middleRow, handleSlot);
 
             craftingSection = Row.of(12, AlignItems.CENTER,
                     diamondGrid,
@@ -60,13 +57,12 @@ public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableM
                     resultSlot
             );
         } else if (activeTab == 1) {
-            // Tab 1: Modifying/Upgrading (Tool=0, Mod1=1, Mod2=2 -> Result=4)
-            SlotElement toolSlot = new SlotElement(this.menu.slots.get(0));
-            SlotElement mod1Slot = new SlotElement(this.menu.slots.get(1));
-            SlotElement mod2Slot = new SlotElement(this.menu.slots.get(2));
-            SlotElement resultSlot = new SlotElement(this.menu.slots.get(4));
+            var toolSlot = new SlotElement(this.menu.slots.get(0));
+            var mod1Slot = new SlotElement(this.menu.slots.get(1));
+            var mod2Slot = new SlotElement(this.menu.slots.get(2));
+            var resultSlot = new SlotElement(this.menu.slots.get(4));
 
-            Column modInputs = Column.of(2, AlignItems.CENTER, mod1Slot, mod2Slot);
+            var modInputs = Column.of(2, AlignItems.CENTER, mod1Slot, mod2Slot);
 
             craftingSection = Row.of(10, AlignItems.CENTER,
                     toolSlot,
@@ -75,10 +71,9 @@ public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableM
                     resultSlot
             );
         } else {
-            // Tab 2: Repairing (Tool=0, Material=1 -> Result=4)
-            SlotElement toolSlot = new SlotElement(this.menu.slots.get(0));
-            SlotElement repairSlot = new SlotElement(this.menu.slots.get(1));
-            SlotElement resultSlot = new SlotElement(this.menu.slots.get(4));
+            var toolSlot = new SlotElement(this.menu.slots.get(0));
+            var repairSlot = new SlotElement(this.menu.slots.get(1));
+            var resultSlot = new SlotElement(this.menu.slots.get(4));
 
             craftingSection = Row.of(12, AlignItems.CENTER,
                     toolSlot,
@@ -88,8 +83,7 @@ public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableM
             );
         }
 
-        // Top-level Column covering the full window
-        Column root = Column.of(0, AlignItems.CENTER,
+        var root = Column.of(0, AlignItems.CENTER,
                 Spacer.vertical(14),
                 craftingSection,
                 Spacer.vertical(12),
@@ -97,7 +91,7 @@ public class TinkeringTableScreen extends ModularContainerScreen<TinkeringTableM
         );
 
         root.setSize(new Size(this.imageWidth, this.imageHeight));
-        root.setBackground(VANILLA_BG, VANILLA_BORDER);
+        root.setBackground(io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper.ORE_BG_PRIMARY, io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper.ORE_BORDER_DARK);
 
         this.currentContent = root;
         return root;

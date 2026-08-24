@@ -28,29 +28,40 @@ import net.minecraft.world.item.Items;
 public class RecipeCatalog {
 
     public static List<PartBuilderRecipe> buildPartBuilderRecipes() {
-        List<PartBuilderRecipe> recipes = new ArrayList<>();
+        var recipes = new ArrayList<PartBuilderRecipe>();
 
-        for (Material mat : ModMaterials.getAllMaterials()) {
-            // Find input raw items (Ingot / Gem / Raw Ore / Storage Block)
-            List<ItemStack> inputs = new ArrayList<>();
-            Item ingot = mat.getItem(ResourceForm.INGOT);
-            if (ingot != null) inputs.add(new ItemStack(ingot));
-            Item gem = mat.getItem(ResourceForm.GEM);
-            if (gem != null) inputs.add(new ItemStack(gem));
-            Item rawOre = mat.getItem(ResourceForm.RAW_ORE);
-            if (rawOre != null) inputs.add(new ItemStack(rawOre));
+        for (var mat : ModMaterials.getAllMaterials()) {
+            var inputs = new ArrayList<ItemStack>();
+            var ingot = mat.getItem(ResourceForm.INGOT);
+            if (ingot != null) {
+                inputs.add(new ItemStack(ingot));
+            }
 
-            if (inputs.isEmpty()) continue;
+            var gem = mat.getItem(ResourceForm.GEM);
+            if (gem != null) {
+                inputs.add(new ItemStack(gem));
+            }
 
-            for (ToolPartType partType : ToolPartType.values()) {
-                ItemStack pattern = getPatternForPart(partType);
-                ToolPartItem partItem = ModItems.getToolPart(partType, mat);
-                if (partItem == null) continue;
+            var rawOre = mat.getItem(ResourceForm.RAW_ORE);
+            if (rawOre != null) {
+                inputs.add(new ItemStack(rawOre));
+            }
+
+            if (inputs.isEmpty()) {
+                continue;
+            }
+
+            for (var partType : ToolPartType.values()) {
+                var pattern = getPatternForPart(partType);
+                var partItem = ModItems.getToolPart(partType, mat);
+                if (partItem == null) {
+                    continue;
+                }
 
                 int cost = partType.getMaterialCost();
-                List<ItemStack> sizedInputs = inputs.stream()
+                var sizedInputs = inputs.stream()
                         .map(i -> {
-                            ItemStack copy = i.copy();
+                            var copy = i.copy();
                             copy.setCount(cost);
                             return copy;
                         })
@@ -66,14 +77,14 @@ public class RecipeCatalog {
                 ));
             }
         }
+
         return recipes;
     }
 
     public static List<ToolAssemblyRecipe> buildToolAssemblyRecipes() {
-        List<ToolAssemblyRecipe> recipes = new ArrayList<>();
+        var recipes = new ArrayList<ToolAssemblyRecipe>();
 
-        // Generate combinations across material tiers
-        Material[] coreMaterials = new Material[] {
+        var coreMaterials = new Material[] {
                 ModMaterials.COPPER,
                 ModMaterials.BRONZE,
                 ModMaterials.IRON,
@@ -84,7 +95,7 @@ public class RecipeCatalog {
                 ModMaterials.NETHERITE
         };
 
-        ToolPartType[] headTypes = new ToolPartType[] {
+        var headTypes = new ToolPartType[] {
                 ToolPartType.PICKAXE_HEAD,
                 ToolPartType.AXE_HEAD,
                 ToolPartType.SHOVEL_HEAD,
@@ -92,8 +103,8 @@ public class RecipeCatalog {
                 ToolPartType.HOE_HEAD
         };
 
-        for (ToolPartType headType : headTypes) {
-            Item toolItem = switch (headType) {
+        for (var headType : headTypes) {
+            var toolItem = switch (headType) {
                 case PICKAXE_HEAD -> ModItems.MODULAR_PICKAXE.get();
                 case AXE_HEAD -> ModItems.MODULAR_AXE.get();
                 case SHOVEL_HEAD -> ModItems.MODULAR_SHOVEL.get();
@@ -101,17 +112,22 @@ public class RecipeCatalog {
                 case HOE_HEAD -> ModItems.MODULAR_HOE.get();
                 default -> null;
             };
-            if (toolItem == null) continue;
 
-            for (Material headMat : coreMaterials) {
-                ToolPartItem head = ModItems.getToolPart(headType, headMat);
-                ToolPartItem handle = ModItems.getToolPart(ToolPartType.HANDLE, headMat);
-                ToolPartItem binding = ModItems.getToolPart(ToolPartType.BINDING, headMat);
-                ToolPartItem tip = ModItems.getToolPart(ToolPartType.TIP, headMat);
+            if (toolItem == null) {
+                continue;
+            }
 
-                if (head == null || handle == null || binding == null) continue;
+            for (var headMat : coreMaterials) {
+                var head = ModItems.getToolPart(headType, headMat);
+                var handle = ModItems.getToolPart(ToolPartType.HANDLE, headMat);
+                var binding = ModItems.getToolPart(ToolPartType.BINDING, headMat);
+                var tip = ModItems.getToolPart(ToolPartType.TIP, headMat);
 
-                Map<PartSlot, Identifier> parts = new EnumMap<>(PartSlot.class);
+                if (head == null || handle == null || binding == null) {
+                    continue;
+                }
+
+                var parts = new EnumMap<PartSlot, Identifier>(PartSlot.class);
                 parts.put(PartSlot.HEAD, headMat.getId());
                 parts.put(PartSlot.HANDLE, headMat.getId());
                 parts.put(PartSlot.BINDING, headMat.getId());
@@ -119,8 +135,8 @@ public class RecipeCatalog {
                     parts.put(PartSlot.TIP, headMat.getId());
                 }
 
-                ModularToolData data = new ModularToolData(parts, List.of(), 0, 0);
-                ItemStack toolStack = new ItemStack(toolItem);
+                var data = new ModularToolData(parts, List.of(), 0, 0);
+                var toolStack = new ItemStack(toolItem);
                 toolStack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data);
 
                 recipes.add(new ToolAssemblyRecipe(
@@ -132,15 +148,15 @@ public class RecipeCatalog {
                 ));
             }
         }
+
         return recipes;
     }
 
     public static List<ToolUpgradingRecipe> buildToolUpgradingRecipes() {
-        List<ToolUpgradingRecipe> recipes = new ArrayList<>();
+        var recipes = new ArrayList<ToolUpgradingRecipe>();
 
-        ItemStack basePick = createSamplePickaxe(ModMaterials.IRON);
+        var basePick = createSamplePickaxe(ModMaterials.IRON);
 
-        // 1. Diamond Upgrade (+500 Durability, +1 Mining Level)
         recipes.add(new ToolUpgradingRecipe(
                 basePick,
                 new ItemStack(Items.DIAMOND),
@@ -148,7 +164,6 @@ public class RecipeCatalog {
                 Component.literal("+500 Durability, +1 Mining Level Tier").withStyle(ChatFormatting.AQUA)
         ));
 
-        // 2. Netherite Upgrade (+Max Durability & Toughness)
         recipes.add(new ToolUpgradingRecipe(
                 createSamplePickaxe(ModMaterials.DIAMOND),
                 new ItemStack(Items.NETHERITE_INGOT),
@@ -156,7 +171,6 @@ public class RecipeCatalog {
                 Component.literal("+800 Durability, Fire Immunity").withStyle(ChatFormatting.GOLD)
         ));
 
-        // 3. Redstone Speed Modifier (+1.5 Mining Speed)
         recipes.add(new ToolUpgradingRecipe(
                 basePick,
                 new ItemStack(Items.REDSTONE_BLOCK),
@@ -164,7 +178,6 @@ public class RecipeCatalog {
                 Component.literal("+2.0 Mining Speed, +10% Attack Speed").withStyle(ChatFormatting.RED)
         ));
 
-        // 4. Lapis Luck Modifier (+Fortune / Looting)
         recipes.add(new ToolUpgradingRecipe(
                 basePick,
                 new ItemStack(Items.LAPIS_BLOCK),
@@ -176,9 +189,8 @@ public class RecipeCatalog {
     }
 
     public static List<AlloySmeltingRecipe> buildAlloySmeltingRecipes() {
-        List<AlloySmeltingRecipe> recipes = new ArrayList<>();
+        var recipes = new ArrayList<AlloySmeltingRecipe>();
 
-        // Bronze: 3 Copper + 1 Tin -> 4 Bronze (200t, 4000 RF)
         recipes.add(new AlloySmeltingRecipe(
                 new ItemStack(Items.COPPER_INGOT, 3),
                 new ItemStack(ModMaterials.TIN.getItem(ResourceForm.INGOT), 1),
@@ -187,7 +199,6 @@ public class RecipeCatalog {
                 200
         ));
 
-        // Invar: 2 Iron + 1 Nickel -> 3 Invar (200t, 4000 RF)
         recipes.add(new AlloySmeltingRecipe(
                 new ItemStack(Items.IRON_INGOT, 2),
                 new ItemStack(ModMaterials.NICKEL.getItem(ResourceForm.INGOT), 1),
@@ -196,7 +207,6 @@ public class RecipeCatalog {
                 200
         ));
 
-        // Electrum: 1 Gold + 1 Silver -> 2 Electrum (200t, 4000 RF)
         recipes.add(new AlloySmeltingRecipe(
                 new ItemStack(Items.GOLD_INGOT, 1),
                 new ItemStack(ModMaterials.SILVER.getItem(ResourceForm.INGOT), 1),
@@ -205,7 +215,6 @@ public class RecipeCatalog {
                 200
         ));
 
-        // Constantan: 1 Copper + 1 Nickel -> 2 Constantan (200t, 4000 RF)
         recipes.add(new AlloySmeltingRecipe(
                 new ItemStack(Items.COPPER_INGOT, 1),
                 new ItemStack(ModMaterials.NICKEL.getItem(ResourceForm.INGOT), 1),
@@ -214,7 +223,6 @@ public class RecipeCatalog {
                 200
         ));
 
-        // Steel: 1 Iron + 2 Coal -> 1 Steel (300t, 6000 RF)
         recipes.add(new AlloySmeltingRecipe(
                 new ItemStack(Items.IRON_INGOT, 1),
                 new ItemStack(Items.COAL, 2),
@@ -227,19 +235,19 @@ public class RecipeCatalog {
     }
 
     private static ItemStack createSamplePickaxe(Material mat) {
-        Map<PartSlot, Identifier> parts = new EnumMap<>(PartSlot.class);
+        var parts = new EnumMap<PartSlot, Identifier>(PartSlot.class);
         parts.put(PartSlot.HEAD, mat.getId());
         parts.put(PartSlot.HANDLE, mat.getId());
         parts.put(PartSlot.BINDING, mat.getId());
 
-        ModularToolData data = new ModularToolData(parts, List.of(), 0, 0);
-        ItemStack pick = new ItemStack(ModItems.MODULAR_PICKAXE.get());
+        var data = new ModularToolData(parts, List.of(), 0, 0);
+        var pick = new ItemStack(ModItems.MODULAR_PICKAXE.get());
         pick.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data);
         return pick;
     }
 
     private static ItemStack getPatternForPart(ToolPartType partType) {
-        Item item = switch (partType) {
+        var item = switch (partType) {
             case PICKAXE_HEAD -> ModItems.PICKAXE_HEAD_PATTERN.get();
             case AXE_HEAD -> ModItems.AXE_HEAD_PATTERN.get();
             case SHOVEL_HEAD -> ModItems.SHOVEL_HEAD_PATTERN.get();
@@ -252,6 +260,7 @@ public class RecipeCatalog {
             case SWORD_GUARD -> ModItems.SWORD_GUARD_PATTERN.get();
             case POMMEL -> ModItems.POMMEL_PATTERN.get();
         };
+
         return new ItemStack(item);
     }
 }

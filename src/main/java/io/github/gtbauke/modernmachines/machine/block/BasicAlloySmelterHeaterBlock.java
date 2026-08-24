@@ -51,8 +51,8 @@ public class BasicAlloySmelterHeaterBlock extends Block {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
+        var level = context.getLevel();
+        var pos = context.getClickedPos();
         boolean isControllerAbove = level.getBlockState(pos.above()).is(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
         return this.defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
@@ -87,17 +87,19 @@ public class BasicAlloySmelterHeaterBlock extends Block {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        BlockPos controllerPos = pos.above();
-        BlockState controllerState = level.getBlockState(controllerPos);
-        if (controllerState.getBlock() instanceof BasicAlloySmelterControllerBlock) {
-            if (!level.isClientSide()) {
-                BlockEntity be = level.getBlockEntity(controllerPos);
-                if (be instanceof AlloySmelterBlockEntity smelterBe) {
-                    player.openMenu(smelterBe, controllerPos);
-                }
-            }
-            return InteractionResult.SUCCESS;
+        var controllerPos = pos.above();
+        var controllerState = level.getBlockState(controllerPos);
+        if (!(controllerState.getBlock() instanceof BasicAlloySmelterControllerBlock)) {
+            return InteractionResult.PASS;
         }
-        return InteractionResult.PASS;
+
+        if (!level.isClientSide()) {
+            var be = level.getBlockEntity(controllerPos);
+            if (be instanceof AlloySmelterBlockEntity smelterBe) {
+                player.openMenu(smelterBe, controllerPos);
+            }
+        }
+
+        return InteractionResult.SUCCESS;
     }
 }

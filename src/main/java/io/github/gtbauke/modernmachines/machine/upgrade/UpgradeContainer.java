@@ -35,12 +35,15 @@ public class UpgradeContainer extends SimpleContainer {
     }
 
     public void recalculateUpgrades() {
-        if (machine == null) return;
-        MachineStats stats = machine.getMachineStats();
+        if (machine == null) {
+            return;
+        }
+
+        var stats = machine.getMachineStats();
         stats.clearModifiers();
 
         for (int i = 0; i < getContainerSize(); i++) {
-            ItemStack stack = getItem(i);
+            var stack = getItem(i);
             if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem upgradeItem) {
                 upgradeItem.applyUpgrade(stats, stack, stack.getCount());
             }

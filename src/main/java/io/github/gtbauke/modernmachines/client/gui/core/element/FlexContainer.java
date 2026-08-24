@@ -101,9 +101,10 @@ public class FlexContainer extends UIElement {
     }
 
     @Override
-    public void setSize(Size size) {
+    public FlexContainer setSize(Size size) {
         this.autoSize = false;
         super.setSize(size);
+        return this;
     }
 
     @Override
@@ -157,8 +158,34 @@ public class FlexContainer extends UIElement {
         int count = children.size();
 
         if (direction == FlexDirection.ROW) {
+            int totalFlow = 0;
+            int fixedW = 0;
+
+            for (var child : children) {
+                if (child.isFillParentHeight()) {
+                    child.setSize(new Size(child.getSize().width(), contentH));
+                }
+
+                if (child.getFlowWeight() > 0) {
+                    totalFlow += child.getFlowWeight();
+                } else if (child.isFillParentWidth()) {
+                    totalFlow += 1;
+                } else {
+                    fixedW += child.getSize().width();
+                }
+            }
+
+            int gaps = count > 1 ? (count - 1) * gap : 0;
+            int availableW = Math.max(0, contentW - fixedW - gaps);
+
             int usedW = 0;
-            for (UIElement child : children) {
+            for (var child : children) {
+                int flow = child.getFlowWeight() > 0 ? child.getFlowWeight() : (child.isFillParentWidth() ? 1 : 0);
+                if (flow > 0 && totalFlow > 0) {
+                    int proportionalW = (int) Math.round(((double) flow / totalFlow) * availableW);
+                    child.setSize(new Size(Math.max(1, proportionalW), child.getSize().height()));
+                }
+
                 usedW += child.getSize().width();
             }
 
@@ -167,7 +194,6 @@ public class FlexContainer extends UIElement {
             }
 
             int remainingW = Math.max(0, contentW - usedW);
-
             int cursorX = 0;
             int extraGap = 0;
 
@@ -187,7 +213,7 @@ public class FlexContainer extends UIElement {
                 extraGap = unit;
             }
 
-            for (UIElement child : children) {
+            for (var child : children) {
                 int childH = child.getSize().height();
                 int childY = 0;
 
@@ -201,8 +227,34 @@ public class FlexContainer extends UIElement {
                 cursorX += child.getSize().width() + gap + extraGap;
             }
         } else {
+            int totalFlow = 0;
+            int fixedH = 0;
+
+            for (var child : children) {
+                if (child.isFillParentWidth()) {
+                    child.setSize(new Size(contentW, child.getSize().height()));
+                }
+
+                if (child.getFlowWeight() > 0) {
+                    totalFlow += child.getFlowWeight();
+                } else if (child.isFillParentHeight()) {
+                    totalFlow += 1;
+                } else {
+                    fixedH += child.getSize().height();
+                }
+            }
+
+            int gaps = count > 1 ? (count - 1) * gap : 0;
+            int availableH = Math.max(0, contentH - fixedH - gaps);
+
             int usedH = 0;
-            for (UIElement child : children) {
+            for (var child : children) {
+                int flow = child.getFlowWeight() > 0 ? child.getFlowWeight() : (child.isFillParentHeight() ? 1 : 0);
+                if (flow > 0 && totalFlow > 0) {
+                    int proportionalH = (int) Math.round(((double) flow / totalFlow) * availableH);
+                    child.setSize(new Size(child.getSize().width(), Math.max(1, proportionalH)));
+                }
+
                 usedH += child.getSize().height();
             }
 
@@ -211,7 +263,6 @@ public class FlexContainer extends UIElement {
             }
 
             int remainingH = Math.max(0, contentH - usedH);
-
             int cursorY = 0;
             int extraGap = 0;
 
@@ -231,7 +282,7 @@ public class FlexContainer extends UIElement {
                 extraGap = unit;
             }
 
-            for (UIElement child : children) {
+            for (var child : children) {
                 int childW = child.getSize().width();
                 int childX = 0;
 

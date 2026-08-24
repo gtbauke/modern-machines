@@ -17,6 +17,7 @@ public class ButtonElement extends UIElement {
     private final Supplier<Component> labelSupplier;
     private final Supplier<Boolean> activeSupplier;
     private final Runnable onClick;
+    private boolean primaryGreen = false;
     private Component tooltip;
 
     public ButtonElement(Size size, Supplier<Component> labelSupplier, Supplier<Boolean> activeSupplier, Runnable onClick) {
@@ -35,15 +36,26 @@ public class ButtonElement extends UIElement {
         return this;
     }
 
+    public ButtonElement setPrimaryGreen(boolean primaryGreen) {
+        this.primaryGreen = primaryGreen;
+        return this;
+    }
+
+    public boolean isPrimaryGreen() {
+        return primaryGreen;
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && getAbsoluteBounds().contains(new Position((int) mouseX, (int) mouseY))) {
             if (onClick != null) {
                 onClick.run();
             }
+
             markDirty();
             return true;
         }
+
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -52,18 +64,15 @@ public class ButtonElement extends UIElement {
         boolean hovered = absoluteBounds.contains(new Position(mouseX, mouseY));
         boolean active = activeSupplier.get();
 
-        int bg = active ? 0xFF4A74B8 : (hovered ? 0xFFDCDCDC : 0xFFB8B8B8);
-        int textColor = active ? 0xFFFFFFFF : 0xFF222222;
+        GUIRenderHelper.drawOreUIButton(graphics, absoluteBounds, hovered, active, primaryGreen || active);
 
-        GUIRenderHelper.drawRect(graphics, absoluteBounds, bg);
-        GUIRenderHelper.drawRectOutline(graphics, absoluteBounds, 0xFF373737);
-        GUIRenderHelper.drawBevel(graphics, absoluteBounds, 0x40FFFFFF, 0x40000000);
-
-        Font font = Minecraft.getInstance().font;
-        Component label = labelSupplier.get();
+        var font = Minecraft.getInstance().font;
+        var label = labelSupplier.get();
         int centerX = absoluteBounds.position().x() + absoluteBounds.size().width() / 2;
         int centerY = absoluteBounds.position().y() + (absoluteBounds.size().height() - 8) / 2;
-        GUIRenderHelper.drawCenteredString(graphics, font, label, new Position(centerX, centerY), textColor, false);
+
+        int textColor = (primaryGreen || active) ? GUIRenderHelper.ORE_TEXT_TITLE : (hovered ? GUIRenderHelper.ORE_TEXT_TITLE : GUIRenderHelper.ORE_TEXT_MUTED);
+        GUIRenderHelper.drawCenteredString(graphics, font, label, new Position(centerX, centerY), textColor, true);
 
         if (tooltip != null && hovered) {
             GUIRenderHelper.drawTooltip(graphics, font, List.of(tooltip), new Position(mouseX, mouseY));

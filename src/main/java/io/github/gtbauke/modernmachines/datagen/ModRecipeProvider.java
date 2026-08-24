@@ -292,18 +292,34 @@ public class ModRecipeProvider extends RecipeProvider {
                 oneToOneConversionRecipe(nugget, ingot, null, 9);
             }
 
-            // 4. Smelting & Blasting
             if (ingot != null) {
-                List<ItemLike> smeltables = new ArrayList<>();
-                if (material.isRegisteredLocally(ResourceForm.ORE) && ore != null) smeltables.add(ore);
-                if (material.isRegisteredLocally(ResourceForm.DEEPSLATE_ORE) && deepslateOre != null) smeltables.add(deepslateOre);
-                if (material.isRegisteredLocally(ResourceForm.NETHERRACK_ORE) && netherrackOre != null) smeltables.add(netherrackOre);
-                if (material.isRegisteredLocally(ResourceForm.END_STONE_ORE) && endStoneOre != null) smeltables.add(endStoneOre);
-                if (material.isRegisteredLocally(ResourceForm.RAW_ORE) && rawOre != null) smeltables.add(rawOre);
-                if (material.isRegisteredLocally(ResourceForm.DUST) && dust != null) smeltables.add(dust);
+                var smeltables = new ArrayList<ItemLike>();
+                if (material.isRegisteredLocally(ResourceForm.ORE) && ore != null) {
+                    smeltables.add(ore);
+                }
+
+                if (material.isRegisteredLocally(ResourceForm.DEEPSLATE_ORE) && deepslateOre != null) {
+                    smeltables.add(deepslateOre);
+                }
+
+                if (material.isRegisteredLocally(ResourceForm.NETHERRACK_ORE) && netherrackOre != null) {
+                    smeltables.add(netherrackOre);
+                }
+
+                if (material.isRegisteredLocally(ResourceForm.END_STONE_ORE) && endStoneOre != null) {
+                    smeltables.add(endStoneOre);
+                }
+
+                if (material.isRegisteredLocally(ResourceForm.RAW_ORE) && rawOre != null) {
+                    smeltables.add(rawOre);
+                }
+
+                if (material.isRegisteredLocally(ResourceForm.DUST) && dust != null) {
+                    smeltables.add(dust);
+                }
 
                 int counter = 0;
-                for (ItemLike smeltable : smeltables) {
+                for (var smeltable : smeltables) {
                     counter++;
                     SimpleCookingRecipeBuilder.smelting(
                             Ingredient.of(smeltable),
