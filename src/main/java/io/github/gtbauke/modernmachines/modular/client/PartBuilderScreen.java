@@ -1,49 +1,58 @@
 package io.github.gtbauke.modernmachines.modular.client;
 
-import io.github.gtbauke.modernmachines.client.gui.core.element.Column;
-import io.github.gtbauke.modernmachines.client.gui.core.element.PlayerInventoryElement;
-import io.github.gtbauke.modernmachines.client.gui.core.element.ProgressBarElement;
-import io.github.gtbauke.modernmachines.client.gui.core.element.Row;
-import io.github.gtbauke.modernmachines.client.gui.core.element.SlotElement;
-import io.github.gtbauke.modernmachines.client.gui.core.element.Spacer;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.AlignItems;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.Size;
-import io.github.gtbauke.modernmachines.client.gui.core.layout.UIElement;
-import io.github.gtbauke.modernmachines.client.gui.screen.ModularContainerScreen;
+import io.github.gtbauke.modernmachines.api.client.gui.core.Color;
+import io.github.gtbauke.modernmachines.api.client.gui.core.Padding;
+import io.github.gtbauke.modernmachines.api.client.gui.core.Size;
+import io.github.gtbauke.modernmachines.api.client.gui.core.layout.AlignItems;
+import io.github.gtbauke.modernmachines.api.client.gui.core.layout.FlexContainer;
+import io.github.gtbauke.modernmachines.api.client.gui.core.layout.FlexDirection;
+import io.github.gtbauke.modernmachines.api.client.gui.core.layout.JustifyContent;
+import io.github.gtbauke.modernmachines.api.client.gui.elements.UIElement;
+import io.github.gtbauke.modernmachines.api.client.gui.screen.ModularContainerScreen;
 import io.github.gtbauke.modernmachines.modular.menu.PartBuilderMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class PartBuilderScreen extends ModularContainerScreen<PartBuilderMenu> {
-
-    public PartBuilderScreen(PartBuilderMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+    public PartBuilderScreen(PartBuilderMenu menu, Inventory inventory, Component title) {
+        super(menu, inventory, title);
     }
 
     @Override
-    protected UIElement buildContent() {
-        if (this.menu.slots.size() < 3) {
-            return null;
-        }
+    public UIElement buildContent() {
+        var root = new FlexContainer()
+                .setBackgroundColor(Color.BLUE)
+                .setBorderColor(Color.GREEN)
+                .setPadding(new Padding(4))
+                .setGap(4)
+                .setSize(new Size(this.imageWidth, this.imageHeight));
 
-        var craftingSection = Row.of(12, AlignItems.CENTER,
-                Row.of(4, AlignItems.CENTER,
-                        new SlotElement(this.menu.slots.get(0)),
-                        new SlotElement(this.menu.slots.get(1))
-                ),
-                ProgressBarElement.arrow(() -> 1.0),
-                new SlotElement(this.menu.slots.get(2))
+        root.addChild(
+                new FlexContainer()
+                        .setBackgroundColor(Color.RED)
+                        .setBorderColor(Color.BLACK)
+                        .setFlowWeight(1)
+        ).addChild(
+                new FlexContainer()
+                        .setBackgroundColor(Color.GREEN)
+                        .setBorderColor(Color.BLACK)
+                        .setFlowWeight(2)
+                        .setGap(2)
+                        .setJustifyContent(JustifyContent.CENTER)
+                        .setAlignItems(AlignItems.CENTER)
+                        .setFlexDirection(FlexDirection.ROW)
+                        .addChild(
+                                new FlexContainer()
+                                        .setBackgroundColor(Color.WHITE)
+                                        .setBorderColor(Color.BLACK)
+                                        .setFlowWeight(1)
+                        ).addChild(
+                                new FlexContainer()
+                                        .setBackgroundColor(Color.WHITE)
+                                        .setBorderColor(Color.BLACK)
+                                        .setFlowWeight(1)
+                        )
         );
-
-        var root = Column.of(0, AlignItems.CENTER,
-                Spacer.vertical(20),
-                craftingSection,
-                Spacer.vertical(20),
-                new PlayerInventoryElement(this.menu, this.menu.getPlayerInventoryStart())
-        );
-
-        root.setSize(new Size(this.imageWidth, this.imageHeight));
-        root.setBackground(io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper.ORE_BG_PRIMARY, io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper.ORE_BORDER_DARK);
 
         return root;
     }
