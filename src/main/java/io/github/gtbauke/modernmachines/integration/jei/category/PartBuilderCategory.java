@@ -1,8 +1,8 @@
 package io.github.gtbauke.modernmachines.integration.jei.category;
 
-import io.github.gtbauke.modernmachines.client.gui.core.layout.Position;
-import io.github.gtbauke.modernmachines.client.gui.core.render.GUIRenderHelper;
-import io.github.gtbauke.modernmachines.client.gui.core.render.NineSliceRenderer;
+import io.github.gtbauke.modernmachines.api.client.gui.core.Position;
+import io.github.gtbauke.modernmachines.api.client.gui.core.render.GUIRenderHelper;
+import io.github.gtbauke.modernmachines.api.client.gui.core.render.NineSliceRenderer;
 import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.integration.jei.JeiRecipeTypes;
 import io.github.gtbauke.modernmachines.integration.jei.recipe.PartBuilderRecipe;

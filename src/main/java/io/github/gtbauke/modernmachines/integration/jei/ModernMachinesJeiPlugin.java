@@ -1,7 +1,7 @@
 package io.github.gtbauke.modernmachines.integration.jei;
 
 import io.github.gtbauke.modernmachines.ModernMachines;
-import io.github.gtbauke.modernmachines.client.gui.screen.ModularContainerScreen;
+import io.github.gtbauke.modernmachines.api.client.gui.screen.ModularContainerScreen;
 import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.core.registry.ModMenuTypes;
 import io.github.gtbauke.modernmachines.integration.jei.category.AlloySmelterCategory;
@@ -24,6 +24,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class ModernMachinesJeiPlugin implements IModPlugin {
     public static final Identifier PLUGIN_UID = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "jei_plugin");
 
     @Override
-    public Identifier getPluginUid() {
+    public @NonNull Identifier getPluginUid() {
         return PLUGIN_UID;
     }
 
@@ -67,11 +68,7 @@ public class ModernMachinesJeiPlugin implements IModPlugin {
         // Auto-hide JEI when Modern Machines Screen Editor overlay is active
         registration.addGenericGuiContainerHandler(ModularContainerScreen.class, new IGuiContainerHandler<ModularContainerScreen<?>>() {
             @Override
-            public List<Rect2i> getGuiExtraAreas(ModularContainerScreen<?> containerScreen) {
-                if (containerScreen.isEditorOpen()) {
-                    return List.of(new Rect2i(0, 0, containerScreen.width, containerScreen.height));
-                }
-
+            public @NonNull List<Rect2i> getGuiExtraAreas(ModularContainerScreen<?> containerScreen) {
                 return List.of();
             }
         });
@@ -79,9 +76,9 @@ public class ModernMachinesJeiPlugin implements IModPlugin {
         // Part Builder click area (center arrow)
         registration.addRecipeClickArea(PartBuilderScreen.class, 88, 30, 24, 20, JeiRecipeTypes.PART_BUILDING);
 
-        // Tinkering Table click area (center area)
-        registration.addRecipeClickArea(TinkeringTableScreen.class, 90, 28, 28, 20,
-                JeiRecipeTypes.TOOL_ASSEMBLY, JeiRecipeTypes.TOOL_UPGRADING);
+//        // Tinkering Table click area (center area)
+//        registration.addRecipeClickArea(TinkeringTableScreen.class, 90, 28, 28, 20,
+//                JeiRecipeTypes.TOOL_ASSEMBLY, JeiRecipeTypes.TOOL_UPGRADING);
 
         // Alloy Smelter click area (center flame and progress arrow)
         registration.addRecipeClickArea(AlloySmelterScreen.class, 76, 30, 28, 20, JeiRecipeTypes.ALLOY_SMELTING);

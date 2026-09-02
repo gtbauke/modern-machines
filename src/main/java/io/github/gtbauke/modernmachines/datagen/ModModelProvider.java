@@ -150,13 +150,6 @@ public class ModModelProvider extends ModelProvider {
 
         blockModels.createFurnace(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get(), heaterModelProvider);
 
-        // 4. Engineer's Terminal Model & Blockstate (Cube Bottom Top: top, bottom, side)
-        TextureMapping terminalMapping = TextureMapping.cubeBottomTop(ModBlocks.ENGINEERS_TERMINAL.get());
-        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
-                ModBlocks.ENGINEERS_TERMINAL.get(),
-                BlockModelGenerators.plainVariant(ModelTemplates.CUBE_BOTTOM_TOP.create(ModBlocks.ENGINEERS_TERMINAL.get(), terminalMapping, blockModels.modelOutput))
-        ));
-
         // Register Patterns
         itemModels.generateFlatItem(ModItems.BLANK_PATTERN.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.PICKAXE_HEAD_PATTERN.get(), ModelTemplates.FLAT_ITEM);

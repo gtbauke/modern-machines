@@ -35,10 +35,6 @@ public class ModBlocks {
     // Compatibility alias for existing references
     public static final DeferredBlock<BasicAlloySmelterControllerBlock> ALLOY_SMELTER = BASIC_ALLOY_SMELTER_CONTROLLER;
 
-    public static final DeferredBlock<io.github.gtbauke.modernmachines.machine.block.EngineersTerminalBlock> ENGINEERS_TERMINAL = BLOCKS.registerBlock("engineers_terminal",
-            io.github.gtbauke.modernmachines.machine.block.EngineersTerminalBlock::new,
-            () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0f, 4.0f).sound(SoundType.METAL));
-
     // Steam Era Blocks
     public static final DeferredBlock<Block> ADOBE_BRICK = BLOCKS.registerBlock("adobe_brick",
             Block::new,

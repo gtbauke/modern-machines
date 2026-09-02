@@ -27,7 +27,6 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.TINKERING_TABLE.get());
                         output.accept(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
                         output.accept(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
-                        output.accept(ModBlocks.ENGINEERS_TERMINAL.get());
 
                         // Building Blocks & Pipes
                         output.accept(ModBlocks.ADOBE_BRICK.get());

@@ -30,7 +30,6 @@ public class ModItems {
     public static final DeferredItem<BlockItem> BASIC_ALLOY_SMELTER_CONTROLLER = ITEMS.registerSimpleBlockItem(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER);
     public static final DeferredItem<BlockItem> BASIC_ALLOY_SMELTER_HEATER = ITEMS.registerSimpleBlockItem(ModBlocks.BASIC_ALLOY_SMELTER_HEATER);
     public static final DeferredItem<BlockItem> ALLOY_SMELTER = BASIC_ALLOY_SMELTER_CONTROLLER;
-    public static final DeferredItem<BlockItem> ENGINEERS_TERMINAL = ITEMS.registerSimpleBlockItem(ModBlocks.ENGINEERS_TERMINAL);
 
     // Steam Era Block Items
     public static final DeferredItem<BlockItem> ADOBE_BRICK_BLOCK = ITEMS.registerSimpleBlockItem(ModBlocks.ADOBE_BRICK);

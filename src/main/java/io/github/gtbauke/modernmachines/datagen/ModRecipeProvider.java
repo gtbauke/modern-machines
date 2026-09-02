@@ -241,18 +241,6 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_blank_pattern", has(ModItems.BLANK_PATTERN.get()))
                 .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "grip_pattern")));
 
-        // Engineer's Terminal Recipe
-        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, ModBlocks.ENGINEERS_TERMINAL.get())
-                .pattern("IGI")
-                .pattern("ITI")
-                .pattern("IRI")
-                .define('I', Items.IRON_INGOT)
-                .define('G', Items.GLASS_PANE)
-                .define('T', ModBlocks.PART_BUILDER.get())
-                .define('R', Items.REDSTONE_BLOCK)
-                .unlockedBy("has_part_builder", has(ModBlocks.PART_BUILDER.get()))
-                .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "engineers_terminal")));
-
         // Iterate over materials
         for (Material material : ModMaterials.getAllMaterials()) {
             Item ingot = material.getItem(ResourceForm.INGOT);

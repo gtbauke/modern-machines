@@ -11,7 +11,6 @@ import io.github.gtbauke.modernmachines.api.client.gui.core.render.GUIRenderHelp
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class OrePanel extends FlexContainer {
-
     public enum Style {
         PRIMARY_BACKGROUND,
         SECONDARY_PANEL
@@ -35,6 +34,7 @@ public class OrePanel extends FlexContainer {
 
     public static OrePanel background(UIElement... children) {
         var panel = new OrePanel(Style.PRIMARY_BACKGROUND);
+
         if (children != null) {
             for (var child : children) {
                 panel.addChild(child);
@@ -50,6 +50,7 @@ public class OrePanel extends FlexContainer {
 
     public static OrePanel panel(UIElement... children) {
         var panel = new OrePanel(Style.SECONDARY_PANEL);
+
         if (children != null) {
             for (var child : children) {
                 panel.addChild(child);

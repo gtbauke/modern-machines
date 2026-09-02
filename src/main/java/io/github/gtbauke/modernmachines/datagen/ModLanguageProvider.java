@@ -36,7 +36,6 @@ public class ModLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.TINKERING_TABLE, "Tinkering Table");
         addBlock(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER, "Basic Alloy Smelter Controller");
         addBlock(ModBlocks.BASIC_ALLOY_SMELTER_HEATER, "Basic Alloy Smelter Heater");
-        addBlock(ModBlocks.ENGINEERS_TERMINAL, "Engineer's Terminal");
         add("container.modernmachines.part_builder", "Part Builder");
         add("container.modernmachines.tinkering_table", "Tinkering Table");
         add("container.modernmachines.basic_alloy_smelter", "Basic Alloy Smelter");

@@ -42,7 +42,7 @@ public class PartBuilderScreen extends ModularContainerScreen<PartBuilderMenu> {
                 resultSlot
         );
 
-        var root = OrePanel.background()
+        return OrePanel.background()
                 .setSize(new Size(this.imageWidth, this.imageHeight))
                 .addChild(
                         Column.of(0, AlignItems.CENTER,
@@ -54,7 +54,5 @@ public class PartBuilderScreen extends ModularContainerScreen<PartBuilderMenu> {
                                 new PlayerInventoryElement(this.menu, this.menu.getPlayerInventoryStart())
                         )
                 );
-
-        return root;
     }
 }
