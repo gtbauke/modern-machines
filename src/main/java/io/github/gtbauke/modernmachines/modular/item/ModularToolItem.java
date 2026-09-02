@@ -1,14 +1,11 @@
 package io.github.gtbauke.modernmachines.modular.item;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import io.github.gtbauke.modernmachines.ModernMachines;
 import io.github.gtbauke.modernmachines.api.modular.MaterialStatsManager;
 import io.github.gtbauke.modernmachines.api.modular.MaterialToolStats;
-import io.github.gtbauke.modernmachines.api.modular.ModifierEntry;
 import io.github.gtbauke.modernmachines.api.modular.ModularToolData;
 import io.github.gtbauke.modernmachines.api.modular.PartSlot;
 import io.github.gtbauke.modernmachines.core.registry.ModDataComponents;
@@ -39,6 +36,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public abstract class ModularToolItem extends Item {
@@ -281,7 +279,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+    public void inventoryTick(ItemStack stack, @NonNull ServerLevel level, @NonNull Entity entity, @Nullable EquipmentSlot slot) {
         if (!stack.has(DataComponents.MAX_DAMAGE) || !stack.has(DataComponents.ATTRIBUTE_MODIFIERS)) {
             recalculateComponents(stack);
         }
@@ -290,7 +288,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public int getMaxDamage(ItemStack stack) {
+    public int getMaxDamage(@NonNull ItemStack stack) {
         return getMaxDurability(stack);
     }
 
@@ -300,7 +298,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public void setDamage(ItemStack stack, int damage) {
+    public void setDamage(@NonNull ItemStack stack, int damage) {
         int max = getMaxDamage(stack);
         int clamped = Math.min(Math.max(0, damage), max);
         stack.set(DataComponents.DAMAGE, clamped);
@@ -311,19 +309,19 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public boolean isBarVisible(ItemStack stack) {
+    public boolean isBarVisible(@NonNull ItemStack stack) {
         return getDamage(stack) > 0;
     }
 
     @Override
-    public int getBarWidth(ItemStack stack) {
+    public int getBarWidth(@NonNull ItemStack stack) {
         int max = getMaxDamage(stack);
         int current = getDamage(stack);
         return Math.round(13.0F - (float) current * 13.0F / (float) max);
     }
 
     @Override
-    public int getBarColor(ItemStack stack) {
+    public int getBarColor(@NonNull ItemStack stack) {
         int max = getMaxDamage(stack);
         int current = getDamage(stack);
         float f = Math.max(0.0F, ((float) max - (float) current) / (float) max);
@@ -331,7 +329,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public float getDestroySpeed(ItemStack stack, BlockState state) {
+    public float getDestroySpeed(@NonNull ItemStack stack, @NonNull BlockState state) {
         if (mineableTag != null && state.is(mineableTag)) {
             return getMiningSpeed(stack);
         }
@@ -340,7 +338,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+    public boolean isCorrectToolForDrops(@NonNull ItemStack stack, @NonNull BlockState state) {
         if (mineableTag != null && state.is(mineableTag)) {
             var tier = getHarvestTier(stack);
             if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
@@ -358,12 +356,12 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(@NonNull ItemStack stack, @NonNull LivingEntity target, @NonNull LivingEntity attacker) {
         applyDamage(stack, 2, attacker);
     }
 
     @Override
-    public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity entity) {
+    public boolean mineBlock(@NonNull ItemStack stack, @NonNull Level level, @NonNull BlockState state, @NonNull BlockPos pos, @NonNull LivingEntity entity) {
         if (!level.isClientSide() && state.getDestroySpeed(level, pos) != 0.0F) {
             applyDamage(stack, 1, entity);
         }
@@ -386,7 +384,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(@NonNull ItemStack stack, @NonNull TooltipContext context, @NonNull TooltipDisplay display, @NonNull Consumer<Component> tooltip, @NonNull TooltipFlag flag) {
         var data = getData(stack);
         if (data.parts().isEmpty()) {
             tooltip.accept(Component.translatable("tooltip.modernmachines.unassembled_tool").withStyle(ChatFormatting.RED));
@@ -425,7 +423,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public Component getName(ItemStack stack) {
+    public @NonNull Component getName(@NonNull ItemStack stack) {
         var data = getData(stack);
         var headMat = data.getPartMaterial(PartSlot.HEAD);
         if (headMat != null) {
@@ -439,7 +437,7 @@ public abstract class ModularToolItem extends Item {
     }
 
     @Override
-    public boolean isFoil(ItemStack stack) {
+    public boolean isFoil(@NonNull ItemStack stack) {
         var data = getData(stack);
         return !data.modifiers().isEmpty() || super.isFoil(stack);
     }

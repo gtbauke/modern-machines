@@ -1,12 +1,7 @@
 package io.github.gtbauke.modernmachines.modular.menu;
 
-import java.util.Optional;
-
 import io.github.gtbauke.modernmachines.api.modular.MaterialStatsManager;
-import io.github.gtbauke.modernmachines.api.modular.MaterialToolStats;
-import io.github.gtbauke.modernmachines.api.modular.ToolPartType;
 import io.github.gtbauke.modernmachines.api.resource.Material;
-import io.github.gtbauke.modernmachines.api.resource.ResourceForm;
 import io.github.gtbauke.modernmachines.core.menu.BaseContainerMenu;
 import io.github.gtbauke.modernmachines.core.registry.ModBlocks;
 import io.github.gtbauke.modernmachines.core.registry.ModDataComponents;
@@ -14,7 +9,6 @@ import io.github.gtbauke.modernmachines.core.registry.ModItems;
 import io.github.gtbauke.modernmachines.core.registry.ModMaterials;
 import io.github.gtbauke.modernmachines.core.registry.ModMenuTypes;
 import io.github.gtbauke.modernmachines.modular.item.PatternItem;
-import io.github.gtbauke.modernmachines.modular.item.ToolPartItem;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,6 +17,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class PartBuilderMenu extends BaseContainerMenu {
     private final ContainerLevelAccess access;
@@ -37,10 +32,9 @@ public class PartBuilderMenu extends BaseContainerMenu {
         super(ModMenuTypes.PART_BUILDER.get(), containerId, 3);
         this.access = access;
 
-        // Input 0: Pattern Slot (x=48, y=34)
         this.addSlot(new Slot(inputContainer, 0, 48, 34) {
             @Override
-            public boolean mayPlace(ItemStack stack) {
+            public boolean mayPlace(@NonNull ItemStack stack) {
                 return stack.getItem() instanceof PatternItem;
             }
 
@@ -63,12 +57,12 @@ public class PartBuilderMenu extends BaseContainerMenu {
         // Output Slot 2: (x=124, y=34)
         this.addSlot(new Slot(resultContainer, 0, 124, 34) {
             @Override
-            public boolean mayPlace(ItemStack stack) {
+            public boolean mayPlace(@NonNull ItemStack stack) {
                 return false;
             }
 
             @Override
-            public void onTake(Player player, ItemStack stack) {
+            public void onTake(@NonNull Player player, @NonNull ItemStack stack) {
                 var patternStack = inputContainer.getItem(0);
                 var matStack = inputContainer.getItem(1);
 
@@ -87,7 +81,7 @@ public class PartBuilderMenu extends BaseContainerMenu {
     }
 
     @Override
-    public void slotsChanged(Container container) {
+    public void slotsChanged(@NonNull Container container) {
         var patternStack = inputContainer.getItem(0);
         var matStack = inputContainer.getItem(1);
 
@@ -145,15 +139,16 @@ public class PartBuilderMenu extends BaseContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NonNull Player player) {
         return isStillValid(this.access, player, ModBlocks.PART_BUILDER.get());
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
+    public @NonNull ItemStack quickMoveStack(@NonNull Player player, int index) {
         var itemstack = ItemStack.EMPTY;
         var slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+
+        if (slot.hasItem()) {
             var stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
@@ -200,7 +195,7 @@ public class PartBuilderMenu extends BaseContainerMenu {
     }
 
     @Override
-    public void removed(Player player) {
+    public void removed(@NonNull Player player) {
         super.removed(player);
         this.access.execute((level, pos) -> this.clearContainer(player, this.inputContainer));
     }

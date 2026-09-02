@@ -3,7 +3,7 @@ package io.github.gtbauke.modernmachines.modular.item;
 import java.util.function.Consumer;
 
 import io.github.gtbauke.modernmachines.api.modular.MaterialStatsManager;
-import io.github.gtbauke.modernmachines.api.modular.MaterialTrait;
+import io.github.gtbauke.modernmachines.api.modular.MaterialToolStats;
 import io.github.gtbauke.modernmachines.api.modular.ToolPartType;
 import io.github.gtbauke.modernmachines.api.resource.Material;
 import io.github.gtbauke.modernmachines.core.registry.ModDataComponents;
@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import org.jspecify.annotations.NonNull;
 
 public class ToolPartItem extends Item {
     private final ToolPartType partType;
@@ -44,12 +45,15 @@ public class ToolPartItem extends Item {
     }
 
     @Override
-    public Component getName(ItemStack stack) {
+    public @NonNull Component getName(ItemStack stack) {
         if (stack.has(ModDataComponents.MATERIAL_ID.get())) {
             var matId = stack.get(ModDataComponents.MATERIAL_ID.get());
+            assert matId != null;
+
             var matName = MaterialStatsManager.getStats(matId)
-                    .map(s -> s.getEffectiveDisplayName())
+                    .map(MaterialToolStats::getEffectiveDisplayName)
                     .orElse(matId.getPath());
+
             return Component.literal(matName + " " + partType.getDisplayName());
         }
 
@@ -57,7 +61,7 @@ public class ToolPartItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(@NonNull ItemStack stack, @NonNull TooltipContext context, @NonNull TooltipDisplay display, @NonNull Consumer<Component> tooltip, @NonNull TooltipFlag flag) {
         var matId = getMaterialId(stack);
         if (matId == null) {
             super.appendHoverText(stack, context, display, tooltip, flag);

@@ -1,18 +1,13 @@
 package io.github.gtbauke.modernmachines.modular.item;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
+import org.jspecify.annotations.NonNull;
 
 public class ModularAxeItem extends ModularToolItem {
 
@@ -21,7 +16,7 @@ public class ModularAxeItem extends ModularToolItem {
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public @NonNull InteractionResult useOn(UseOnContext context) {
         var level = context.getLevel();
         var pos = context.getClickedPos();
         var player = context.getPlayer();
@@ -33,6 +28,7 @@ public class ModularAxeItem extends ModularToolItem {
             level.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
             if (!level.isClientSide()) {
                 level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
+
                 if (player != null) {
                     applyDamage(stack, 1, player);
                 }
@@ -45,6 +41,7 @@ public class ModularAxeItem extends ModularToolItem {
         if (modifiedState != null) {
             level.playSound(player, pos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.levelEvent(player, 3005, pos, 0);
+
             if (!level.isClientSide()) {
                 level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
                 if (player != null) {
@@ -59,6 +56,7 @@ public class ModularAxeItem extends ModularToolItem {
         if (modifiedState != null) {
             level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.levelEvent(player, 3004, pos, 0);
+
             if (!level.isClientSide()) {
                 level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
                 if (player != null) {

@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import org.jspecify.annotations.NonNull;
 
 public class PatternItem extends Item {
     private final Optional<ToolPartType> targetPart;
@@ -28,7 +29,7 @@ public class PatternItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(@NonNull ItemStack stack, @NonNull TooltipContext context, @NonNull TooltipDisplay display, @NonNull Consumer<Component> tooltip, @NonNull TooltipFlag flag) {
         if (targetPart.isPresent()) {
             tooltip.accept(Component.translatable("tooltip.modernmachines.pattern_for",
                     Component.translatable("part_type.modernmachines." + targetPart.get().getSerializedName())).withStyle(ChatFormatting.GOLD));
@@ -36,6 +37,7 @@ public class PatternItem extends Item {
         } else {
             tooltip.accept(Component.translatable("tooltip.modernmachines.blank_pattern_desc").withStyle(ChatFormatting.DARK_GRAY));
         }
+
         super.appendHoverText(stack, context, display, tooltip, flag);
     }
 }
