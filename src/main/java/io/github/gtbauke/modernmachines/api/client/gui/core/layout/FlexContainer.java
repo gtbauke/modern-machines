@@ -50,7 +50,30 @@ public class FlexContainer extends UIElement {
     }
 
     public FlexContainer setBorderColor(Color color) {
-        this.borderColor = color;
+        this.topBorderColor = color;
+        this.rightBorderColor = color;
+        this.bottomBorderColor = color;
+        this.leftBorderColor = color;
+        return this;
+    }
+
+    public FlexContainer setTopBorderColor(Color color) {
+        this.topBorderColor = color;
+        return this;
+    }
+
+    public FlexContainer setRightBorderColor(Color color) {
+        this.rightBorderColor = color;
+        return this;
+    }
+
+    public FlexContainer setBottomBorderColor(Color color) {
+        this.bottomBorderColor = color;
+        return this;
+    }
+
+    public FlexContainer setLeftBorderColor(Color color) {
+        this.leftBorderColor = color;
         return this;
     }
 
