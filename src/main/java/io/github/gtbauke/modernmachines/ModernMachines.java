@@ -21,6 +21,10 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import io.github.gtbauke.modernmachines.data.VirtualDataPack;
+import io.github.gtbauke.modernmachines.data.VirtualResourcePack;
+import net.minecraft.server.packs.PackType;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
@@ -50,7 +54,27 @@ public class ModernMachines {
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(this::addReloadListeners);
 
+        modEventBus.addListener(this::addPackFinders);
+
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+    }
+
+    private void addPackFinders(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.SERVER_DATA) {
+            event.addRepositorySource(consumer -> {
+                var pack = VirtualDataPack.createDataPack();
+                if (pack != null) {
+                    consumer.accept(pack);
+                }
+            });
+        } else if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+            event.addRepositorySource(consumer -> {
+                var pack = VirtualResourcePack.createResourcePack();
+                if (pack != null) {
+                    consumer.accept(pack);
+                }
+            });
+        }
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

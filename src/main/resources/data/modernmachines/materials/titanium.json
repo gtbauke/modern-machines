@@ -2,6 +2,33 @@
   "material": "modernmachines:titanium",
   "color": "#C4B8C6",
   "melting_point": 1668,
+  "ore_generation": {
+    "enabled": true,
+    "overworld": {
+      "enabled": true,
+      "vein_size": 4,
+      "veins_per_chunk": 3,
+      "min_y": -64,
+      "max_y": -16,
+      "distribution": "triangle"
+    },
+    "nether": {
+      "enabled": true,
+      "vein_size": 4,
+      "veins_per_chunk": 3,
+      "min_y": 10,
+      "max_y": 115,
+      "distribution": "uniform"
+    },
+    "end": {
+      "enabled": true,
+      "vein_size": 4,
+      "veins_per_chunk": 3,
+      "min_y": 10,
+      "max_y": 70,
+      "distribution": "uniform"
+    }
+  },
   "head": {
     "durability": 1800,
     "mining_speed": 8.5,

@@ -447,6 +447,10 @@ public class ModMaterials {
         return material;
     }
 
+    public static Material registerCustom(MaterialBuilder builder) {
+        return register(builder);
+    }
+
     public static List<Material> getAllMaterials() {
         return Collections.unmodifiableList(MATERIALS_LIST);
     }
@@ -457,5 +461,6 @@ public class ModMaterials {
 
     public static void init() {
         // Classloading trigger to register all materials
+        io.github.gtbauke.modernmachines.config.material.CustomMaterialLoader.loadEarly();
     }
 }

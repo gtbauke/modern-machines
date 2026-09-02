@@ -2,6 +2,33 @@
   "material": "modernmachines:lead",
   "color": "#6E7587",
   "melting_point": 327,
+  "ore_generation": {
+    "enabled": true,
+    "overworld": {
+      "enabled": true,
+      "vein_size": 8,
+      "veins_per_chunk": 8,
+      "min_y": -64,
+      "max_y": 64,
+      "distribution": "triangle"
+    },
+    "nether": {
+      "enabled": true,
+      "vein_size": 8,
+      "veins_per_chunk": 6,
+      "min_y": 10,
+      "max_y": 115,
+      "distribution": "uniform"
+    },
+    "end": {
+      "enabled": true,
+      "vein_size": 8,
+      "veins_per_chunk": 4,
+      "min_y": 10,
+      "max_y": 70,
+      "distribution": "uniform"
+    }
+  },
   "head": {
     "durability": 220,
     "mining_speed": 4.5,

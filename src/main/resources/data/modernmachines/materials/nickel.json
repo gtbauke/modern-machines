@@ -2,6 +2,33 @@
   "material": "modernmachines:nickel",
   "color": "#DEDCB9",
   "melting_point": 1455,
+  "ore_generation": {
+    "enabled": true,
+    "overworld": {
+      "enabled": true,
+      "vein_size": 7,
+      "veins_per_chunk": 6,
+      "min_y": -48,
+      "max_y": 48,
+      "distribution": "triangle"
+    },
+    "nether": {
+      "enabled": true,
+      "vein_size": 7,
+      "veins_per_chunk": 5,
+      "min_y": 10,
+      "max_y": 115,
+      "distribution": "uniform"
+    },
+    "end": {
+      "enabled": true,
+      "vein_size": 7,
+      "veins_per_chunk": 4,
+      "min_y": 10,
+      "max_y": 70,
+      "distribution": "uniform"
+    }
+  },
   "head": {
     "durability": 300,
     "mining_speed": 6.0,

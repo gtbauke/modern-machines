@@ -2,6 +2,33 @@
   "material": "modernmachines:aluminum",
   "color": "#CBD7DB",
   "melting_point": 660,
+  "ore_generation": {
+    "enabled": true,
+    "overworld": {
+      "enabled": true,
+      "vein_size": 8,
+      "veins_per_chunk": 10,
+      "min_y": -16,
+      "max_y": 128,
+      "distribution": "triangle"
+    },
+    "nether": {
+      "enabled": true,
+      "vein_size": 8,
+      "veins_per_chunk": 8,
+      "min_y": 10,
+      "max_y": 115,
+      "distribution": "uniform"
+    },
+    "end": {
+      "enabled": true,
+      "vein_size": 8,
+      "veins_per_chunk": 5,
+      "min_y": 10,
+      "max_y": 70,
+      "distribution": "uniform"
+    }
+  },
   "head": {
     "durability": 280,
     "mining_speed": 7.5,

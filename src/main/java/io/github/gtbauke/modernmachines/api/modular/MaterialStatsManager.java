@@ -90,12 +90,15 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
 
             STATS.put(id, stats);
         }
+
+        STATS.putAll(io.github.gtbauke.modernmachines.config.material.CustomMaterialLoader.getCustomToolStats());
     }
 
     @Override
     protected void apply(Map<Identifier, MaterialToolStats> map, @NonNull ResourceManager resourceManager, ProfilerFiller profiler) {
         initDefaults();
         STATS.putAll(map);
+        STATS.putAll(io.github.gtbauke.modernmachines.config.material.CustomMaterialLoader.getCustomToolStats());
         LOGGER.info("Loaded {} material definitions (built-in + datapacks)", STATS.size());
     }
 

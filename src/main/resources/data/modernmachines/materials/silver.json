@@ -2,6 +2,33 @@
   "material": "modernmachines:silver",
   "color": "#E3F1F4",
   "melting_point": 962,
+  "ore_generation": {
+    "enabled": true,
+    "overworld": {
+      "enabled": true,
+      "vein_size": 7,
+      "veins_per_chunk": 6,
+      "min_y": -64,
+      "max_y": 32,
+      "distribution": "triangle"
+    },
+    "nether": {
+      "enabled": true,
+      "vein_size": 7,
+      "veins_per_chunk": 5,
+      "min_y": 10,
+      "max_y": 115,
+      "distribution": "uniform"
+    },
+    "end": {
+      "enabled": true,
+      "vein_size": 7,
+      "veins_per_chunk": 4,
+      "min_y": 10,
+      "max_y": 70,
+      "distribution": "uniform"
+    }
+  },
   "head": {
     "durability": 190,
     "mining_speed": 7.0,

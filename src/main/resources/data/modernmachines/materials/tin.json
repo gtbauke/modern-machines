@@ -2,6 +2,33 @@
   "material": "modernmachines:tin",
   "color": "#D3DCDF",
   "melting_point": 232,
+  "ore_generation": {
+    "enabled": true,
+    "overworld": {
+      "enabled": true,
+      "vein_size": 9,
+      "veins_per_chunk": 14,
+      "min_y": -20,
+      "max_y": 112,
+      "distribution": "triangle"
+    },
+    "nether": {
+      "enabled": true,
+      "vein_size": 9,
+      "veins_per_chunk": 10,
+      "min_y": 10,
+      "max_y": 115,
+      "distribution": "uniform"
+    },
+    "end": {
+      "enabled": true,
+      "vein_size": 9,
+      "veins_per_chunk": 6,
+      "min_y": 10,
+      "max_y": 70,
+      "distribution": "uniform"
+    }
+  },
   "head": {
     "durability": 180,
     "mining_speed": 5.0,
