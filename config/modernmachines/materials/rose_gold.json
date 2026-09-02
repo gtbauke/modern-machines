@@ -1,0 +1,52 @@
+{
+  "name": "rose_gold",
+  "displayName": "Rose Gold",
+  "color": "#B76E79",
+  "type": "alloy",
+  "hardness": 4.0,
+  "resistance": 4.5,
+  "miningLevel": "minecraft:needs_iron_tool",
+  "meltingPoint": 1050,
+  "alloy_recipe": {
+    "energy": 3000,
+    "cooking_time": 200,
+    "experience": 0.8,
+    "result_count": 4,
+    "inputs": [
+      {
+        "ingredient": "#c:ingots/gold",
+        "count": 3
+      },
+      {
+        "ingredient": "#c:ingots/copper",
+        "count": 1
+      }
+    ]
+  },
+  "head": {
+    "durability": 450,
+    "miningSpeed": 7.0,
+    "attackDamage": 2.5,
+    "harvestTier": "iron"
+  },
+  "handle": {
+    "durabilityMultiplier": 1.1,
+    "miningSpeedMultiplier": 1.1,
+    "attackSpeedBonus": 0.1
+  },
+  "binding": {
+    "bonusDurability": 80
+  },
+  "attachment": {
+    "bonusDurability": 40,
+    "attackDamageBonus": 0.8,
+    "speedBonus": 0.3
+  },
+  "traits": [
+    {
+      "id": "modernmachines:conductive",
+      "level": 1,
+      "description": "Channels electrical charge"
+    }
+  ]
+}

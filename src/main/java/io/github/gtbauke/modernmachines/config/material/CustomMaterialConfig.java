@@ -31,6 +31,9 @@ public class CustomMaterialConfig {
     @SerializedName(value = "ore_generation", alternate = {"oreGeneration"})
     public @Nullable OreGenConfig oreGeneration;
 
+    @SerializedName(value = "alloy_recipe", alternate = {"alloyRecipe"})
+    public @Nullable AlloyRecipeConfig alloyRecipe;
+
     // Optional tool stats configuration
     public @Nullable HeadConfig head;
     public @Nullable HandleConfig handle;
@@ -106,5 +109,24 @@ public class CustomMaterialConfig {
         public String id = "";
         public int level = 1;
         public @Nullable String description;
+    }
+
+    public static class AlloyRecipeConfig {
+        public int energy = 3000;
+
+        @SerializedName(value = "cooking_time", alternate = {"cookingTime"})
+        public int cookingTime = 200;
+
+        public float experience = 0.8f;
+
+        @SerializedName(value = "result_count", alternate = {"resultCount"})
+        public int resultCount = 1;
+
+        public List<AlloyInputConfig> inputs = Collections.emptyList();
+    }
+
+    public static class AlloyInputConfig {
+        public String ingredient = "";
+        public int count = 1;
     }
 }

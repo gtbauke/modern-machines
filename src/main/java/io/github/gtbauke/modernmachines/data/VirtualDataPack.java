@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import io.github.gtbauke.modernmachines.ModernMachines;
 import io.github.gtbauke.modernmachines.api.resource.Material;
 import io.github.gtbauke.modernmachines.api.resource.ResourceForm;
+import io.github.gtbauke.modernmachines.config.material.CustomMaterialConfig;
 import io.github.gtbauke.modernmachines.config.material.CustomMaterialLoader;
 import io.github.gtbauke.modernmachines.config.material.DimensionOreConfig;
 import io.github.gtbauke.modernmachines.config.material.OreGenConfig;
@@ -69,6 +70,14 @@ public class VirtualDataPack {
         var allOreBlocks = new ArrayList<String>();
         var allRawMaterials = new ArrayList<String>();
         var allIngots = new ArrayList<String>();
+        var allPlates = new ArrayList<String>();
+        var allRods = new ArrayList<String>();
+        var allGears = new ArrayList<String>();
+        var allScrews = new ArrayList<String>();
+        var allWires = new ArrayList<String>();
+        var allDusts = new ArrayList<String>();
+        var allNuggets = new ArrayList<String>();
+        var allStorageBlocks = new ArrayList<String>();
 
         var overworldFeatures = new ArrayList<String>();
         var netherFeatures = new ArrayList<String>();
@@ -106,8 +115,30 @@ public class VirtualDataPack {
                     needsDiamondBlocks,
                     allOreBlocks,
                     allRawMaterials,
-                    allIngots
+                    allIngots,
+                    allPlates,
+                    allRods,
+                    allGears,
+                    allScrews,
+                    allWires,
+                    allDusts,
+                    allNuggets,
+                    allStorageBlocks
             );
+        }
+
+        for (var entry : CustomMaterialLoader.getAllCustomConfigs().entrySet()) {
+            var name = entry.getKey();
+            var config = entry.getValue();
+
+            if (CustomMaterialLoader.getCustomMaterialNames().contains(name)) {
+                continue;
+            }
+
+            var material = ModMaterials.getByName(name);
+            if (material != null && config.alloyRecipe != null && !config.alloyRecipe.inputs.isEmpty()) {
+                addAlloySmeltingRecipe(pack, material, config.alloyRecipe);
+            }
         }
 
         addTagResources(
@@ -118,7 +149,15 @@ public class VirtualDataPack {
                 needsDiamondBlocks,
                 allOreBlocks,
                 allRawMaterials,
-                allIngots
+                allIngots,
+                allPlates,
+                allRods,
+                allGears,
+                allScrews,
+                allWires,
+                allDusts,
+                allNuggets,
+                allStorageBlocks
         );
     }
 
@@ -372,7 +411,15 @@ public class VirtualDataPack {
             List<String> needsDiamondBlocks,
             List<String> allOreBlocks,
             List<String> allRawMaterials,
-            List<String> allIngots
+            List<String> allIngots,
+            List<String> allPlates,
+            List<String> allRods,
+            List<String> allGears,
+            List<String> allScrews,
+            List<String> allWires,
+            List<String> allDusts,
+            List<String> allNuggets,
+            List<String> allStorageBlocks
     ) {
         var name = material.name();
         var rawItem = material.hasForm(ResourceForm.RAW_ORE) ? ModernMachines.MOD_ID + ":" + ResourceForm.RAW_ORE.getRegistryName(name) : null;
@@ -380,6 +427,12 @@ public class VirtualDataPack {
         var nuggetItem = material.hasForm(ResourceForm.NUGGET) ? ModernMachines.MOD_ID + ":" + ResourceForm.NUGGET.getRegistryName(name) : null;
         var storageBlock = material.hasForm(ResourceForm.STORAGE_BLOCK) ? ModernMachines.MOD_ID + ":" + ResourceForm.STORAGE_BLOCK.getRegistryName(name) : null;
         var rawStorageBlock = material.hasForm(ResourceForm.RAW_STORAGE_BLOCK) ? ModernMachines.MOD_ID + ":" + ResourceForm.RAW_STORAGE_BLOCK.getRegistryName(name) : null;
+        var plateItem = material.hasForm(ResourceForm.PLATE) ? ModernMachines.MOD_ID + ":" + ResourceForm.PLATE.getRegistryName(name) : null;
+        var rodItem = material.hasForm(ResourceForm.ROD) ? ModernMachines.MOD_ID + ":" + ResourceForm.ROD.getRegistryName(name) : null;
+        var gearItem = material.hasForm(ResourceForm.GEAR) ? ModernMachines.MOD_ID + ":" + ResourceForm.GEAR.getRegistryName(name) : null;
+        var screwItem = material.hasForm(ResourceForm.SCREW) ? ModernMachines.MOD_ID + ":" + ResourceForm.SCREW.getRegistryName(name) : null;
+        var wireItem = material.hasForm(ResourceForm.WIRE) ? ModernMachines.MOD_ID + ":" + ResourceForm.WIRE.getRegistryName(name) : null;
+        var dustItem = material.hasForm(ResourceForm.DUST) ? ModernMachines.MOD_ID + ":" + ResourceForm.DUST.getRegistryName(name) : null;
 
         if (rawItem != null) {
             allRawMaterials.add(rawItem);
@@ -387,6 +440,42 @@ public class VirtualDataPack {
 
         if (ingotItem != null) {
             allIngots.add(ingotItem);
+            addTag(pack, "c", "tags/item/ingots/" + name + ".json", ingotItem);
+        }
+
+        if (nuggetItem != null) {
+            allNuggets.add(nuggetItem);
+            addTag(pack, "c", "tags/item/nuggets/" + name + ".json", nuggetItem);
+        }
+
+        if (plateItem != null) {
+            allPlates.add(plateItem);
+            addTag(pack, "c", "tags/item/plates/" + name + ".json", plateItem);
+        }
+
+        if (rodItem != null) {
+            allRods.add(rodItem);
+            addTag(pack, "c", "tags/item/rods/" + name + ".json", rodItem);
+        }
+
+        if (gearItem != null) {
+            allGears.add(gearItem);
+            addTag(pack, "c", "tags/item/gears/" + name + ".json", gearItem);
+        }
+
+        if (screwItem != null) {
+            allScrews.add(screwItem);
+            addTag(pack, "c", "tags/item/screws/" + name + ".json", screwItem);
+        }
+
+        if (wireItem != null) {
+            allWires.add(wireItem);
+            addTag(pack, "c", "tags/item/wires/" + name + ".json", wireItem);
+        }
+
+        if (dustItem != null) {
+            allDusts.add(dustItem);
+            addTag(pack, "c", "tags/item/dusts/" + name + ".json", dustItem);
         }
 
         var oreForms = List.of(
@@ -417,8 +506,11 @@ public class VirtualDataPack {
         if (storageBlock != null) {
             var blockName = ResourceForm.STORAGE_BLOCK.getRegistryName(name);
             pickaxeMineableBlocks.add(storageBlock);
+            allStorageBlocks.add(storageBlock);
             assignMiningLevel(material, storageBlock, needsStoneBlocks, needsIronBlocks, needsDiamondBlocks);
             addSelfDropLootTable(pack, blockName, storageBlock);
+            addTag(pack, "c", "tags/block/storage_blocks/" + name + ".json", storageBlock);
+            addTag(pack, "c", "tags/item/storage_blocks/" + name + ".json", storageBlock);
         }
 
         if (rawStorageBlock != null) {
@@ -429,6 +521,44 @@ public class VirtualDataPack {
         }
 
         addCraftingAndSmeltingRecipes(pack, name, rawItem, ingotItem, nuggetItem, storageBlock, rawStorageBlock, material.smeltingXp());
+        addComponentRecipes(pack, name, ingotItem, plateItem, rodItem, gearItem, screwItem, wireItem, dustItem);
+
+        var customConfig = CustomMaterialLoader.getCustomConfig(name);
+        if (customConfig != null && customConfig.alloyRecipe != null && !customConfig.alloyRecipe.inputs.isEmpty()) {
+            addAlloySmeltingRecipe(pack, material, customConfig.alloyRecipe);
+        }
+    }
+
+    private static void addAlloySmeltingRecipe(
+            VirtualPackResources pack,
+            Material material,
+            CustomMaterialConfig.AlloyRecipeConfig recipeConfig
+    ) {
+        var name = material.name();
+        var inputs = new ArrayList<Map<String, Object>>();
+
+        for (var input : recipeConfig.inputs) {
+            inputs.add(Map.of(
+                    "count", input.count,
+                    "ingredient", input.ingredient
+            ));
+        }
+
+        var resultCount = recipeConfig.resultCount > 0 ? recipeConfig.resultCount : 1;
+        var recipeJson = Map.of(
+                "type", ModernMachines.MOD_ID + ":alloy_smelting",
+                "energy", recipeConfig.energy > 0 ? recipeConfig.energy : 3000,
+                "cooking_time", recipeConfig.cookingTime > 0 ? recipeConfig.cookingTime : 200,
+                "experience", recipeConfig.experience,
+                "inputs", inputs,
+                "result", Map.of(
+                        "count", resultCount,
+                        "id", ModernMachines.MOD_ID + ":" + ResourceForm.INGOT.getRegistryName(name)
+                )
+        );
+
+        var recipeId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "recipe/alloy_" + name + ".json");
+        pack.addResource(recipeId, GSON.toJson(recipeJson));
     }
 
     private static void assignMiningLevel(
@@ -641,6 +771,104 @@ public class VirtualDataPack {
         }
     }
 
+    private static void addTag(VirtualPackResources pack, String namespace, String path, String itemOrBlockId) {
+        var id = Identifier.fromNamespaceAndPath(namespace, path);
+        pack.addResource(id, GSON.toJson(Map.of("replace", false, "values", List.of(itemOrBlockId))));
+    }
+
+    private static void addComponentRecipes(
+            VirtualPackResources pack,
+            String name,
+            @Nullable String ingotItem,
+            @Nullable String plateItem,
+            @Nullable String rodItem,
+            @Nullable String gearItem,
+            @Nullable String screwItem,
+            @Nullable String wireItem,
+            @Nullable String dustItem
+    ) {
+        if (plateItem != null && ingotItem != null) {
+            var plateRecipe = Map.of(
+                    "type", "minecraft:crafting_shapeless",
+                    "category", "misc",
+                    "ingredients", List.of("modernmachines:engineers_hammer", ingotItem),
+                    "result", Map.of("id", plateItem)
+            );
+            pack.addResource(
+                    Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "recipe/crafting/" + name + "_plate_from_hammer.json"),
+                    GSON.toJson(plateRecipe)
+            );
+        }
+
+        if (dustItem != null && ingotItem != null) {
+            var dustRecipe = Map.of(
+                    "type", "minecraft:crafting_shapeless",
+                    "category", "misc",
+                    "ingredients", List.of("modernmachines:engineers_hammer", ingotItem),
+                    "result", Map.of("id", dustItem)
+            );
+            pack.addResource(
+                    Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "recipe/crafting/" + name + "_dust_from_hammer.json"),
+                    GSON.toJson(dustRecipe)
+            );
+        }
+
+        if (rodItem != null && ingotItem != null) {
+            var rodRecipe = Map.of(
+                    "type", "minecraft:crafting_shaped",
+                    "category", "misc",
+                    "pattern", List.of("I", "I"),
+                    "key", Map.of("I", ingotItem),
+                    "result", Map.of("id", rodItem, "count", 4)
+            );
+            pack.addResource(
+                    Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "recipe/crafting/" + name + "_rod.json"),
+                    GSON.toJson(rodRecipe)
+            );
+        }
+
+        if (screwItem != null && rodItem != null) {
+            var screwRecipe = Map.of(
+                    "type", "minecraft:crafting_shapeless",
+                    "category", "misc",
+                    "ingredients", List.of("modernmachines:engineers_hammer", rodItem),
+                    "result", Map.of("id", screwItem, "count", 4)
+            );
+            pack.addResource(
+                    Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "recipe/crafting/" + name + "_screw_from_hammer.json"),
+                    GSON.toJson(screwRecipe)
+            );
+        }
+
+        if (wireItem != null && plateItem != null) {
+            var wireRecipe = Map.of(
+                    "type", "minecraft:crafting_shapeless",
+                    "category", "misc",
+                    "ingredients", List.of("modernmachines:wire_cutter", plateItem),
+                    "result", Map.of("id", wireItem, "count", 2)
+            );
+            pack.addResource(
+                    Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "recipe/crafting/" + name + "_wire_from_cutters.json"),
+                    GSON.toJson(wireRecipe)
+            );
+        }
+
+        if (gearItem != null && plateItem != null) {
+            var centerIngot = ingotItem != null ? ingotItem : "minecraft:iron_ingot";
+            var gearRecipe = Map.of(
+                    "type", "minecraft:crafting_shaped",
+                    "category", "misc",
+                    "pattern", List.of(" P ", "PIP", " P "),
+                    "key", Map.of("P", plateItem, "I", centerIngot),
+                    "result", Map.of("id", gearItem)
+            );
+            pack.addResource(
+                    Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "recipe/crafting/" + name + "_gear.json"),
+                    GSON.toJson(gearRecipe)
+            );
+        }
+    }
+
     private static void addTagResources(
             VirtualPackResources pack,
             List<String> pickaxeMineableBlocks,
@@ -649,54 +877,39 @@ public class VirtualDataPack {
             List<String> needsDiamondBlocks,
             List<String> allOreBlocks,
             List<String> allRawMaterials,
-            List<String> allIngots
+            List<String> allIngots,
+            List<String> allPlates,
+            List<String> allRods,
+            List<String> allGears,
+            List<String> allScrews,
+            List<String> allWires,
+            List<String> allDusts,
+            List<String> allNuggets,
+            List<String> allStorageBlocks
     ) {
-        if (!pickaxeMineableBlocks.isEmpty()) {
-            pack.addResource(
-                    Identifier.fromNamespaceAndPath("minecraft", "tags/block/mineable/pickaxe.json"),
-                    GSON.toJson(Map.of("replace", false, "values", pickaxeMineableBlocks))
-            );
-        }
+        addTagIfNotEmpty(pack, "minecraft", "tags/block/mineable/pickaxe.json", pickaxeMineableBlocks);
+        addTagIfNotEmpty(pack, "minecraft", "tags/block/needs_stone_tool.json", needsStoneBlocks);
+        addTagIfNotEmpty(pack, "minecraft", "tags/block/needs_iron_tool.json", needsIronBlocks);
+        addTagIfNotEmpty(pack, "minecraft", "tags/block/needs_diamond_tool.json", needsDiamondBlocks);
+        addTagIfNotEmpty(pack, "c", "tags/block/ores.json", allOreBlocks);
+        addTagIfNotEmpty(pack, "c", "tags/item/raw_materials.json", allRawMaterials);
+        addTagIfNotEmpty(pack, "c", "tags/item/ingots.json", allIngots);
+        addTagIfNotEmpty(pack, "c", "tags/item/plates.json", allPlates);
+        addTagIfNotEmpty(pack, "c", "tags/item/rods.json", allRods);
+        addTagIfNotEmpty(pack, "c", "tags/item/gears.json", allGears);
+        addTagIfNotEmpty(pack, "c", "tags/item/screws.json", allScrews);
+        addTagIfNotEmpty(pack, "c", "tags/item/wires.json", allWires);
+        addTagIfNotEmpty(pack, "c", "tags/item/dusts.json", allDusts);
+        addTagIfNotEmpty(pack, "c", "tags/item/nuggets.json", allNuggets);
+        addTagIfNotEmpty(pack, "c", "tags/item/storage_blocks.json", allStorageBlocks);
+        addTagIfNotEmpty(pack, "c", "tags/block/storage_blocks.json", allStorageBlocks);
+    }
 
-        if (!needsStoneBlocks.isEmpty()) {
+    private static void addTagIfNotEmpty(VirtualPackResources pack, String namespace, String path, List<String> values) {
+        if (!values.isEmpty()) {
             pack.addResource(
-                    Identifier.fromNamespaceAndPath("minecraft", "tags/block/needs_stone_tool.json"),
-                    GSON.toJson(Map.of("replace", false, "values", needsStoneBlocks))
-            );
-        }
-
-        if (!needsIronBlocks.isEmpty()) {
-            pack.addResource(
-                    Identifier.fromNamespaceAndPath("minecraft", "tags/block/needs_iron_tool.json"),
-                    GSON.toJson(Map.of("replace", false, "values", needsIronBlocks))
-            );
-        }
-
-        if (!needsDiamondBlocks.isEmpty()) {
-            pack.addResource(
-                    Identifier.fromNamespaceAndPath("minecraft", "tags/block/needs_diamond_tool.json"),
-                    GSON.toJson(Map.of("replace", false, "values", needsDiamondBlocks))
-            );
-        }
-
-        if (!allOreBlocks.isEmpty()) {
-            pack.addResource(
-                    Identifier.fromNamespaceAndPath("c", "tags/block/ores.json"),
-                    GSON.toJson(Map.of("replace", false, "values", allOreBlocks))
-            );
-        }
-
-        if (!allRawMaterials.isEmpty()) {
-            pack.addResource(
-                    Identifier.fromNamespaceAndPath("c", "tags/item/raw_materials.json"),
-                    GSON.toJson(Map.of("replace", false, "values", allRawMaterials))
-            );
-        }
-
-        if (!allIngots.isEmpty()) {
-            pack.addResource(
-                    Identifier.fromNamespaceAndPath("c", "tags/item/ingots.json"),
-                    GSON.toJson(Map.of("replace", false, "values", allIngots))
+                    Identifier.fromNamespaceAndPath(namespace, path),
+                    GSON.toJson(Map.of("replace", false, "values", values))
             );
         }
     }

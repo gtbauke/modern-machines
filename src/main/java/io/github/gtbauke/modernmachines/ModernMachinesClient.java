@@ -46,14 +46,18 @@ public class ModernMachinesClient {
     private void registerFluidModels(RegisterFluidModelsEvent event) {
         var stillMat = new net.minecraft.client.resources.model.sprite.Material(FLUID_STILL);
         var flowingMat = new net.minecraft.client.resources.model.sprite.Material(FLUID_FLOWING);
+
         for (var material : ModMaterials.getAllMaterials()) {
             if (material.hasForm(ResourceForm.MOLTEN) && material.isRegisteredLocally(ResourceForm.MOLTEN)) {
                 var stillFluid = material.getFluid(ResourceForm.MOLTEN);
                 var flowingFluid = material.getFlowingFluid(ResourceForm.MOLTEN);
+
                 if (stillFluid != null && flowingFluid != null) {
                     int tintColor = 0xFF000000 | material.colorHex();
+
                     var tintSource = FluidTintSources.constant(tintColor);
                     var unbaked = new FluidModel.Unbaked(stillMat, flowingMat, null, tintSource);
+
                     event.register(unbaked, stillFluid, flowingFluid);
                 }
             }

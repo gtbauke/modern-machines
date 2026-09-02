@@ -13,12 +13,15 @@ import io.github.gtbauke.modernmachines.api.resource.ResourceForm;
 import io.github.gtbauke.modernmachines.core.registry.ModDataComponents;
 import io.github.gtbauke.modernmachines.core.registry.ModItems;
 import io.github.gtbauke.modernmachines.core.registry.ModMaterials;
+import io.github.gtbauke.modernmachines.config.material.CustomMaterialConfig;
+import io.github.gtbauke.modernmachines.config.material.CustomMaterialLoader;
 import io.github.gtbauke.modernmachines.integration.jei.recipe.AlloySmeltingRecipe;
 import io.github.gtbauke.modernmachines.integration.jei.recipe.PartBuilderRecipe;
 import io.github.gtbauke.modernmachines.integration.jei.recipe.ToolAssemblyRecipe;
 import io.github.gtbauke.modernmachines.integration.jei.recipe.ToolUpgradingRecipe;
 import io.github.gtbauke.modernmachines.modular.item.ToolPartItem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -231,7 +234,81 @@ public class RecipeCatalog {
                 300
         ));
 
+        for (var entry : CustomMaterialLoader.getAllCustomConfigs().entrySet()) {
+            var name = entry.getKey();
+            var config = entry.getValue();
+            var material = ModMaterials.getByName(name);
+            if (material == null || config == null || config.alloyRecipe == null || config.alloyRecipe.inputs.size() < 2) {
+                continue;
+            }
+
+            var ingot = material.getItem(ResourceForm.INGOT);
+            if (ingot == null) {
+                continue;
+            }
+
+            var stackA = resolveJeiIngredient(config.alloyRecipe.inputs.get(0));
+            var stackB = resolveJeiIngredient(config.alloyRecipe.inputs.get(1));
+            if (stackA.isEmpty() || stackB.isEmpty()) {
+                continue;
+            }
+
+            var resultCount = config.alloyRecipe.resultCount > 0 ? config.alloyRecipe.resultCount : 1;
+            recipes.add(new AlloySmeltingRecipe(
+                    stackA,
+                    stackB,
+                    new ItemStack(ingot, resultCount),
+                    config.alloyRecipe.energy > 0 ? config.alloyRecipe.energy : 3000,
+                    config.alloyRecipe.cookingTime > 0 ? config.alloyRecipe.cookingTime : 200
+            ));
+        }
+
         return recipes;
+    }
+
+    private static ItemStack resolveJeiIngredient(CustomMaterialConfig.AlloyInputConfig input) {
+        var str = input.ingredient;
+        var count = input.count > 0 ? input.count : 1;
+        if (str.startsWith("#")) {
+            str = str.substring(1);
+        }
+
+        var id = Identifier.tryParse(str);
+        if (id != null) {
+            var itemHolder = BuiltInRegistries.ITEM.get(id);
+            if (itemHolder.isPresent()) {
+                return new ItemStack(itemHolder.get().value(), count);
+            }
+        }
+
+        if ("c:ingots/gold".equals(str) || "c:gold_ingots".equals(str)) {
+            return new ItemStack(Items.GOLD_INGOT, count);
+        }
+
+        if ("c:ingots/copper".equals(str) || "c:copper_ingots".equals(str)) {
+            return new ItemStack(Items.COPPER_INGOT, count);
+        }
+
+        if ("c:ingots/iron".equals(str) || "c:iron_ingots".equals(str)) {
+            return new ItemStack(Items.IRON_INGOT, count);
+        }
+
+        if ("c:ingots/tin".equals(str)) {
+            var tin = ModMaterials.TIN.getItem(ResourceForm.INGOT);
+            return tin != null ? new ItemStack(tin, count) : ItemStack.EMPTY;
+        }
+
+        if ("c:ingots/silver".equals(str)) {
+            var silver = ModMaterials.SILVER.getItem(ResourceForm.INGOT);
+            return silver != null ? new ItemStack(silver, count) : ItemStack.EMPTY;
+        }
+
+        if ("c:ingots/nickel".equals(str)) {
+            var nickel = ModMaterials.NICKEL.getItem(ResourceForm.INGOT);
+            return nickel != null ? new ItemStack(nickel, count) : ItemStack.EMPTY;
+        }
+
+        return ItemStack.EMPTY;
     }
 
     private static ItemStack createSamplePickaxe(Material mat) {

@@ -37,6 +37,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 
 public class CustomMaterialLoader {
@@ -46,11 +47,69 @@ public class CustomMaterialLoader {
     private static final Map<String, OreGenConfig> ORE_GEN_CONFIGS = new LinkedHashMap<>();
     private static final Map<Identifier, MaterialToolStats> CUSTOM_TOOL_STATS = new ConcurrentHashMap<>();
     private static final Set<String> CUSTOM_MATERIAL_NAMES = ConcurrentHashMap.newKeySet();
+    private static final Map<String, CustomMaterialConfig> CUSTOM_CONFIGS = new ConcurrentHashMap<>();
+
+    public static @Nullable CustomMaterialConfig getCustomConfig(String name) {
+        return CUSTOM_CONFIGS.get(name);
+    }
+
+    public static Map<String, CustomMaterialConfig> getAllCustomConfigs() {
+        return Collections.unmodifiableMap(CUSTOM_CONFIGS);
+    }
 
     public static void loadEarly() {
+        loadClasspathMaterials();
         initBuiltInDefaults();
+        loadConfigMaterials();
+    }
 
-        Path configDir = FMLPaths.CONFIGDIR.get().resolve("modernmachines/materials");
+    private static void loadClasspathMaterials() {
+        var devPath = Path.of("src/main/resources/data/modernmachines/materials");
+        if (Files.isDirectory(devPath)) {
+            try (var stream = Files.list(devPath)) {
+                stream.filter(path -> path.toString().endsWith(".json")).forEach(CustomMaterialLoader::loadMaterialFile);
+            } catch (IOException e) {
+                LOGGER.warn("Failed to read dev resources directory: {}", devPath, e);
+            }
+        }
+
+        var loader = FMLLoader.getCurrentOrNull();
+        if (loader == null) {
+            return;
+        }
+
+        var modFile = loader.getModFileByClass(ModernMachines.class);
+        if (modFile == null) {
+            return;
+        }
+
+        var contents = modFile.getContents();
+        for (var root : contents.getContentRoots()) {
+            var matDir = root.resolve("data/modernmachines/materials");
+            if (Files.isDirectory(matDir)) {
+                try (var stream = Files.list(matDir)) {
+                    stream.filter(path -> path.toString().endsWith(".json")).forEach(CustomMaterialLoader::loadMaterialFile);
+                } catch (IOException e) {
+                    LOGGER.warn("Failed to list materials in mod content root: {}", matDir, e);
+                }
+            }
+        }
+
+        contents.visitContent("data/modernmachines/materials", (relPath, resource) -> {
+            if (!relPath.endsWith(".json")) {
+                return;
+            }
+
+            try (var is = resource.open()) {
+                loadMaterialStream(is, relPath);
+            } catch (Exception e) {
+                LOGGER.warn("Failed to load material from jar resource '{}': {}", relPath, e.getMessage());
+            }
+        });
+    }
+
+    private static void loadConfigMaterials() {
+        var configDir = FMLPaths.CONFIGDIR.get().resolve("modernmachines/materials");
 
         try {
             if (!Files.exists(configDir)) {
@@ -72,27 +131,8 @@ public class CustomMaterialLoader {
     private static void initBuiltInDefaults() {
         for (var material : ModMaterials.getAllMaterials()) {
             var name = material.name();
-            var resourcePath = "/data/modernmachines/materials/" + name + ".json";
-
-            try (var is = CustomMaterialLoader.class.getResourceAsStream(resourcePath)) {
-                if (is != null) {
-                    try (var reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-                        var config = GSON.fromJson(reader, CustomMaterialConfig.class);
-                        if (config != null && config.oreGeneration != null) {
-                            var oreGen = OreGenConfig.mergeWithDefaults(
-                                    config.oreGeneration,
-                                    material.hardness(),
-                                    material.hasForm(ResourceForm.ORE) || material.hasForm(ResourceForm.DEEPSLATE_ORE),
-                                    material.hasForm(ResourceForm.NETHERRACK_ORE),
-                                    material.hasForm(ResourceForm.END_STONE_ORE)
-                            );
-                            ORE_GEN_CONFIGS.put(name, oreGen);
-                            continue;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.warn("Failed to load resource material JSON for '{}': {}", name, e.getMessage());
+            if (ORE_GEN_CONFIGS.containsKey(name)) {
+                continue;
             }
 
             var defaultGen = OreGenConfig.createDefault(
@@ -111,17 +151,30 @@ public class CustomMaterialLoader {
             return;
         }
 
+        try (var is = Files.newInputStream(filePath)) {
+            loadMaterialStream(is, filePath.toString());
+        } catch (Exception e) {
+            LOGGER.error("Failed to read material file: {}", filePath, e);
+        }
+    }
+
+    private static void loadMaterialStream(java.io.InputStream is, String sourceIdentifier) {
         CustomMaterialConfig config;
-        try (var reader = new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8)) {
+        try (var reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             config = GSON.fromJson(reader, CustomMaterialConfig.class);
         } catch (Exception e) {
-            LOGGER.error("Failed to parse custom material JSON from file: {}", filePath, e);
+            LOGGER.error("Failed to parse custom material JSON from {}: {}", sourceIdentifier, e);
             return;
         }
 
         if (config == null) {
-            LOGGER.warn("Material config file is empty: {}", filePath);
+            LOGGER.warn("Material config is empty from {}", sourceIdentifier);
             return;
+        }
+
+        var fileName = sourceIdentifier.contains("/") ? sourceIdentifier.substring(sourceIdentifier.lastIndexOf('/') + 1) : sourceIdentifier;
+        if (fileName.contains("\\")) {
+            fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
         }
 
         var name = config.name != null && !config.name.isBlank()
@@ -129,7 +182,7 @@ public class CustomMaterialLoader {
                 : fileName.replace(".json", "").toLowerCase(Locale.ROOT);
 
         if (!name.matches("^[a-z0-9_]+$")) {
-            LOGGER.error("Invalid material name '{}' in file: {}. Names must only contain lowercase a-z, 0-9, and _", name, filePath);
+            LOGGER.error("Invalid material name '{}' from {}. Names must only contain lowercase a-z, 0-9, and _", name, sourceIdentifier);
             return;
         }
 
@@ -158,6 +211,8 @@ public class CustomMaterialLoader {
             CUSTOM_TOOL_STATS.put(material.getId(), toolStats);
         }
 
+        CUSTOM_CONFIGS.put(material.name(), config);
+
         LOGGER.info("Applied config overrides for existing material '{}'", material.name());
     }
 
@@ -185,6 +240,7 @@ public class CustomMaterialLoader {
 
         var material = ModMaterials.registerCustom(builder);
         CUSTOM_MATERIAL_NAMES.add(name);
+        CUSTOM_CONFIGS.put(name, config);
 
         var oreGen = OreGenConfig.mergeWithDefaults(
                 config.oreGeneration,
