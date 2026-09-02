@@ -47,6 +47,7 @@ public class ModernMachines {
         ModMenuTypes.register(modEventBus);
         ModRecipeTypes.register(modEventBus);
         ModDataComponents.register(modEventBus);
+        io.github.gtbauke.modernmachines.core.registry.ModTraits.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
         io.github.gtbauke.modernmachines.network.ModNetworking.register(modEventBus);
         io.github.gtbauke.modernmachines.datagen.DataGenerators.register(modEventBus);

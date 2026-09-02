@@ -346,6 +346,12 @@ public class CustomMaterialLoader {
             }
         }
 
+        if (traits.isEmpty()) {
+            if ("rose_gold".equals(config.name)) {
+                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "lucky"), 1, ""));
+            }
+        }
+
         var mainItem = material.getItem(ResourceForm.INGOT);
         if (mainItem == null) {
             mainItem = material.getItem(ResourceForm.GEM);

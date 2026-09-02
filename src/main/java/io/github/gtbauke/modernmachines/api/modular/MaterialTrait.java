@@ -29,11 +29,30 @@ public record MaterialTrait(Identifier id, int level, String description) {
     );
 
     public Component getDisplayName() {
-        String path = id.getPath();
-        String name = Character.toUpperCase(path.charAt(0)) + path.substring(1).replace("_", " ");
+        var trait = io.github.gtbauke.modernmachines.api.modular.trait.ToolTraitRegistry.get(id);
+        if (trait != null) {
+            return trait.getDisplayName(level);
+        }
+
+        var path = id.getPath();
+        var name = Character.toUpperCase(path.charAt(0)) + path.substring(1).replace("_", " ");
         if (level > 1) {
             return Component.literal(name + " " + level);
         }
+
         return Component.literal(name);
+    }
+
+    public Component getDescription() {
+        var trait = io.github.gtbauke.modernmachines.api.modular.trait.ToolTraitRegistry.get(id);
+        if (trait != null) {
+            return trait.getDescription(level);
+        }
+
+        if (description != null && !description.isBlank()) {
+            return Component.literal(description);
+        }
+
+        return Component.empty();
     }
 }

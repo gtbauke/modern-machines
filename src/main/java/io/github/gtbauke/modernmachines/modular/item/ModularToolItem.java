@@ -1,9 +1,14 @@
 package io.github.gtbauke.modernmachines.modular.item;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.gtbauke.modernmachines.ModernMachines;
+import io.github.gtbauke.modernmachines.api.modular.trait.ToolTrait;
+import io.github.gtbauke.modernmachines.api.modular.trait.ToolTraitRegistry;
 import io.github.gtbauke.modernmachines.api.modular.MaterialStatsManager;
 import io.github.gtbauke.modernmachines.api.modular.MaterialToolStats;
 import io.github.gtbauke.modernmachines.api.modular.ModularToolData;
@@ -74,6 +79,37 @@ public abstract class ModularToolItem extends Item {
     public static void setData(ItemStack stack, ModularToolData data) {
         stack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data);
         recalculateComponents(stack);
+    }
+
+    public static Map<ToolTrait, Integer> getActiveTraits(ItemStack stack) {
+        var data = getData(stack);
+        if (data.parts().isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        var traitLevels = new LinkedHashMap<ToolTrait, Integer>();
+
+        for (var matId : data.parts().values()) {
+            if (matId == null) {
+                continue;
+            }
+
+            var statsOpt = MaterialStatsManager.getStats(matId);
+            if (statsOpt.isEmpty()) {
+                continue;
+            }
+
+            for (var traitEntry : statsOpt.get().traits()) {
+                var trait = ToolTraitRegistry.get(traitEntry.id());
+                if (trait == null) {
+                    continue;
+                }
+
+                traitLevels.merge(trait, traitEntry.level(), Integer::sum);
+            }
+        }
+
+        return traitLevels;
     }
 
     public static int getMaxDurability(ItemStack stack) {
@@ -151,7 +187,12 @@ public abstract class ModularToolItem extends Item {
 
         float hasteBonus = data.getModifierLevel(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "haste")) * 1.5f;
 
-        return Math.max(1.0f, (baseSpeed * handleMultiplier) + hasteBonus);
+        float finalSpeed = Math.max(1.0f, (baseSpeed * handleMultiplier) + hasteBonus);
+        for (var entry : getActiveTraits(stack).entrySet()) {
+            finalSpeed = entry.getKey().modifyMiningSpeed(stack, null, null, finalSpeed, entry.getValue());
+        }
+
+        return Math.max(1.0f, finalSpeed);
     }
 
     public static float getAttackDamage(ItemStack stack, float baseDamage) {
@@ -185,7 +226,12 @@ public abstract class ModularToolItem extends Item {
 
         float sharpnessBonus = data.getModifierLevel(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "sharpness")) * 1.25f;
 
-        return baseDamage + headDamage + attachmentBonus + sharpnessBonus;
+        float finalDamage = baseDamage + headDamage + attachmentBonus + sharpnessBonus;
+        for (var entry : getActiveTraits(stack).entrySet()) {
+            finalDamage = entry.getKey().modifyAttackDamage(stack, null, null, finalDamage, entry.getValue());
+        }
+
+        return Math.max(1.0f, finalDamage);
     }
 
     public static float getAttackSpeed(ItemStack stack, float baseSpeed) {
@@ -285,6 +331,10 @@ public abstract class ModularToolItem extends Item {
         }
 
         super.inventoryTick(stack, level, entity, slot);
+
+        for (var entry : getActiveTraits(stack).entrySet()) {
+            entry.getKey().onInventoryTick(stack, level, entity, slot, entry.getValue());
+        }
     }
 
     @Override
@@ -331,7 +381,12 @@ public abstract class ModularToolItem extends Item {
     @Override
     public float getDestroySpeed(@NonNull ItemStack stack, @NonNull BlockState state) {
         if (mineableTag != null && state.is(mineableTag)) {
-            return getMiningSpeed(stack);
+            float speed = getMiningSpeed(stack);
+            for (var entry : getActiveTraits(stack).entrySet()) {
+                speed = entry.getKey().modifyMiningSpeed(stack, state, null, speed, entry.getValue());
+            }
+
+            return Math.max(1.0f, speed);
         }
 
         return super.getDestroySpeed(stack, state);
@@ -358,25 +413,41 @@ public abstract class ModularToolItem extends Item {
     @Override
     public void hurtEnemy(@NonNull ItemStack stack, @NonNull LivingEntity target, @NonNull LivingEntity attacker) {
         applyDamage(stack, 2, attacker);
+
+        for (var entry : getActiveTraits(stack).entrySet()) {
+            entry.getKey().onAttack(stack, target, attacker, entry.getValue());
+        }
     }
 
     @Override
     public boolean mineBlock(@NonNull ItemStack stack, @NonNull Level level, @NonNull BlockState state, @NonNull BlockPos pos, @NonNull LivingEntity entity) {
         if (!level.isClientSide() && state.getDestroySpeed(level, pos) != 0.0F) {
             applyDamage(stack, 1, entity);
+
+            for (var entry : getActiveTraits(stack).entrySet()) {
+                entry.getKey().onMineBlock(stack, level, state, pos, entity, entry.getValue());
+            }
         }
 
         return true;
     }
 
     public void applyDamage(ItemStack stack, int amount, LivingEntity entity) {
+        int finalAmount = amount;
+        for (var entry : getActiveTraits(stack).entrySet()) {
+            finalAmount = entry.getKey().onDamageTool(stack, finalAmount, entity, entry.getValue());
+            if (finalAmount <= 0) {
+                return;
+            }
+        }
+
         var data = getData(stack);
         int unbreaking = data.getModifierLevel(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "reinforced"));
         if (unbreaking > 0 && entity.getRandom().nextInt(1 + unbreaking) > 0) {
             return;
         }
 
-        stack.hurtAndBreak(amount, entity, EquipmentSlot.MAINHAND);
+        stack.hurtAndBreak(finalAmount, entity, EquipmentSlot.MAINHAND);
         int newDmg = stack.getOrDefault(DataComponents.DAMAGE, 0);
         if (data.damage() != newDmg) {
             stack.set(ModDataComponents.MODULAR_TOOL_DATA.get(), data.withDamage(newDmg));
@@ -417,6 +488,19 @@ public abstract class ModularToolItem extends Item {
             tooltip.accept(Component.literal("  - ")
                     .append(Component.translatable("modifier." + mod.id().getNamespace() + "." + mod.id().getPath()))
                     .append(" " + mod.level()).withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
+
+        var traits = getActiveTraits(stack);
+        if (!traits.isEmpty()) {
+            tooltip.accept(Component.translatable("tooltip.modernmachines.traits_header").withStyle(ChatFormatting.YELLOW));
+            for (var entry : traits.entrySet()) {
+                var trait = entry.getKey();
+                var level = entry.getValue();
+                tooltip.accept(Component.literal("  - ")
+                        .append(trait.getDisplayName(level).copy().withStyle(ChatFormatting.AQUA))
+                        .append(": ")
+                        .append(trait.getDescription(level).copy().withStyle(ChatFormatting.GRAY)));
+            }
         }
 
         super.appendHoverText(stack, context, display, tooltip, flag);

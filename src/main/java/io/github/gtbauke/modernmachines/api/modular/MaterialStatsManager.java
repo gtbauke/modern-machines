@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -57,20 +58,20 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
                     : Optional.<Ingredient>empty();
 
             var traits = new java.util.ArrayList<MaterialTrait>();
-            MaterialToolStats.AttachmentStats attachmentStats;
+            var traitId = getBuiltInTraitForMaterial(mat);
+            if (traitId != null) {
+                traits.add(new MaterialTrait(traitId, 1, ""));
+            }
 
+            MaterialToolStats.AttachmentStats attachmentStats;
             if (mat == ModMaterials.LAPIS_LAZULI) {
                 attachmentStats = new MaterialToolStats.AttachmentStats(60, 0.5f, 0.0f, Optional.empty());
-                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "prosperity"), 1, "Increased experience and fortune"));
             } else if (mat == ModMaterials.DIAMOND) {
                 attachmentStats = new MaterialToolStats.AttachmentStats(150, 1.0f, 0.0f, Optional.empty());
-                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "reinforced"), 1, "Chance to not consume durability"));
             } else if (mat == ModMaterials.EMERALD) {
                 attachmentStats = new MaterialToolStats.AttachmentStats(100, 0.75f, 0.0f, Optional.empty());
-                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "bounty"), 1, "Increased mob loot and luck"));
             } else if (mat == ModMaterials.AMETHYST) {
                 attachmentStats = new MaterialToolStats.AttachmentStats(80, 0.6f, 0.4f, Optional.empty());
-                traits.add(new MaterialTrait(Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "resonance"), 1, "Bonus attack and swing speed"));
             } else {
                 attachmentStats = new MaterialToolStats.AttachmentStats((int) (durability * 0.1f), damage * 0.3f, 0.2f, Optional.empty());
             }
@@ -127,5 +128,89 @@ public class MaterialStatsManager extends SimpleJsonResourceReloadListener<Mater
 
     public static Map<Identifier, MaterialToolStats> getAllStats() {
         return Collections.unmodifiableMap(STATS);
+    }
+
+    private static @Nullable Identifier getBuiltInTraitForMaterial(Material mat) {
+        if (mat == ModMaterials.WOOD) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "ecological");
+        }
+
+        if (mat == ModMaterials.STONE) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "dense");
+        }
+
+        if (mat == ModMaterials.IRON) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "reinforced");
+        }
+
+        if (mat == ModMaterials.GOLD || mat == ModMaterials.LAPIS_LAZULI) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "prosperity");
+        }
+
+        if (mat == ModMaterials.DIAMOND) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "keen_edge");
+        }
+
+        if (mat == ModMaterials.NETHERITE) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "hellforged");
+        }
+
+        if (mat == ModMaterials.COPPER || mat == ModMaterials.AMETHYST) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "conductive");
+        }
+
+        if (mat == ModMaterials.TIN) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "lightweight");
+        }
+
+        if (mat == ModMaterials.BRONZE) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "sturdy");
+        }
+
+        if (mat == ModMaterials.STEEL) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "sharp");
+        }
+
+        if (mat == ModMaterials.SILVER) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "purifying");
+        }
+
+        if (mat == ModMaterials.LEAD) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "heavy");
+        }
+
+        if (mat == ModMaterials.NICKEL) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "resilient");
+        }
+
+        if (mat == ModMaterials.INVAR) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "tempered");
+        }
+
+        if (mat == ModMaterials.ELECTRUM) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "overclocked");
+        }
+
+        if (mat == ModMaterials.CONSTANTAN) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "thermal");
+        }
+
+        if (mat == ModMaterials.TITANIUM) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "unyielding");
+        }
+
+        if (mat == ModMaterials.URANIUM) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "radioactive");
+        }
+
+        if (mat == ModMaterials.EMERALD) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "lucky");
+        }
+
+        if ("rose_gold".equals(mat.name())) {
+            return Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "lucky");
+        }
+
+        return null;
     }
 }
