@@ -134,4 +134,52 @@ public class OreGenConfigTest {
         assertEquals(0, rule.veinsPerChunk());
         assertEquals(1.0f, rule.discardChanceOnAirExposure(), 0.001f);
     }
+
+    @Test
+    public void testMultiTargetAndBlacklistParsing() {
+        var json = """
+                {
+                    "enabled": true,
+                    "dimensions": ["minecraft:overworld", "aether:the_aether"],
+                    "dimension_blacklist": ["minecraft:the_nether"],
+                    "biome_tags": ["#minecraft:is_mountain", "#c:is_sandy"],
+                    "biome_blacklist": ["minecraft:ocean"],
+                    "targets": [
+                        {
+                            "type": "tag_match",
+                            "target": "minecraft:stone_ore_replaceables",
+                            "form": "ore"
+                        },
+                        {
+                            "type": "block_match",
+                            "target": "aether:holystone",
+                            "state": "modernmachines:holystone_titanium_ore"
+                        }
+                    ],
+                    "vein_size": 8,
+                    "veins_per_chunk": 5,
+                    "distribution": "trapezoid",
+                    "min_y": -32,
+                    "max_y": 128
+                }
+                """;
+
+        var rule = GSON.fromJson(json, OreGenRule.class);
+        assertNotNull(rule);
+        assertEquals(2, rule.dimensions().size());
+        assertEquals(1, rule.dimensionBlacklist().size());
+        assertEquals(2, rule.biomeTags().size());
+        assertEquals(1, rule.biomeBlacklist().size());
+        assertEquals(2, rule.targets().size());
+
+        assertEquals("tag_match", rule.targets().get(0).targetType());
+        assertEquals("minecraft:stone_ore_replaceables", rule.targets().get(0).target());
+        assertEquals("ore", rule.targets().get(0).oreForm());
+
+        assertEquals("block_match", rule.targets().get(1).targetType());
+        assertEquals("aether:holystone", rule.targets().get(1).target());
+        assertEquals("modernmachines:holystone_titanium_ore", rule.targets().get(1).state());
+
+        assertEquals("trapezoid", rule.distribution());
+    }
 }

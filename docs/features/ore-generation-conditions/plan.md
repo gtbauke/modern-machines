@@ -112,11 +112,11 @@ public static final Supplier<PlacementModifierType<DimensionFilterPlacementModif
   - *Verification*: `./gradlew build`
 
 ### Phase 3: Datapack Synthesis
-- [ ] **Task 3.1**: Extend `VirtualDataPack.java` to synthesize `ConfiguredFeature` JSON strings for each rule.
+- [x] **Task 3.1**: Extend `VirtualDataPack.java` to synthesize `ConfiguredFeature` JSON strings for each rule.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 3.2**: Extend `VirtualDataPack.java` to synthesize `PlacedFeature` JSON strings utilizing the new custom placement modifiers.
+- [x] **Task 3.2**: Extend `VirtualDataPack.java` to synthesize `PlacedFeature` JSON strings utilizing the new custom placement modifiers.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 3.3**: Extend `VirtualDataPack.java` to synthesize `BiomeModifier` JSON strings handling combinations of biome tags/IDs and `required_mod` checks (via `neoforge:mod_loaded` conditions).
+- [x] **Task 3.3**: Extend `VirtualDataPack.java` to synthesize `BiomeModifier` JSON strings handling combinations of biome tags/IDs and `required_mod` checks (via `neoforge:mod_loaded` conditions).
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 4: Validation & Polish

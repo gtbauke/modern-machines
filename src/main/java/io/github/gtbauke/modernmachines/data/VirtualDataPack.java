@@ -2,6 +2,7 @@ package io.github.gtbauke.modernmachines.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -18,8 +19,11 @@ import io.github.gtbauke.modernmachines.config.material.CustomMaterialConfig;
 import io.github.gtbauke.modernmachines.config.material.CustomMaterialLoader;
 import io.github.gtbauke.modernmachines.config.material.DimensionOreConfig;
 import io.github.gtbauke.modernmachines.config.material.OreGenConfig;
+import io.github.gtbauke.modernmachines.config.material.OreGenRule;
+import io.github.gtbauke.modernmachines.config.material.OreTargetConfig;
 import io.github.gtbauke.modernmachines.core.registry.ModMaterials;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.fml.loading.FMLLoader;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
@@ -79,10 +83,7 @@ public class VirtualDataPack {
         var allNuggets = new ArrayList<String>();
         var allStorageBlocks = new ArrayList<String>();
 
-        var overworldFeatures = new ArrayList<String>();
-        var netherFeatures = new ArrayList<String>();
-        var endFeatures = new ArrayList<String>();
-
+        int totalRulesGenerated = 0;
         for (var entry : oreConfigs.entrySet()) {
             var name = entry.getKey();
             var oreGen = entry.getValue();
@@ -92,13 +93,23 @@ public class VirtualDataPack {
                 continue;
             }
 
-            addWorldgenResources(pack, material, oreGen, overworldFeatures, netherFeatures, endFeatures);
+            var rules = oreGen.getResolvedRules(
+                    material.hardness(),
+                    material.hasForm(ResourceForm.ORE),
+                    material.hasForm(ResourceForm.DEEPSLATE_ORE),
+                    material.hasForm(ResourceForm.NETHERRACK_ORE),
+                    material.hasForm(ResourceForm.END_STONE_ORE)
+            );
+
+            for (int i = 0; i < rules.size(); i++) {
+                var rule = rules.get(i);
+                if (addOreRuleWorldgen(pack, material, rule, i)) {
+                    totalRulesGenerated++;
+                }
+            }
         }
 
-        addBiomeModifiers(pack, overworldFeatures, netherFeatures, endFeatures);
-
-        LOGGER.info("Registered virtual ore worldgen: {} Overworld, {} Nether, {} End features",
-                overworldFeatures.size(), netherFeatures.size(), endFeatures.size());
+        LOGGER.info("Registered virtual ore worldgen: {} rules generated across materials", totalRulesGenerated);
 
         for (var materialName : CustomMaterialLoader.getCustomMaterialNames()) {
             var material = ModMaterials.getByName(materialName);
@@ -161,70 +172,245 @@ public class VirtualDataPack {
         );
     }
 
-    private static void addWorldgenResources(
+    private static boolean addOreRuleWorldgen(
             VirtualPackResources pack,
             Material material,
-            OreGenConfig oreGen,
-            List<String> overworldFeatures,
-            List<String> netherFeatures,
-            List<String> endFeatures
+            OreGenRule rule,
+            int ruleIndex
     ) {
-        if (oreGen.overworld().enabled() && (material.hasForm(ResourceForm.ORE) || material.hasForm(ResourceForm.DEEPSLATE_ORE))) {
-            addOverworldOreWorldgen(pack, material, oreGen.overworld(), overworldFeatures);
+        if (!rule.enabled()) {
+            return false;
         }
 
-        if (oreGen.nether().enabled() && material.hasForm(ResourceForm.NETHERRACK_ORE)) {
-            addNetherOreWorldgen(pack, material, oreGen.nether(), netherFeatures);
+        if (rule.requiredMod() != null && !rule.requiredMod().isBlank()) {
+            var loader = FMLLoader.getCurrentOrNull();
+            if (loader != null && loader.getLoadingModList().getModFileById(rule.requiredMod().trim()) == null) {
+                LOGGER.debug("Skipping ore rule {} for material {} because required mod '{}' is not loaded",
+                        ruleIndex, material.name(), rule.requiredMod());
+                return false;
+            }
         }
 
-        if (oreGen.end().enabled() && material.hasForm(ResourceForm.END_STONE_ORE)) {
-            addEndOreWorldgen(pack, material, oreGen.end(), endFeatures);
-        }
-    }
-
-    private static void addOverworldOreWorldgen(
-            VirtualPackResources pack,
-            Material material,
-            DimensionOreConfig config,
-            List<String> overworldFeatures
-    ) {
-        var name = material.name();
-        var targets = getObjects(material, name);
-
+        var targets = resolveRuleTargets(material, rule);
         if (targets.isEmpty()) {
-            return;
+            return false;
         }
+
+        var name = material.name();
+        var featureSuffix = name + "_rule_" + ruleIndex;
 
         var configuredFeature = Map.of(
                 "type", "minecraft:ore",
                 "config", Map.of(
-                        "size", config.veinSize(),
-                        "discard_chance_on_air_exposure", 0.0f,
+                        "size", rule.veinSize(),
+                        "discard_chance_on_air_exposure", rule.discardChanceOnAirExposure(),
                         "targets", targets
                 )
         );
 
-        var cfgId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/configured_feature/ore_" + name + ".json");
+        var cfgId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/configured_feature/ore_" + featureSuffix + ".json");
         pack.addResource(cfgId, GSON.toJson(configuredFeature));
 
-        var placedFeature = Map.of(
-                "feature", ModernMachines.MOD_ID + ":ore_" + name,
-                "placement", List.of(
-                        Map.of("type", "minecraft:count", "count", config.veinsPerChunk()),
-                        Map.of("type", "minecraft:in_square"),
-                        Map.of("type", "minecraft:height_range", "height", Map.of(
-                                "type", "uniform".equalsIgnoreCase(config.distribution()) ? "minecraft:uniform" : "minecraft:trapezoid",
-                                "min_inclusive", Map.of("absolute", config.minY()),
-                                "max_inclusive", Map.of("absolute", config.maxY())
-                        )),
-                        Map.of("type", "minecraft:biome")
+        var placement = new ArrayList<Object>();
+
+        if (rule.rarity() > 0) {
+            placement.add(Map.of("type", "minecraft:rarity_filter", "chance", rule.rarity()));
+        } else {
+            placement.add(Map.of("type", "minecraft:count", "count", rule.veinsPerChunk()));
+        }
+
+        placement.add(Map.of("type", "minecraft:in_square"));
+
+        placement.add(Map.of(
+                "type", "minecraft:height_range",
+                "height", Map.of(
+                        "type", "uniform".equalsIgnoreCase(rule.distribution()) ? "minecraft:uniform" : "minecraft:trapezoid",
+                        "min_inclusive", Map.of("absolute", rule.minY()),
+                        "max_inclusive", Map.of("absolute", rule.maxY())
                 )
+        ));
+
+        if (!rule.dimensions().isEmpty() || !rule.dimensionBlacklist().isEmpty()) {
+            placement.add(Map.of(
+                    "type", ModernMachines.MOD_ID + ":dimension_filter",
+                    "allowed", rule.dimensions(),
+                    "denied", rule.dimensionBlacklist()
+            ));
+        }
+
+        if (rule.adjacentToBlock() != null && !rule.adjacentToBlock().isBlank()) {
+            placement.add(Map.of(
+                    "type", ModernMachines.MOD_ID + ":adjacent_block",
+                    "block", rule.adjacentToBlock().trim()
+            ));
+        }
+
+        placement.add(Map.of("type", "minecraft:biome"));
+
+        var placedFeature = Map.of(
+                "feature", ModernMachines.MOD_ID + ":ore_" + featureSuffix,
+                "placement", placement
         );
 
-        var placedId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/placed_feature/ore_" + name + "_placed.json");
+        var placedId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/placed_feature/ore_" + featureSuffix + "_placed.json");
         pack.addResource(placedId, GSON.toJson(placedFeature));
 
-        overworldFeatures.add(ModernMachines.MOD_ID + ":ore_" + name + "_placed");
+        var biomeSelector = resolveBiomeSelector(rule);
+        var biomeModifier = Map.of(
+                "type", "neoforge:add_features",
+                "biomes", biomeSelector,
+                "features", List.of(ModernMachines.MOD_ID + ":ore_" + featureSuffix + "_placed"),
+                "step", "underground_ores"
+        );
+
+        var modifierId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "neoforge/biome_modifier/add_ore_" + featureSuffix + ".json");
+        pack.addResource(modifierId, GSON.toJson(biomeModifier));
+
+        return true;
+    }
+
+    private static @NonNull List<Object> resolveRuleTargets(Material material, OreGenRule rule) {
+        var targets = new ArrayList<>();
+
+        if (rule.targets() != null && !rule.targets().isEmpty()) {
+            for (var targetConfig : rule.targets()) {
+                var predicateType = targetConfig.targetType();
+                if (!predicateType.contains(":")) {
+                    predicateType = "minecraft:" + predicateType;
+                }
+
+                Map<String, Object> predicate;
+                if (predicateType.equals("minecraft:block_match") || predicateType.equals("minecraft:blockstate_match")) {
+                    predicate = Map.of(
+                            "predicate_type", predicateType,
+                            "block", targetConfig.target()
+                    );
+                } else {
+                    predicate = Map.of(
+                            "predicate_type", predicateType,
+                            "tag", targetConfig.target()
+                    );
+                }
+
+                String stateBlockId;
+                if (targetConfig.state() != null && !targetConfig.state().isBlank()) {
+                    stateBlockId = targetConfig.state().trim();
+                } else {
+                    var form = parseOreForm(targetConfig.oreForm());
+                    if (form != null && material.hasForm(form)) {
+                        stateBlockId = getBlockId(material, form, material.name());
+                    } else {
+                        stateBlockId = getFirstAvailableOreBlockId(material);
+                    }
+                }
+
+                if (stateBlockId != null) {
+                    targets.add(Map.of(
+                            "target", predicate,
+                            "state", Map.of("Name", stateBlockId)
+                    ));
+                }
+            }
+        }
+
+        if (targets.isEmpty()) {
+            var defaultTargets = getObjects(material, material.name());
+            targets.addAll(defaultTargets);
+        }
+
+        return targets;
+    }
+
+    private static @NonNull Object resolveBiomeSelector(OreGenRule rule) {
+        if (!rule.biomeBlacklist().isEmpty()) {
+            var positiveBiomes = extractPositiveBiomes(rule);
+
+            return Map.of(
+                    "type", "neoforge:and",
+                    "values", List.of(
+                            positiveBiomes,
+                            Map.of(
+                                    "type", "neoforge:none",
+                                    "values", rule.biomeBlacklist()
+                            )
+                    )
+            );
+        }
+
+        return extractPositiveBiomes(rule);
+    }
+
+    private static @NonNull Object extractPositiveBiomes(OreGenRule rule) {
+        var values = new ArrayList<String>();
+        values.addAll(rule.biomeTags());
+        values.addAll(rule.biomes());
+
+        if (values.isEmpty()) {
+            if (rule.dimensions().contains("minecraft:the_nether")) {
+                return "#minecraft:is_nether";
+            }
+
+            if (rule.dimensions().contains("minecraft:the_end")) {
+                return "#minecraft:is_end";
+            }
+
+            return "#minecraft:is_overworld";
+        }
+
+        if (values.size() == 1) {
+            return values.get(0);
+        }
+
+        return values;
+    }
+
+    private static @Nullable ResourceForm parseOreForm(@Nullable String formStr) {
+        if (formStr == null || formStr.isBlank()) {
+            return null;
+        }
+
+        var normalized = formStr.trim().toUpperCase(Locale.ROOT).replace(" ", "_");
+        try {
+            return ResourceForm.valueOf(normalized);
+        } catch (IllegalArgumentException e) {
+            if (normalized.equals("STONE") || normalized.equals("STONE_ORE")) {
+                return ResourceForm.ORE;
+            }
+
+            if (normalized.equals("DEEPSLATE")) {
+                return ResourceForm.DEEPSLATE_ORE;
+            }
+
+            if (normalized.equals("NETHERRACK") || normalized.equals("NETHER")) {
+                return ResourceForm.NETHERRACK_ORE;
+            }
+
+            if (normalized.equals("END") || normalized.equals("END_STONE")) {
+                return ResourceForm.END_STONE_ORE;
+            }
+
+            return null;
+        }
+    }
+
+    private static @Nullable String getFirstAvailableOreBlockId(Material material) {
+        if (material.hasForm(ResourceForm.ORE)) {
+            return getBlockId(material, ResourceForm.ORE, material.name());
+        }
+
+        if (material.hasForm(ResourceForm.DEEPSLATE_ORE)) {
+            return getBlockId(material, ResourceForm.DEEPSLATE_ORE, material.name());
+        }
+
+        if (material.hasForm(ResourceForm.NETHERRACK_ORE)) {
+            return getBlockId(material, ResourceForm.NETHERRACK_ORE, material.name());
+        }
+
+        if (material.hasForm(ResourceForm.END_STONE_ORE)) {
+            return getBlockId(material, ResourceForm.END_STONE_ORE, material.name());
+        }
+
+        return null;
     }
 
     private static @NonNull List<Object> getObjects(Material material, String name) {
@@ -273,133 +459,6 @@ public class VirtualDataPack {
         }
 
         return ModernMachines.MOD_ID + ":" + form.getRegistryName(name);
-    }
-
-    private static void addNetherOreWorldgen(
-            VirtualPackResources pack,
-            Material material,
-            DimensionOreConfig config,
-            List<String> netherFeatures
-    ) {
-        var name = material.name();
-        var configuredFeature = getOreBlockName(ResourceForm.NETHERRACK_ORE, material, config, "minecraft:netherrack");
-
-        var cfgId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/configured_feature/ore_netherrack_" + name + ".json");
-        pack.addResource(cfgId, GSON.toJson(configuredFeature));
-
-        var placedFeature = Map.of(
-                "feature", ModernMachines.MOD_ID + ":ore_netherrack_" + name,
-                "placement", List.of(
-                        Map.of("type", "minecraft:count", "count", config.veinsPerChunk()),
-                        Map.of("type", "minecraft:in_square"),
-                        Map.of("type", "minecraft:height_range", "height", Map.of(
-                                "type", "uniform".equalsIgnoreCase(config.distribution()) ? "minecraft:uniform" : "minecraft:trapezoid",
-                                "min_inclusive", Map.of("absolute", config.minY()),
-                                "max_inclusive", Map.of("absolute", config.maxY())
-                        )),
-                        Map.of("type", "minecraft:biome")
-                )
-        );
-
-        var placedId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/placed_feature/ore_netherrack_" + name + "_placed.json");
-        pack.addResource(placedId, GSON.toJson(placedFeature));
-
-        netherFeatures.add(ModernMachines.MOD_ID + ":ore_netherrack_" + name + "_placed");
-    }
-
-    private static @NonNull Map<String, Object> getOreBlockName(ResourceForm form, Material material, DimensionOreConfig config, String replaceBlock) {
-        var oreBlockId = getBlockId(material, form, material.name());
-
-        return Map.of(
-                "type", "minecraft:ore",
-                "config", Map.of(
-                        "size", config.veinSize(),
-                        "discard_chance_on_air_exposure", 0.0f,
-                        "targets", List.of(
-                                Map.of(
-                                        "target", Map.of(
-                                                "predicate_type", "minecraft:block_match",
-                                                "block", replaceBlock
-                                        ),
-                                        "state", Map.of(
-                                                "Name", oreBlockId
-                                        )
-                                )
-                        )
-                )
-        );
-    }
-
-    private static void addEndOreWorldgen(
-            VirtualPackResources pack,
-            Material material,
-            DimensionOreConfig config,
-            List<String> endFeatures
-    ) {
-        var name = material.name();
-        var configuredFeature = getOreBlockName(ResourceForm.END_STONE_ORE, material, config, "minecraft:end_stone");
-
-        var cfgId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/configured_feature/ore_end_stone_" + name + ".json");
-        pack.addResource(cfgId, GSON.toJson(configuredFeature));
-
-        var placedFeature = Map.of(
-                "feature", ModernMachines.MOD_ID + ":ore_end_stone_" + name,
-                "placement", List.of(
-                        Map.of("type", "minecraft:count", "count", config.veinsPerChunk()),
-                        Map.of("type", "minecraft:in_square"),
-                        Map.of("type", "minecraft:height_range", "height", Map.of(
-                                "type", "uniform".equalsIgnoreCase(config.distribution()) ? "minecraft:uniform" : "minecraft:trapezoid",
-                                "min_inclusive", Map.of("absolute", config.minY()),
-                                "max_inclusive", Map.of("absolute", config.maxY())
-                        )),
-                        Map.of("type", "minecraft:biome")
-                )
-        );
-
-        var placedId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/placed_feature/ore_end_stone_" + name + "_placed.json");
-        pack.addResource(placedId, GSON.toJson(placedFeature));
-
-        endFeatures.add(ModernMachines.MOD_ID + ":ore_end_stone_" + name + "_placed");
-    }
-
-    private static void addBiomeModifiers(
-            VirtualPackResources pack,
-            List<String> overworldFeatures,
-            List<String> netherFeatures,
-            List<String> endFeatures
-    ) {
-        if (!overworldFeatures.isEmpty()) {
-            var overworldModifier = Map.of(
-                    "type", "neoforge:add_features",
-                    "biomes", "#minecraft:is_overworld",
-                    "features", overworldFeatures,
-                    "step", "underground_ores"
-            );
-            var id = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "neoforge/biome_modifier/add_ores.json");
-            pack.addResource(id, GSON.toJson(overworldModifier));
-        }
-
-        if (!netherFeatures.isEmpty()) {
-            var netherModifier = Map.of(
-                    "type", "neoforge:add_features",
-                    "biomes", "#minecraft:is_nether",
-                    "features", netherFeatures,
-                    "step", "underground_ores"
-            );
-            var id = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "neoforge/biome_modifier/add_nether_ores.json");
-            pack.addResource(id, GSON.toJson(netherModifier));
-        }
-
-        if (!endFeatures.isEmpty()) {
-            var endModifier = Map.of(
-                    "type", "neoforge:add_features",
-                    "biomes", "#minecraft:is_end",
-                    "features", endFeatures,
-                    "step", "underground_ores"
-            );
-            var id = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "neoforge/biome_modifier/add_end_ores.json");
-            pack.addResource(id, GSON.toJson(endModifier));
-        }
     }
 
     private static void addGameplayResources(
