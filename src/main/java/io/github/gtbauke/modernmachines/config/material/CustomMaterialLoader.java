@@ -45,6 +45,7 @@ public class CustomMaterialLoader {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(OreTargetConfig.class, new OreTargetConfigDeserializer())
             .registerTypeAdapter(OreGenRule.class, new OreGenRuleDeserializer())
+            .registerTypeAdapter(LargeOreVeinConfig.class, new LargeOreVeinConfigDeserializer())
             .setPrettyPrinting()
             .create();
 

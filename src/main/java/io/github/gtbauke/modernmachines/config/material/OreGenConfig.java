@@ -13,6 +13,8 @@ public record OreGenConfig(
         boolean enabled,
         @SerializedName(value = "rules", alternate = {"rule"})
         @Nullable List<OreGenRule> rules,
+        @SerializedName(value = "large_veins", alternate = {"largeVeins", "large_vein", "largeVein"})
+        @Nullable List<LargeOreVeinConfig> largeVeins,
         @SerializedName(value = "overworld", alternate = {})
         @Nullable DimensionOreConfig overworld,
         @SerializedName(value = "nether", alternate = {})
@@ -22,11 +24,21 @@ public record OreGenConfig(
 ) {
     public OreGenConfig(
             boolean enabled,
+            @Nullable List<OreGenRule> rules,
             @Nullable DimensionOreConfig overworld,
             @Nullable DimensionOreConfig nether,
             @Nullable DimensionOreConfig end
     ) {
-        this(enabled, null, overworld, nether, end);
+        this(enabled, rules, null, overworld, nether, end);
+    }
+
+    public OreGenConfig(
+            boolean enabled,
+            @Nullable DimensionOreConfig overworld,
+            @Nullable DimensionOreConfig nether,
+            @Nullable DimensionOreConfig end
+    ) {
+        this(enabled, null, null, overworld, nether, end);
     }
 
     public @NonNull List<OreGenRule> getResolvedRules(
@@ -95,6 +107,21 @@ public record OreGenConfig(
         return Collections.unmodifiableList(result);
     }
 
+    public @NonNull List<LargeOreVeinConfig> getResolvedLargeVeins() {
+        if (!enabled || largeVeins == null || largeVeins.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        var result = new ArrayList<LargeOreVeinConfig>();
+        for (var vein : largeVeins) {
+            if (vein != null && vein.enabled()) {
+                result.add(vein);
+            }
+        }
+
+        return Collections.unmodifiableList(result);
+    }
+
     public static @NonNull OreGenConfig createDefault(
             float hardness,
             boolean hasStone,
@@ -115,7 +142,7 @@ public record OreGenConfig(
             rules.add(OreGenRule.defaultEnd(hardness, true));
         }
 
-        return new OreGenConfig(!rules.isEmpty(), rules, null, null, null);
+        return new OreGenConfig(!rules.isEmpty(), rules, null, null, null, null);
     }
 
     public static @NonNull OreGenConfig createDefault(
@@ -155,7 +182,7 @@ public record OreGenConfig(
                 ? config.end()
                 : (hasEnd ? DimensionOreConfig.defaultEnd(hardness) : DimensionOreConfig.disabled());
 
-        return new OreGenConfig(config.enabled(), config.rules(), overworld, nether, end);
+        return new OreGenConfig(config.enabled(), config.rules(), config.largeVeins(), overworld, nether, end);
     }
 
     public static @NonNull OreGenConfig mergeWithDefaults(

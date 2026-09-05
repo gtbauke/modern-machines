@@ -37,7 +37,7 @@ public class AdjacentBlockPlacementModifier extends PlacementFilter {
             var state = context.getBlockState(adjacentPos);
             var blockLoc = BuiltInRegistries.BLOCK.getKey(state.getBlock());
 
-            if (blockLoc != null && blockLoc.equals(targetBlock)) {
+            if (blockLoc.equals(targetBlock)) {
                 return true;
             }
         }

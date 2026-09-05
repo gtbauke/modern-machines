@@ -12,6 +12,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.github.gtbauke.modernmachines.config.material.CustomMaterialConfig;
+import io.github.gtbauke.modernmachines.config.material.LargeOreVeinConfig;
+import io.github.gtbauke.modernmachines.config.material.LargeOreVeinConfigDeserializer;
 import io.github.gtbauke.modernmachines.config.material.OreGenConfig;
 import io.github.gtbauke.modernmachines.config.material.OreGenRule;
 import io.github.gtbauke.modernmachines.config.material.OreGenRuleDeserializer;
@@ -22,6 +24,7 @@ public class OreGenConfigTest {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(OreTargetConfig.class, new OreTargetConfigDeserializer())
             .registerTypeAdapter(OreGenRule.class, new OreGenRuleDeserializer())
+            .registerTypeAdapter(LargeOreVeinConfig.class, new LargeOreVeinConfigDeserializer())
             .setPrettyPrinting()
             .create();
 
@@ -181,5 +184,105 @@ public class OreGenConfigTest {
         assertEquals("modernmachines:holystone_titanium_ore", rule.targets().get(1).state());
 
         assertEquals("trapezoid", rule.distribution());
+    }
+
+    @Test
+    public void testLargeOreVeinConfigParsing() {
+        var json = """
+                {
+                    "name": "iron",
+                    "ore_generation": {
+                        "enabled": true,
+                        "large_veins": [
+                            {
+                                "enabled": true,
+                                "dimensions": ["minecraft:overworld"],
+                                "biome_tags": ["#minecraft:is_mountain"],
+                                "min_y": -40,
+                                "max_y": 60,
+                                "rarity": 24,
+                                "filler_block": "minecraft:tuff",
+                                "primary_ore_chance": 0.4,
+                                "raw_block_chance": 0.05,
+                                "secondary_material": "nickel",
+                                "secondary_ore_chance": 0.15,
+                                "surface_indicators": {
+                                    "enabled": true,
+                                    "block": "modernmachines:iron_indicator",
+                                    "chance": 0.7
+                                },
+                                "noise": {
+                                    "length": 64,
+                                    "thickness": 8,
+                                    "density": 0.7
+                                }
+                            }
+                        ]
+                    }
+                }
+                """;
+
+        var config = GSON.fromJson(json, CustomMaterialConfig.class);
+        assertNotNull(config);
+        assertNotNull(config.oreGeneration);
+        assertTrue(config.oreGeneration.enabled());
+
+        var veins = config.oreGeneration.getResolvedLargeVeins();
+        assertEquals(1, veins.size());
+
+        var vein = veins.get(0);
+        assertTrue(vein.enabled());
+        assertEquals(List.of("minecraft:overworld"), vein.dimensions());
+        assertEquals(List.of("#minecraft:is_mountain"), vein.biomeTags());
+        assertEquals(-40, vein.minY());
+        assertEquals(60, vein.maxY());
+        assertEquals(24, vein.rarity());
+        assertEquals("minecraft:tuff", vein.fillerBlock());
+        assertEquals(0.4f, vein.primaryOreChance(), 0.001f);
+        assertEquals(0.05f, vein.rawBlockChance(), 0.001f);
+        assertEquals("nickel", vein.secondaryMaterial());
+        assertEquals(0.15f, vein.secondaryOreChance(), 0.001f);
+
+        assertNotNull(vein.surfaceIndicators());
+        assertTrue(vein.surfaceIndicators().enabled());
+        assertEquals("modernmachines:iron_indicator", vein.surfaceIndicators().block());
+        assertEquals(0.7f, vein.surfaceIndicators().chance(), 0.001f);
+
+        assertNotNull(vein.noise());
+        assertEquals(64, vein.noise().length());
+        assertEquals(8, vein.noise().thickness());
+        assertEquals(0.7f, vein.noise().density(), 0.001f);
+    }
+
+    @Test
+    public void testLargeOreVeinDefaultsAndClamping() {
+        var json = """
+                {
+                    "enabled": true,
+                    "min_y": 0,
+                    "max_y": 50,
+                    "rarity": 0,
+                    "primary_ore_chance": 1.5,
+                    "raw_block_chance": -0.5,
+                    "secondary_ore_chance": 2.0
+                }
+                """;
+
+        var vein = GSON.fromJson(json, io.github.gtbauke.modernmachines.config.material.LargeOreVeinConfig.class);
+        assertNotNull(vein);
+        assertTrue(vein.enabled());
+        assertEquals("minecraft:granite", vein.fillerBlock());
+        assertEquals(16, vein.rarity());
+        assertEquals(1.0f, vein.primaryOreChance(), 0.001f);
+        assertEquals(0.0f, vein.rawBlockChance(), 0.001f);
+        assertEquals(1.0f, vein.secondaryOreChance(), 0.001f);
+
+        assertNotNull(vein.surfaceIndicators());
+        assertFalse(vein.surfaceIndicators().enabled());
+
+        assertNotNull(vein.noise());
+        assertEquals(48, vein.noise().length());
+        assertEquals(6, vein.noise().thickness());
+        assertEquals(0.65f, vein.noise().density(), 0.001f);
     }
 }
