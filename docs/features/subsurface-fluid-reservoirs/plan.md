@@ -143,15 +143,15 @@ public record HazardConfig(
   - *Verification*: Check `.minecraft/logs/latest.log` during `./gradlew runClient` for VirtualDataPack registration success.
 
 ### Phase 4: Hazards & Secondary Recovery
-- [ ] **Task 4.1**: Implement NeoForge event subscriber for `BlockEvent.BreakEvent` to handle breach hazards (blowouts, toxic clouds, flashovers).
+- [x] **Task 4.1**: Implement NeoForge event subscriber for `BlockEvent.BreakEvent` to handle breach hazards (blowouts, toxic clouds, flashovers).
   - *Verification*: Run `./gradlew compileJava`.
-- [ ] **Task 4.2**: Implement hazard cooldowns and particle limits per chunk.
+- [x] **Task 4.2**: Implement hazard cooldowns and particle limits per chunk.
   - *Verification*: Test in-game via `./gradlew runClient` by mining barriers with and without casings near lava.
-- [ ] **Task 4.3**: Finalize Wellhead injection logic (secondary recovery waterflooding) and pressure restabilization.
+- [x] **Task 4.3**: Finalize Wellhead injection logic (secondary recovery waterflooding) and pressure restabilization.
   - *Verification*: Run full build: `./gradlew build`.
 
 ### Phase 5: Polish & Validation
-- [ ] **Task 5.1**: Ensure all annotations (e.g. `@SubscribeEvent`, nullability contracts) and braces follow `AGENTS.md` guidelines.
+- [x] **Task 5.1**: Ensure all annotations (e.g. `@SubscribeEvent`, nullability contracts) and braces follow `AGENTS.md` guidelines.
   - *Verification*: Manual review or custom linter script.
-- [ ] **Task 5.2**: Test server/client synchronization and client particle rendering packets.
+- [x] **Task 5.2**: Test server/client synchronization and client particle rendering packets.
   - *Verification*: Run `./gradlew runServer` and connect a client to verify multiplayer capability.
