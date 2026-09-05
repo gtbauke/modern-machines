@@ -449,12 +449,28 @@ public class CustomMaterialLoader {
                 "gear",
                 "molten"
         );
-        exampleConfig.oreGeneration = new OreGenConfig(
+        var overworldRule = new OreGenRule(
                 true,
-                new DimensionOreConfig(true, 6, 5, -48, 32, "triangle"),
-                new DimensionOreConfig(false, 6, 4, 10, 115, "uniform"),
-                new DimensionOreConfig(false, 4, 3, 10, 70, "uniform")
+                List.of("minecraft:overworld"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                List.of("#minecraft:is_mountain"),
+                List.of("minecraft:ocean"),
+                List.of(
+                        OreTargetConfig.stone("ore"),
+                        OreTargetConfig.deepslate("deepslate_ore")
+                ),
+                6,
+                5,
+                0,
+                "triangle",
+                -48,
+                96,
+                0.3f,
+                null,
+                null
         );
+        exampleConfig.oreGeneration = new OreGenConfig(true, List.of(overworldRule), null, null, null);
 
         exampleConfig.head = new CustomMaterialConfig.HeadConfig();
         exampleConfig.head.durability = 650;
