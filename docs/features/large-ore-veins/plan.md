@@ -113,17 +113,17 @@ public record LargeOreVeinConfig(
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 3: Virtual DataPack Synthesis
-- [ ] **Task 3.1**: Update `VirtualDataPack` to generate `configured_feature` JSONs for each large vein entry.
+- [x] **Task 3.1**: Update `VirtualDataPack` to generate `configured_feature` JSONs for each large vein entry.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 3.2**: Update `VirtualDataPack` to generate `placed_feature` JSONs with appropriate rarity and height placement rules.
+- [x] **Task 3.2**: Update `VirtualDataPack` to generate `placed_feature` JSONs with appropriate rarity and height placement rules.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 3.3**: Update `VirtualDataPack` to generate `biome_modifier` JSONs for NeoForge.
+- [x] **Task 3.3**: Update `VirtualDataPack` to generate `biome_modifier` JSONs for NeoForge.
   - *Verification*: `./gradlew test` (or `./gradlew build`)
 
 ### Phase 4: Polish, Testing & Validation
-- [ ] **Task 4.1**: Create the `#modernmachines:large_vein_replaceable` block tag in the datagen or virtual datapack.
+- [x] **Task 4.1**: Create the `#modernmachines:large_vein_replaceable` block tag in the datagen or virtual datapack.
   - *Verification*: `./gradlew build`
-- [ ] **Task 4.2**: Test generation in-game to verify chunk borders are seamless and no cascading lag occurs. Run the full build suite.
+- [x] **Task 4.2**: Test generation in-game to verify chunk borders are seamless and no cascading lag occurs. Run the full build suite.
   - *Verification*: `./gradlew build`
 
 ---

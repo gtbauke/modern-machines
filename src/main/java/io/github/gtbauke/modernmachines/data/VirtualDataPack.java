@@ -1,6 +1,7 @@
 package io.github.gtbauke.modernmachines.data;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,6 +19,7 @@ import io.github.gtbauke.modernmachines.api.resource.ResourceForm;
 import io.github.gtbauke.modernmachines.config.material.CustomMaterialConfig;
 import io.github.gtbauke.modernmachines.config.material.CustomMaterialLoader;
 import io.github.gtbauke.modernmachines.config.material.DimensionOreConfig;
+import io.github.gtbauke.modernmachines.config.material.LargeOreVeinConfig;
 import io.github.gtbauke.modernmachines.config.material.OreGenConfig;
 import io.github.gtbauke.modernmachines.config.material.OreGenRule;
 import io.github.gtbauke.modernmachines.config.material.OreTargetConfig;
@@ -107,9 +109,17 @@ public class VirtualDataPack {
                     totalRulesGenerated++;
                 }
             }
+
+            var largeVeins = oreGen.getResolvedLargeVeins();
+            for (int i = 0; i < largeVeins.size(); i++) {
+                var vein = largeVeins.get(i);
+                if (addLargeOreVeinWorldgen(pack, material, vein, i)) {
+                    totalRulesGenerated++;
+                }
+            }
         }
 
-        LOGGER.info("Registered virtual ore worldgen: {} rules generated across materials", totalRulesGenerated);
+        LOGGER.info("Registered virtual ore worldgen: {} rules/veins generated across materials", totalRulesGenerated);
 
         for (var materialName : CustomMaterialLoader.getCustomMaterialNames()) {
             var material = ModMaterials.getByName(materialName);
@@ -267,6 +277,198 @@ public class VirtualDataPack {
         pack.addResource(modifierId, GSON.toJson(biomeModifier));
 
         return true;
+    }
+
+    private static boolean addLargeOreVeinWorldgen(
+            VirtualPackResources pack,
+            Material material,
+            LargeOreVeinConfig vein,
+            int veinIndex
+    ) {
+        if (!vein.enabled()) {
+            return false;
+        }
+
+        var name = material.name();
+        var featureSuffix = name + "_" + veinIndex;
+
+        var primaryOreBlock = material.hasForm(ResourceForm.ORE)
+                ? BuiltInRegistries.BLOCK.getKey(material.getBlock(ResourceForm.ORE)).toString()
+                : (material.hasForm(ResourceForm.DEEPSLATE_ORE)
+                        ? BuiltInRegistries.BLOCK.getKey(material.getBlock(ResourceForm.DEEPSLATE_ORE)).toString()
+                        : "minecraft:" + name + "_ore");
+
+        var configMap = new LinkedHashMap<String, Object>();
+        configMap.put("min_y", vein.minY());
+        configMap.put("max_y", vein.maxY());
+        configMap.put("filler_block", blockStateJson(vein.fillerBlock()));
+        configMap.put("primary_ore", blockStateJson(primaryOreBlock));
+
+        if (material.hasForm(ResourceForm.DEEPSLATE_ORE)) {
+            var deepslateId = BuiltInRegistries.BLOCK.getKey(material.getBlock(ResourceForm.DEEPSLATE_ORE)).toString();
+            configMap.put("primary_deepslate_ore", blockStateJson(deepslateId));
+        }
+
+        configMap.put("primary_ore_chance", vein.primaryOreChance());
+
+        if (vein.rawBlockChance() > 0.0f) {
+            if (material.hasForm(ResourceForm.RAW_STORAGE_BLOCK)) {
+                var rawBlockId = BuiltInRegistries.BLOCK.getKey(material.getBlock(ResourceForm.RAW_STORAGE_BLOCK)).toString();
+                configMap.put("raw_block", blockStateJson(rawBlockId));
+            } else {
+                configMap.put("raw_block", blockStateJson("minecraft:raw_" + name + "_block"));
+            }
+        }
+
+        configMap.put("raw_block_chance", vein.rawBlockChance());
+
+        if (vein.secondaryMaterial() != null && !vein.secondaryMaterial().isBlank() && vein.secondaryOreChance() > 0.0f) {
+            var secName = vein.secondaryMaterial().trim();
+            var secMat = ModMaterials.getByName(secName);
+            if (secMat != null) {
+                if (secMat.hasForm(ResourceForm.ORE)) {
+                    var secOreId = BuiltInRegistries.BLOCK.getKey(secMat.getBlock(ResourceForm.ORE)).toString();
+                    configMap.put("secondary_ore", blockStateJson(secOreId));
+                } else if (secMat.hasForm(ResourceForm.DEEPSLATE_ORE)) {
+                    var secOreId = BuiltInRegistries.BLOCK.getKey(secMat.getBlock(ResourceForm.DEEPSLATE_ORE)).toString();
+                    configMap.put("secondary_ore", blockStateJson(secOreId));
+                }
+
+                if (secMat.hasForm(ResourceForm.DEEPSLATE_ORE)) {
+                    var secDeepId = BuiltInRegistries.BLOCK.getKey(secMat.getBlock(ResourceForm.DEEPSLATE_ORE)).toString();
+                    configMap.put("secondary_deepslate_ore", blockStateJson(secDeepId));
+                }
+            } else {
+                configMap.put("secondary_ore", blockStateJson("minecraft:" + secName + "_ore"));
+                configMap.put("secondary_deepslate_ore", blockStateJson("minecraft:deepslate_" + secName + "_ore"));
+            }
+        }
+
+        configMap.put("secondary_ore_chance", vein.secondaryOreChance());
+
+        if (vein.surfaceIndicators().enabled() && vein.surfaceIndicators().chance() > 0.0f) {
+            var indBlock = vein.surfaceIndicators().block();
+            if (indBlock != null && !indBlock.isBlank()) {
+                configMap.put("surface_indicator_block", blockStateJson(indBlock.trim()));
+            } else {
+                configMap.put("surface_indicator_block", blockStateJson(primaryOreBlock));
+            }
+
+            configMap.put("surface_indicator_chance", vein.surfaceIndicators().chance());
+        } else {
+            configMap.put("surface_indicator_chance", 0.0f);
+        }
+
+        var noise = vein.noise();
+        if (noise != null) {
+            configMap.put("noise_length", noise.length());
+            configMap.put("noise_thickness", noise.thickness());
+            configMap.put("noise_density", noise.density());
+        }
+
+        var configuredFeature = Map.of(
+                "type", ModernMachines.MOD_ID + ":large_ore_vein",
+                "config", configMap
+        );
+
+        var cfgId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/configured_feature/large_ore_vein_" + featureSuffix + ".json");
+        pack.addResource(cfgId, GSON.toJson(configuredFeature));
+
+        var placement = new ArrayList<Object>();
+
+        if (vein.rarity() > 0) {
+            placement.add(Map.of("type", "minecraft:rarity_filter", "chance", vein.rarity()));
+        }
+
+        placement.add(Map.of("type", "minecraft:in_square"));
+
+        placement.add(Map.of(
+                "type", "minecraft:height_range",
+                "height", Map.of(
+                        "type", "minecraft:uniform",
+                        "min_inclusive", Map.of("absolute", vein.minY()),
+                        "max_inclusive", Map.of("absolute", vein.maxY())
+                )
+        ));
+
+        if (!vein.dimensions().isEmpty() || !vein.dimensionBlacklist().isEmpty()) {
+            placement.add(Map.of(
+                    "type", ModernMachines.MOD_ID + ":dimension_filter",
+                    "allowed", vein.dimensions(),
+                    "denied", vein.dimensionBlacklist()
+            ));
+        }
+
+        placement.add(Map.of("type", "minecraft:biome"));
+
+        var placedFeature = Map.of(
+                "feature", ModernMachines.MOD_ID + ":large_ore_vein_" + featureSuffix,
+                "placement", placement
+        );
+
+        var placedId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/placed_feature/large_ore_vein_" + featureSuffix + "_placed.json");
+        pack.addResource(placedId, GSON.toJson(placedFeature));
+
+        var biomeSelector = resolveVeinBiomeSelector(vein);
+        var biomeModifier = Map.of(
+                "type", "neoforge:add_features",
+                "biomes", biomeSelector,
+                "features", List.of(ModernMachines.MOD_ID + ":large_ore_vein_" + featureSuffix + "_placed"),
+                "step", "underground_ores"
+        );
+
+        var modifierId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "neoforge/biome_modifier/add_large_ore_vein_" + featureSuffix + ".json");
+        pack.addResource(modifierId, GSON.toJson(biomeModifier));
+
+        return true;
+    }
+
+    private static @NonNull Map<String, String> blockStateJson(String blockId) {
+        var id = blockId.contains(":") ? blockId : "minecraft:" + blockId;
+        return Map.of("Name", id);
+    }
+
+    private static @NonNull Object resolveVeinBiomeSelector(LargeOreVeinConfig vein) {
+        if (!vein.biomeBlacklist().isEmpty()) {
+            var positiveBiomes = extractPositiveVeinBiomes(vein);
+
+            return Map.of(
+                    "type", "neoforge:and",
+                    "values", List.of(
+                            positiveBiomes,
+                            Map.of(
+                                    "type", "neoforge:none",
+                                    "values", vein.biomeBlacklist()
+                            )
+                    )
+            );
+        }
+
+        return extractPositiveVeinBiomes(vein);
+    }
+
+    private static @NonNull Object extractPositiveVeinBiomes(LargeOreVeinConfig vein) {
+        var values = new ArrayList<String>();
+        values.addAll(vein.biomeTags());
+        values.addAll(vein.biomes());
+
+        if (values.isEmpty()) {
+            if (vein.dimensions().contains("minecraft:the_nether")) {
+                return "#minecraft:is_nether";
+            }
+
+            if (vein.dimensions().contains("minecraft:the_end")) {
+                return "#minecraft:is_end";
+            }
+
+            return "#minecraft:is_overworld";
+        }
+
+        if (values.size() == 1) {
+            return values.get(0);
+        }
+
+        return values;
     }
 
     private static @NonNull List<Object> resolveRuleTargets(Material material, OreGenRule rule) {
@@ -962,6 +1164,14 @@ public class VirtualDataPack {
         addTagIfNotEmpty(pack, "c", "tags/item/nuggets.json", allNuggets);
         addTagIfNotEmpty(pack, "c", "tags/item/storage_blocks.json", allStorageBlocks);
         addTagIfNotEmpty(pack, "c", "tags/block/storage_blocks.json", allStorageBlocks);
+        addTagIfNotEmpty(pack, ModernMachines.MOD_ID, "tags/block/large_vein_replaceable.json", List.of(
+                "#minecraft:base_stone_overworld",
+                "#minecraft:base_stone_nether",
+                "#minecraft:stone_ore_replaceables",
+                "#minecraft:deepslate_ore_replaceables",
+                "minecraft:end_stone",
+                "minecraft:netherrack"
+        ));
     }
 
     private static void addTagIfNotEmpty(VirtualPackResources pack, String namespace, String path, List<String> values) {

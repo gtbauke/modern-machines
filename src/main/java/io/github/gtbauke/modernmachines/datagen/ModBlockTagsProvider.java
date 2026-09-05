@@ -40,6 +40,16 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
                 BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.STEEL_PIPE.get()).orElseThrow()
         );
 
+        tag(io.github.gtbauke.modernmachines.worldgen.feature.LargeOreVeinFeature.LARGE_VEIN_REPLACEABLE)
+                .addTag(BlockTags.BASE_STONE_OVERWORLD)
+                .addTag(BlockTags.BASE_STONE_NETHER)
+                .addTag(BlockTags.STONE_ORE_REPLACEABLES)
+                .addTag(BlockTags.DEEPSLATE_ORE_REPLACEABLES)
+                .add(
+                        BuiltInRegistries.BLOCK.getResourceKey(net.minecraft.world.level.block.Blocks.END_STONE).orElseThrow(),
+                        BuiltInRegistries.BLOCK.getResourceKey(net.minecraft.world.level.block.Blocks.NETHERRACK).orElseThrow()
+                );
+
         for (Material material : ModMaterials.getAllMaterials()) {
             for (ResourceForm form : material.supportedForms()) {
                 if (form.isBlock()) {
