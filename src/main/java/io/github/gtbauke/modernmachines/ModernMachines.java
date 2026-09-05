@@ -37,8 +37,9 @@ public class ModernMachines {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(ModBlockEntities::registerCapabilities);
 
-        // Initialize materials before deferred registers
+        // Initialize materials and reservoirs before deferred registers
         ModMaterials.init();
+        io.github.gtbauke.modernmachines.config.reservoir.ReservoirLoader.loadEarly();
 
         io.github.gtbauke.modernmachines.core.registry.ModFluids.register(modEventBus);
         ModBlocks.register(modEventBus);

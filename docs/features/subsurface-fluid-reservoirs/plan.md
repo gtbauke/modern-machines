@@ -119,11 +119,11 @@ public record HazardConfig(
 ## 5. Step-by-Step Implementation Task List
 
 ### Phase 1: Core Data Model & Configuration
-- [ ] **Task 1.1**: Create JSON configuration records (`ReservoirConfig`, `HazardConfig`) and codecs.
+- [x] **Task 1.1**: Create JSON configuration records (`ReservoirConfig`, `HazardConfig`) and codecs.
   - *Verification*: Run `./gradlew compileJava` and ensure codecs compile cleanly.
-- [ ] **Task 1.2**: Implement `ReservoirLoader` to parse JSON from `data/modernmachines/reservoirs/`.
+- [x] **Task 1.2**: Implement `ReservoirLoader` to parse JSON from `data/modernmachines/reservoirs/`.
   - *Verification*: Run `./gradlew test` with dummy JSON data.
-- [ ] **Task 1.3**: Implement `ReservoirInstance` and `ReservoirSavedData` for the `ServerLevel`.
+- [x] **Task 1.3**: Implement `ReservoirInstance` and `ReservoirSavedData` for the `ServerLevel`.
   - *Verification*: Run `./gradlew test` to verify spatial indexing and serialization logic.
 
 ### Phase 2: Blocks & Capabilities
