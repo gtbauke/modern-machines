@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Machines - Texture Design Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .pixelated {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    
+    /* 3D Isometric Cube Styles */
+    .cube-scene {
+      width: 120px;
+      height: 120px;
+      perspective: 400px;
+      margin: 0 auto;
+    }
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(-30deg) rotateY(45deg);
+      transition: transform 0.2s ease-out;
+    }
+    .cube-face {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      left: 20px;
+      top: 20px;
+      background-size: cover;
+      image-rendering: pixelated;
+    }
+    .face-front  { transform: rotateY(0deg) translateZ(40px); filter: brightness(0.9); }
+    .face-right  { transform: rotateY(90deg) translateZ(40px); filter: brightness(0.75); }
+    .face-top    { transform: rotateX(90deg) translateZ(40px); filter: brightness(1.1); }
+    .face-left   { transform: rotateY(-90deg) translateZ(40px); filter: brightness(0.65); }
+    .face-bottom { transform: rotateX(-90deg) translateZ(40px); filter: brightness(0.5); }
+    .face-back   { transform: rotateY(180deg) translateZ(40px); filter: brightness(0.8); }
+
+    /* Pixel Matrix Grid */
+    .pixel-grid {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: 1px;
+      background: #334155;
+      padding: 1px;
+      border-radius: 4px;
+    }
+    .pixel-cell {
+      width: 14px;
+      height: 14px;
+      cursor: crosshair;
+      transition: transform 0.1s;
+    }
+    .pixel-cell:hover {
+      transform: scale(1.4);
+      z-index: 10;
+      outline: 1px solid white;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6 font-sans">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <header class="border-b border-slate-700 pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="px-2.5 py-1 text-xs font-semibold uppercase tracking-wider rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Texture Design Board</span>
+          <span class="text-xs text-slate-400">Target: <code class="text-indigo-300 font-mono" id="target-path">textures/block/drill_casing.png</code></span>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight mt-1 text-white" id="asset-title">Drill Casing (16x16)</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="downloadActiveTexture()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg shadow transition flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Download 16x16 PNG
+        </button>
+      </div>
+    </header>
+
+    <!-- Bedrock Inspiration & Palette Harmonization Banner -->
+    <section class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+      <div>
+        <h3 class="text-sm font-semibold text-slate-200">Bedrock Inspiration & Reference Context</h3>
+        <p class="text-xs text-slate-400 mt-0.5">Matched color curves and noise frequencies from vanilla reference: <code class="text-slate-300 font-mono" id="reference-name">bedrock-samples/resource_pack/textures/blocks/deepslate.png</code></p>
+      </div>
+      <div id="palette-swatches" class="flex flex-wrap gap-1.5 items-center">
+        <!-- Palette swatches injected dynamically -->
+      </div>
+    </section>
+
+    <!-- Texture Options Grid (Side-by-Side Comparison) -->
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="options-container">
+      <!-- Injected Option Cards -->
+    </main>
+  </div>
+
+  <script>
+    // Example texture definition schema
+    const TEXTURE_DATA = {
+      assetTitle: "Drill Casing",
+      targetPath: "src/main/resources/assets/modernmachines/textures/block/drill_casing.png",
+      referenceName: "bedrock-samples/.../textures/blocks/deepslate.png",
+      palette: {
+        "0": "#23272A",
+        "1": "#3B4048",
+        "2": "#4A515B",
+        "3": "#58606C",
+        "4": "#181A1D",
+        "5": "#8A93A0"
+      },
+      options: [
+        {
+          id: "option-a",
+          name: "Option A: Reinforced Cross-Braced Steel",
+          description: "Industrial diamond-cased reinforcement with heavy corner bevels and steel rivets.",
+          map: [
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,5,2,2,2,2,2,4,4,2,2,2,2,2,5,0],
+            [0,2,3,3,1,1,2,4,4,2,1,1,3,3,2,0],
+            [0,2,3,1,1,2,3,4,4,3,2,1,1,3,2,0],
+            [0,2,1,1,2,3,1,4,4,1,3,2,1,1,2,0],
+            [0,2,1,2,3,1,1,4,4,1,1,3,2,1,2,0],
+            [0,2,2,3,1,1,2,4,4,2,1,1,3,2,2,0],
+            [0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0],
+            [0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0],
+            [0,2,2,3,1,1,2,4,4,2,1,1,3,2,2,0],
+            [0,2,1,2,3,1,1,4,4,1,1,3,2,1,2,0],
+            [0,2,1,1,2,3,1,4,4,1,3,2,1,1,2,0],
+            [0,2,3,1,1,2,3,4,4,3,2,1,1,3,2,0],
+            [0,2,3,3,1,1,2,4,4,2,1,1,3,3,2,0],
+            [0,5,2,2,2,2,2,4,4,2,2,2,2,2,5,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+          ]
+        }
+      ]
+    };
+
+    let selectedOptionIndex = 0;
+
+    function renderBoard(data) {
+      document.getElementById('asset-title').innerText = data.assetTitle;
+      document.getElementById('target-path').innerText = data.targetPath;
+      document.getElementById('reference-name').innerText = data.referenceName;
+
+      // Render Palette
+      const paletteContainer = document.getElementById('palette-swatches');
+      paletteContainer.innerHTML = '';
+      for (const [key, color] of Object.entries(data.palette)) {
+        const swatch = document.createElement('div');
+        swatch.className = 'flex items-center gap-1 bg-slate-900 border border-slate-700 px-2 py-1 rounded text-xs font-mono';
+        swatch.innerHTML = `<span class="w-3.5 h-3.5 rounded-sm border border-black/30" style="background-color: ${color}"></span><span>${color}</span>`;
+        paletteContainer.appendChild(swatch);
+      }
+
+      // Render Options
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+
+      data.options.forEach((opt, idx) => {
+        const card = document.createElement('div');
+        card.className = `bg-slate-800 border ${idx === selectedOptionIndex ? 'border-indigo-500 ring-2 ring-indigo-500/20' : 'border-slate-700'} rounded-2xl p-6 space-y-6 transition`;
+
+        // Canvas element creation
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.createImageData(16, 16);
+
+        for (let y = 0; y < 16; y++) {
+          for (let x = 0; x < 16; x++) {
+            const val = opt.map[y][x];
+            const hex = data.palette[val] || val || '#000000';
+            const rgb = hexToRgb(hex);
+            const pIdx = (y * 16 + x) * 4;
+            imgData.data[pIdx] = rgb.r;
+            imgData.data[pIdx + 1] = rgb.g;
+            imgData.data[pIdx + 2] = rgb.b;
+            imgData.data[pIdx + 3] = rgb.a;
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+        const dataUrl = canvas.toDataURL();
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Option ${String.fromCharCode(65 + idx)}</span>
+              <h2 class="text-lg font-bold text-white mt-0.5">${opt.name}</h2>
+              <p class="text-xs text-slate-400 mt-1">${opt.description}</p>
+            </div>
+            <button onclick="selectOption(${idx})" class="px-3 py-1.5 text-xs font-semibold rounded-lg ${idx === selectedOptionIndex ? 'bg-indigo-500 text-white' : 'bg-slate-700 hover:bg-slate-600 text-slate-200'}">
+              ${idx === selectedOptionIndex ? 'Selected' : 'Select'}
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+            <!-- 2D Previews (1x, 4x, 16x) -->
+            <div class="space-y-4">
+              <div class="flex items-center gap-6">
+                <div>
+                  <span class="text-[10px] text-slate-500 uppercase font-mono block mb-1">1x Native</span>
+                  <div class="w-8 h-8 bg-slate-800 border border-slate-700 flex items-center justify-center rounded">
+                    <img src="${dataUrl}" class="w-4 h-4 pixelated">
+                  </div>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 uppercase font-mono block mb-1">4x Handheld</span>
+                  <div class="w-16 h-16 bg-slate-800 border border-slate-700 flex items-center justify-center rounded">
+                    <img src="${dataUrl}" class="w-16 h-16 pixelated">
+                  </div>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 uppercase font-mono block mb-1">8x Icon</span>
+                  <div class="w-20 h-20 bg-slate-800 border border-slate-700 flex items-center justify-center rounded">
+                    <img src="${dataUrl}" class="w-20 h-20 pixelated">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3D Isometric Rotating Block -->
+            <div class="flex flex-col items-center justify-center border-l border-slate-800 pl-4">
+              <span class="text-[10px] text-slate-500 uppercase font-mono mb-2">3D In-World Preview</span>
+              <div class="cube-scene">
+                <div class="cube" id="cube-${idx}">
+                  <div class="cube-face face-front" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-right" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-top" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-left" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-bottom" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-back" style="background-image: url('${dataUrl}')"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pixel Matrix Inspector -->
+          <div class="space-y-2">
+            <span class="text-xs font-semibold text-slate-400 block">16x16 Pixel Canvas Breakdown</span>
+            <div class="pixel-grid" id="grid-${idx}"></div>
+          </div>
+        `;
+
+        container.appendChild(card);
+
+        // Populate Pixel Grid
+        const gridEl = document.getElementById(`grid-${idx}`);
+        for (let y = 0; y < 16; y++) {
+          for (let x = 0; x < 16; x++) {
+            const val = opt.map[y][x];
+            const hex = data.palette[val] || val || '#000000';
+            const cell = document.createElement('div');
+            cell.className = 'pixel-cell';
+            cell.style.backgroundColor = hex;
+            cell.title = `(${x}, ${y}): ${hex}`;
+            gridEl.appendChild(cell);
+          }
+        }
+      });
+    }
+
+    function selectOption(idx) {
+      selectedOptionIndex = idx;
+      renderBoard(TEXTURE_DATA);
+    }
+
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 6) {
+        return {
+          r: parseInt(hex.substring(0, 2), 16),
+          g: parseInt(hex.substring(2, 4), 16),
+          b: parseInt(hex.substring(4, 6), 16),
+          a: 255
+        };
+      }
+      return { r: 0, g: 0, b: 0, a: 0 };
+    }
+
+    function downloadActiveTexture() {
+      const opt = TEXTURE_DATA.options[selectedOptionIndex];
+      const canvas = document.createElement('canvas');
+      canvas.width = 16;
+      canvas.height = 16;
+      const ctx = canvas.getContext('2d');
+      const imgData = ctx.createImageData(16, 16);
+
+      for (let y = 0; y < 16; y++) {
+        for (let x = 0; x < 16; x++) {
+          const val = opt.map[y][x];
+          const hex = TEXTURE_DATA.palette[val] || val || '#000000';
+          const rgb = hexToRgb(hex);
+          const pIdx = (y * 16 + x) * 4;
+          imgData.data[pIdx] = rgb.r;
+          imgData.data[pIdx + 1] = rgb.g;
+          imgData.data[pIdx + 2] = rgb.b;
+          imgData.data[pIdx + 3] = rgb.a;
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      const link = document.createElement('a');
+      link.download = TEXTURE_DATA.targetPath.split('/').pop() || 'texture.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => renderBoard(TEXTURE_DATA));
+  </script>
+</body>
+</html>

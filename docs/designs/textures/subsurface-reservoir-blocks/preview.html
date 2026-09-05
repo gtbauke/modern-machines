@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Machines - Subsurface Reservoir Textures</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .pixelated {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    .cube-scene {
+      width: 110px;
+      height: 110px;
+      perspective: 350px;
+      margin: 0 auto;
+    }
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(-30deg) rotateY(45deg);
+      transition: transform 0.2s ease-out;
+    }
+    .cube-face {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      left: 20px;
+      top: 20px;
+      background-size: cover;
+      image-rendering: pixelated;
+    }
+    .face-front  { transform: rotateY(0deg) translateZ(35px); filter: brightness(0.9); }
+    .face-right  { transform: rotateY(90deg) translateZ(35px); filter: brightness(0.75); }
+    .face-top    { transform: rotateX(90deg) translateZ(35px); filter: brightness(1.1); }
+    .face-left   { transform: rotateY(-90deg) translateZ(35px); filter: brightness(0.65); }
+    .face-bottom { transform: rotateX(-90deg) translateZ(35px); filter: brightness(0.5); }
+    .face-back   { transform: rotateY(180deg) translateZ(35px); filter: brightness(0.8); }
+
+    .pixel-grid {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: 1px;
+      background: #1e293b;
+      padding: 1px;
+      border-radius: 4px;
+    }
+    .pixel-cell {
+      width: 12px;
+      height: 12px;
+      cursor: crosshair;
+      transition: transform 0.1s;
+    }
+    .pixel-cell:hover {
+      transform: scale(1.5);
+      z-index: 10;
+      outline: 1px solid white;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 font-sans">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <header class="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="px-2.5 py-1 text-xs font-semibold uppercase tracking-wider rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Texture Designer Board</span>
+          <span class="text-xs text-slate-400">Feature: <code class="text-indigo-300 font-mono">Subsurface Fluid Reservoirs</code></span>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight mt-1 text-white">Reservoir Geological & Machinery Textures (16x16)</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="downloadAll()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg shadow transition flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Download All 16x16 PNGs
+        </button>
+      </div>
+    </header>
+
+    <!-- Blocks Grid -->
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="blocks-container">
+      <!-- Injected dynamically -->
+    </main>
+  </div>
+
+  <script>
+    const ASSETS = [
+      {
+        id: "drill_casing",
+        name: "Drill Casing",
+        targetPath: "textures/block/drill_casing.png",
+        reference: "bedrock-samples/textures/blocks/netherite_block.png + iron_block.png",
+        description: "Reinforced high-strength steel casing with heavy corner bevels, rivets, and cross bracing.",
+        palette: {
+          "0": "#1C1F24",
+          "1": "#2B3036",
+          "2": "#3E444C",
+          "3": "#4F5863",
+          "4": "#68727D",
+          "5": "#8A93A0"
+        },
+        pixels: [
+          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+          [0,5,2,2,2,2,2,1,1,2,2,2,2,2,5,0],
+          [0,2,3,3,2,1,2,1,1,2,1,2,3,3,2,0],
+          [0,2,3,2,1,2,3,1,1,3,2,1,2,3,2,0],
+          [0,2,2,1,2,3,2,1,1,2,3,2,1,2,2,0],
+          [0,2,1,2,3,2,1,1,1,1,2,3,2,1,2,0],
+          [0,2,2,3,2,1,2,1,1,2,1,2,3,2,2,0],
+          [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+          [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+          [0,2,2,3,2,1,2,1,1,2,1,2,3,2,2,0],
+          [0,2,1,2,3,2,1,1,1,1,2,3,2,1,2,0],
+          [0,2,2,1,2,3,2,1,1,2,3,2,1,2,2,0],
+          [0,2,3,2,1,2,3,1,1,3,2,1,2,3,2,0],
+          [0,2,3,3,2,1,2,1,1,2,1,2,3,3,2,0],
+          [0,5,2,2,2,2,2,1,1,2,2,2,2,2,5,0],
+          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        ]
+      },
+      {
+        id: "oil_shale",
+        name: "Oil Shale",
+        targetPath: "textures/block/oil_shale.png",
+        reference: "bedrock-samples/textures/blocks/deepslate.png + coal_ore.png",
+        description: "Dark stratified organic sediment saturated with hydrocarbons and subtle oily gloss streaks.",
+        palette: {
+          "0": "#111214",
+          "1": "#18191C",
+          "2": "#222428",
+          "3": "#2D3036",
+          "4": "#363A42",
+          "5": "#0D0E10"
+        },
+        pixels: [
+          [2,2,1,1,2,3,2,1,2,2,3,2,1,1,2,2],
+          [1,0,0,5,5,0,1,1,0,5,5,0,0,1,1,2],
+          [5,5,4,5,5,5,0,5,5,4,5,5,5,0,1,1],
+          [0,0,5,5,0,0,1,0,0,5,5,0,0,1,2,3],
+          [1,2,3,2,1,2,2,3,2,1,2,2,3,2,1,2],
+          [2,3,2,1,1,2,3,2,1,1,2,3,2,1,1,1],
+          [1,1,0,5,5,5,0,1,1,0,5,5,5,0,1,2],
+          [0,5,5,4,5,5,5,0,5,5,4,5,5,5,0,1],
+          [5,5,0,0,5,5,0,0,5,5,0,0,5,5,1,1],
+          [1,2,2,3,2,1,2,2,3,2,1,2,2,3,2,1],
+          [2,3,2,1,2,3,2,1,2,3,2,1,2,3,2,2],
+          [1,1,2,0,5,5,0,1,1,2,0,5,5,0,1,1],
+          [0,0,5,5,4,5,5,0,0,5,5,4,5,5,0,1],
+          [5,5,5,0,0,5,5,5,5,5,0,0,5,5,5,0],
+          [1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1],
+          [2,2,3,2,1,2,2,3,2,1,2,2,3,2,1,2]
+        ]
+      },
+      {
+        id: "capstone",
+        name: "Capstone",
+        targetPath: "textures/block/capstone.png",
+        reference: "bedrock-samples/textures/blocks/tuff.png + basalt_top.png",
+        description: "Dense, impermeable crystalline barrier rock with mineral grain and dense quartz shear lines.",
+        palette: {
+          "0": "#1E2026",
+          "1": "#282A30",
+          "2": "#383C44",
+          "3": "#484E58",
+          "4": "#626875",
+          "5": "#7D8594"
+        },
+        pixels: [
+          [2,3,2,1,0,1,2,3,2,1,0,1,2,3,2,1],
+          [3,2,1,0,0,2,4,5,4,2,0,0,2,4,5,2],
+          [2,1,0,1,2,4,5,3,4,4,1,2,4,5,3,1],
+          [1,0,1,2,4,5,2,1,1,4,4,4,5,2,1,0],
+          [0,1,2,4,5,3,1,0,0,1,4,5,3,1,0,0],
+          [1,2,4,5,2,1,0,2,3,4,5,2,1,0,2,3],
+          [2,4,5,3,1,0,2,3,4,5,3,1,0,2,3,2],
+          [4,5,2,1,0,1,2,4,5,2,1,0,1,2,2,1],
+          [5,3,1,0,1,2,4,5,3,1,0,1,2,3,1,0],
+          [3,1,0,2,2,4,5,2,1,0,2,2,3,2,0,1],
+          [1,0,2,3,4,5,3,1,0,2,3,2,1,0,1,2],
+          [0,2,3,4,5,2,1,0,0,2,1,0,1,2,3,2],
+          [2,3,4,5,3,1,0,2,2,1,0,1,2,3,2,1],
+          [3,4,5,2,1,0,2,3,1,0,1,2,3,2,1,0],
+          [4,5,3,1,0,1,2,3,0,1,2,3,2,1,0,1],
+          [5,2,1,0,1,2,3,2,1,2,3,2,1,0,1,2]
+        ]
+      },
+      {
+        id: "wellhead",
+        name: "Wellhead",
+        targetPath: "textures/block/wellhead.png",
+        reference: "bedrock-samples/textures/blocks/furnace_front_off.png + copper_block.png",
+        description: "Industrial steel wellhead frame with brass pipe flange and high-pressure indicator dial.",
+        palette: {
+          "0": "#191B1F",
+          "1": "#23272C",
+          "2": "#383E46",
+          "3": "#4A525C",
+          "4": "#D99E32",
+          "5": "#B87C1D",
+          "6": "#F5F5F5",
+          "7": "#2E7D32",
+          "8": "#C62828",
+          "9": "#111111"
+        },
+        pixels: [
+          [1,1,1,1,1,4,4,4,4,4,4,1,1,1,1,1],
+          [1,3,3,3,3,4,5,5,5,5,4,3,3,3,3,1],
+          [1,3,2,2,2,0,0,0,0,0,0,2,2,2,3,1],
+          [1,3,2,0,9,9,9,9,9,9,0,2,2,2,3,1],
+          [1,3,2,0,9,7,7,8,8,9,0,2,2,2,3,1],
+          [1,3,2,0,9,6,6,9,6,9,0,2,2,2,3,1],
+          [1,3,2,0,9,6,9,6,6,9,0,2,2,2,3,1],
+          [1,3,2,0,9,9,9,9,9,9,0,2,2,2,3,1],
+          [1,3,2,0,0,0,0,0,0,0,0,2,2,2,3,1],
+          [1,3,2,2,2,4,4,4,4,2,2,2,2,2,3,1],
+          [1,3,2,2,4,5,5,5,5,4,2,2,2,2,3,1],
+          [1,3,2,2,4,5,4,4,5,4,2,2,2,2,3,1],
+          [1,3,2,2,2,4,5,5,4,2,2,2,2,2,3,1],
+          [1,3,2,2,2,2,4,4,2,2,2,2,2,2,3,1],
+          [1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      }
+    ];
+
+    function renderAll() {
+      const container = document.getElementById('blocks-container');
+      container.innerHTML = '';
+
+      ASSETS.forEach((asset, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6";
+
+        // Render Canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.createImageData(16, 16);
+
+        for (let y = 0; y < 16; y++) {
+          for (let x = 0; x < 16; x++) {
+            const val = asset.pixels[y][x];
+            const hex = asset.palette[val] || val || '#000000';
+            const rgb = hexToRgb(hex);
+            const pIdx = (y * 16 + x) * 4;
+            imgData.data[pIdx] = rgb.r;
+            imgData.data[pIdx + 1] = rgb.g;
+            imgData.data[pIdx + 2] = rgb.b;
+            imgData.data[pIdx + 3] = rgb.a;
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+        const dataUrl = canvas.toDataURL();
+        asset.dataUrl = dataUrl;
+
+        // Palette HTML
+        let paletteHtml = '';
+        for (const [key, color] of Object.entries(asset.palette)) {
+          paletteHtml += `<span class="inline-flex items-center gap-1 bg-slate-950 border border-slate-800 px-1.5 py-0.5 rounded text-[10px] font-mono"><span class="w-2.5 h-2.5 rounded-sm" style="background:${color}"></span>${color}</span>`;
+        }
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">${asset.targetPath}</span>
+              <h2 class="text-xl font-bold text-white mt-0.5">${asset.name}</h2>
+              <p class="text-xs text-slate-400 mt-1">${asset.description}</p>
+            </div>
+            <button onclick="downloadSingle(${idx})" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition">
+              Download PNG
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center bg-slate-950/60 p-4 rounded-xl border border-slate-800/60">
+            <div class="space-y-3">
+              <span class="text-[10px] text-slate-500 uppercase font-mono block">2D Scale Views</span>
+              <div class="flex items-center gap-4">
+                <div class="w-8 h-8 bg-slate-800 border border-slate-700 flex items-center justify-center rounded">
+                  <img src="${dataUrl}" class="w-4 h-4 pixelated">
+                </div>
+                <div class="w-12 h-12 bg-slate-800 border border-slate-700 flex items-center justify-center rounded">
+                  <img src="${dataUrl}" class="w-8 h-8 pixelated">
+                </div>
+                <div class="w-16 h-16 bg-slate-800 border border-slate-700 flex items-center justify-center rounded">
+                  <img src="${dataUrl}" class="w-14 h-14 pixelated">
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col items-center justify-center border-t sm:border-t-0 sm:border-l border-slate-800 pt-3 sm:pt-0 sm:pl-3">
+              <span class="text-[10px] text-slate-500 uppercase font-mono mb-1">3D Block Preview</span>
+              <div class="cube-scene">
+                <div class="cube">
+                  <div class="cube-face face-front" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-right" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-top" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-left" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-bottom" style="background-image: url('${dataUrl}')"></div>
+                  <div class="cube-face face-back" style="background-image: url('${dataUrl}')"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-400">Palette Swatches</span>
+              <span class="text-[10px] text-slate-500 font-mono">${Object.keys(asset.palette).length} Colors</span>
+            </div>
+            <div class="flex flex-wrap gap-1">${paletteHtml}</div>
+          </div>
+
+          <div class="space-y-2">
+            <span class="text-xs font-semibold text-slate-400 block">16x16 Pixel Canvas Breakdown</span>
+            <div class="pixel-grid" id="grid-${asset.id}"></div>
+          </div>
+        `;
+
+        container.appendChild(card);
+
+        const gridEl = document.getElementById(`grid-${asset.id}`);
+        for (let y = 0; y < 16; y++) {
+          for (let x = 0; x < 16; x++) {
+            const val = asset.pixels[y][x];
+            const hex = asset.palette[val] || val || '#000000';
+            const cell = document.createElement('div');
+            cell.className = 'pixel-cell';
+            cell.style.backgroundColor = hex;
+            cell.title = `(${x}, ${y}): ${hex}`;
+            gridEl.appendChild(cell);
+          }
+        }
+      });
+    }
+
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 6) {
+        return {
+          r: parseInt(hex.substring(0, 2), 16),
+          g: parseInt(hex.substring(2, 4), 16),
+          b: parseInt(hex.substring(4, 6), 16),
+          a: 255
+        };
+      }
+      return { r: 0, g: 0, b: 0, a: 0 };
+    }
+
+    function downloadSingle(idx) {
+      const asset = ASSETS[idx];
+      const link = document.createElement('a');
+      link.download = asset.id + '.png';
+      link.href = asset.dataUrl;
+      link.click();
+    }
+
+    function downloadAll() {
+      ASSETS.forEach((_, idx) => downloadSingle(idx));
+    }
+
+    document.addEventListener('DOMContentLoaded', renderAll);
+  </script>
+</body>
+</html>

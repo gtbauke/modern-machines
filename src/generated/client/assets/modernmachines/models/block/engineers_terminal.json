@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "modernmachines:block/engineers_terminal_bottom",
-    "side": "modernmachines:block/engineers_terminal_side",
-    "top": "modernmachines:block/engineers_terminal_top"
-  }
-}
