@@ -42,7 +42,11 @@ import net.neoforged.fml.loading.FMLPaths;
 
 public class CustomMaterialLoader {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(OreTargetConfig.class, new OreTargetConfigDeserializer())
+            .registerTypeAdapter(OreGenRule.class, new OreGenRuleDeserializer())
+            .setPrettyPrinting()
+            .create();
 
     private static final Map<String, OreGenConfig> ORE_GEN_CONFIGS = new LinkedHashMap<>();
     private static final Map<Identifier, MaterialToolStats> CUSTOM_TOOL_STATS = new ConcurrentHashMap<>();
@@ -137,7 +141,8 @@ public class CustomMaterialLoader {
 
             var defaultGen = OreGenConfig.createDefault(
                     material.hardness(),
-                    material.hasForm(ResourceForm.ORE) || material.hasForm(ResourceForm.DEEPSLATE_ORE),
+                    material.hasForm(ResourceForm.ORE),
+                    material.hasForm(ResourceForm.DEEPSLATE_ORE),
                     material.hasForm(ResourceForm.NETHERRACK_ORE),
                     material.hasForm(ResourceForm.END_STONE_ORE)
             );
@@ -199,7 +204,8 @@ public class CustomMaterialLoader {
         var oreGen = OreGenConfig.mergeWithDefaults(
                 config.oreGeneration,
                 material.hardness(),
-                material.hasForm(ResourceForm.ORE) || material.hasForm(ResourceForm.DEEPSLATE_ORE),
+                material.hasForm(ResourceForm.ORE),
+                material.hasForm(ResourceForm.DEEPSLATE_ORE),
                 material.hasForm(ResourceForm.NETHERRACK_ORE),
                 material.hasForm(ResourceForm.END_STONE_ORE)
         );
@@ -245,7 +251,8 @@ public class CustomMaterialLoader {
         var oreGen = OreGenConfig.mergeWithDefaults(
                 config.oreGeneration,
                 material.hardness(),
-                material.hasForm(ResourceForm.ORE) || material.hasForm(ResourceForm.DEEPSLATE_ORE),
+                material.hasForm(ResourceForm.ORE),
+                material.hasForm(ResourceForm.DEEPSLATE_ORE),
                 material.hasForm(ResourceForm.NETHERRACK_ORE),
                 material.hasForm(ResourceForm.END_STONE_ORE)
         );
