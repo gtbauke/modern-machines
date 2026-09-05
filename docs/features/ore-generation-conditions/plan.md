@@ -104,11 +104,11 @@ public static final Supplier<PlacementModifierType<DimensionFilterPlacementModif
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 2: Placement Modifiers
-- [ ] **Task 2.1**: Implement `DimensionFilterPlacementModifier` and its MapCodec in `io.github.gtbauke.modernmachines.worldgen.placement`.
+- [x] **Task 2.1**: Implement `DimensionFilterPlacementModifier` and its MapCodec in `io.github.gtbauke.modernmachines.worldgen.placement`.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 2.2**: Implement `AdjacentBlockPlacementModifier` and its MapCodec (strict 1-block adjacency).
+- [x] **Task 2.2**: Implement `AdjacentBlockPlacementModifier` and its MapCodec (strict 1-block adjacency).
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 2.3**: Register custom modifiers in `io.github.gtbauke.modernmachines.core.registry.ModPlacementModifiers`.
+- [x] **Task 2.3**: Register custom modifiers in `io.github.gtbauke.modernmachines.core.registry.ModPlacementModifiers`.
   - *Verification*: `./gradlew build`
 
 ### Phase 3: Datapack Synthesis
