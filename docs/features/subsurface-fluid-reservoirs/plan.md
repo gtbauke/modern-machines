@@ -135,11 +135,11 @@ public record HazardConfig(
   - *Verification*: Run `./gradlew build` to ensure capability registration is correct.
 
 ### Phase 3: WorldGen & VirtualDataPack
-- [ ] **Task 3.1**: Implement `SubsurfaceReservoirConfiguration` and `SubsurfaceReservoirFeature`.
+- [x] **Task 3.1**: Implement `SubsurfaceReservoirConfiguration` and `SubsurfaceReservoirFeature`.
   - *Verification*: Run `./gradlew compileJava`.
-- [ ] **Task 3.2**: Add generation logic with strict chunk clamping and insertion into `ReservoirSavedData`.
+- [x] **Task 3.2**: Add generation logic with strict chunk clamping and insertion into `ReservoirSavedData`.
   - *Verification*: Launch a test world (`./gradlew runClient`) and verify safe generation without cascading console warnings.
-- [ ] **Task 3.3**: Integrate `ReservoirConfig` into `VirtualDataPack` to synthesize placed features/biome modifiers.
+- [x] **Task 3.3**: Integrate `ReservoirConfig` into `VirtualDataPack` to synthesize placed features/biome modifiers.
   - *Verification*: Check `.minecraft/logs/latest.log` during `./gradlew runClient` for VirtualDataPack registration success.
 
 ### Phase 4: Hazards & Secondary Recovery

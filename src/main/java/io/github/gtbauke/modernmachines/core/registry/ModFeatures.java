@@ -17,6 +17,11 @@ public class ModFeatures {
     public static final Supplier<LargeOreVeinFeature> LARGE_ORE_VEIN =
             FEATURES.register("large_ore_vein", () -> new LargeOreVeinFeature(LargeOreVeinConfiguration.CODEC.codec()));
 
+    public static final Supplier<io.github.gtbauke.modernmachines.worldgen.feature.SubsurfaceReservoirFeature> SUBSURFACE_RESERVOIR =
+            FEATURES.register("subsurface_reservoir", () -> new io.github.gtbauke.modernmachines.worldgen.feature.SubsurfaceReservoirFeature(
+                    io.github.gtbauke.modernmachines.worldgen.feature.SubsurfaceReservoirConfiguration.CODEC.codec()
+            ));
+
     public static void register(IEventBus eventBus) {
         FEATURES.register(eventBus);
     }

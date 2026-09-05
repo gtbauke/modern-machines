@@ -23,6 +23,8 @@ import io.github.gtbauke.modernmachines.config.material.LargeOreVeinConfig;
 import io.github.gtbauke.modernmachines.config.material.OreGenConfig;
 import io.github.gtbauke.modernmachines.config.material.OreGenRule;
 import io.github.gtbauke.modernmachines.config.material.OreTargetConfig;
+import io.github.gtbauke.modernmachines.config.reservoir.ReservoirConfig;
+import io.github.gtbauke.modernmachines.config.reservoir.ReservoirLoader;
 import io.github.gtbauke.modernmachines.core.registry.ModMaterials;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.fml.loading.FMLLoader;
@@ -120,6 +122,15 @@ public class VirtualDataPack {
         }
 
         LOGGER.info("Registered virtual ore worldgen: {} rules/veins generated across materials", totalRulesGenerated);
+
+        int totalReservoirsGenerated = 0;
+        for (var reservoir : ReservoirLoader.getAllReservoirs().values()) {
+            if (addReservoirWorldgen(pack, reservoir)) {
+                totalReservoirsGenerated++;
+            }
+        }
+
+        LOGGER.info("Registered virtual reservoir worldgen: {} reservoirs generated", totalReservoirsGenerated);
 
         for (var materialName : CustomMaterialLoader.getCustomMaterialNames()) {
             var material = ModMaterials.getByName(materialName);
@@ -458,6 +469,140 @@ public class VirtualDataPack {
             }
 
             if (vein.dimensions().contains("minecraft:the_end")) {
+                return "#minecraft:is_end";
+            }
+
+            return "#minecraft:is_overworld";
+        }
+
+        if (values.size() == 1) {
+            return values.get(0);
+        }
+
+        return values;
+    }
+
+    private static boolean addReservoirWorldgen(
+            VirtualPackResources pack,
+            ReservoirConfig reservoir
+    ) {
+        if (!reservoir.enabled()) {
+            return false;
+        }
+
+        var name = reservoir.name() != null ? reservoir.name() : "reservoir";
+        var featureSuffix = name.toLowerCase(Locale.ROOT);
+
+        var configMap = new LinkedHashMap<String, Object>();
+        configMap.put("reservoir_type", name);
+        configMap.put("fluid_id", reservoir.fluid());
+
+        var fluidBlock = "minecraft:water";
+        if (reservoir.fluid().contains("lava")) {
+            fluidBlock = "minecraft:lava";
+        }
+
+        configMap.put("fluid_block", blockStateJson(fluidBlock));
+        configMap.put("barrier_block", blockStateJson(reservoir.barrierBlock()));
+
+        if (reservoir.capstoneBlock() != null && !reservoir.capstoneBlock().isBlank()) {
+            configMap.put("capstone_block", blockStateJson(reservoir.capstoneBlock().trim()));
+        }
+
+        configMap.put("min_y", reservoir.minY());
+        configMap.put("max_y", reservoir.maxY());
+        configMap.put("radius_xz", reservoir.radiusXz());
+        configMap.put("radius_y", reservoir.radiusY());
+        configMap.put("initial_pressure", reservoir.initialPressure());
+        configMap.put("total_volume", reservoir.capacity());
+
+        var configuredFeature = Map.of(
+                "type", ModernMachines.MOD_ID + ":subsurface_reservoir",
+                "config", configMap
+        );
+
+        var cfgId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/configured_feature/reservoir_" + featureSuffix + ".json");
+        pack.addResource(cfgId, GSON.toJson(configuredFeature));
+
+        var placement = new ArrayList<Object>();
+
+        if (reservoir.rarity() > 0) {
+            placement.add(Map.of("type", "minecraft:rarity_filter", "chance", reservoir.rarity()));
+        }
+
+        placement.add(Map.of("type", "minecraft:in_square"));
+
+        placement.add(Map.of(
+                "type", "minecraft:height_range",
+                "height", Map.of(
+                        "type", "minecraft:uniform",
+                        "min_inclusive", Map.of("absolute", reservoir.minY()),
+                        "max_inclusive", Map.of("absolute", reservoir.maxY())
+                )
+        ));
+
+        if (!reservoir.dimensions().isEmpty() || !reservoir.dimensionBlacklist().isEmpty()) {
+            placement.add(Map.of(
+                    "type", ModernMachines.MOD_ID + ":dimension_filter",
+                    "allowed", reservoir.dimensions(),
+                    "denied", reservoir.dimensionBlacklist()
+            ));
+        }
+
+        placement.add(Map.of("type", "minecraft:biome"));
+
+        var placedFeature = Map.of(
+                "feature", ModernMachines.MOD_ID + ":reservoir_" + featureSuffix,
+                "placement", placement
+        );
+
+        var placedId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "worldgen/placed_feature/reservoir_" + featureSuffix + "_placed.json");
+        pack.addResource(placedId, GSON.toJson(placedFeature));
+
+        var biomeSelector = resolveReservoirBiomeSelector(reservoir);
+        var biomeModifier = Map.of(
+                "type", "neoforge:add_features",
+                "biomes", biomeSelector,
+                "features", List.of(ModernMachines.MOD_ID + ":reservoir_" + featureSuffix + "_placed"),
+                "step", "underground_ores"
+        );
+
+        var modifierId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "neoforge/biome_modifier/add_reservoir_" + featureSuffix + ".json");
+        pack.addResource(modifierId, GSON.toJson(biomeModifier));
+
+        return true;
+    }
+
+    private static @NonNull Object resolveReservoirBiomeSelector(ReservoirConfig reservoir) {
+        if (!reservoir.biomeBlacklist().isEmpty()) {
+            var positiveBiomes = extractPositiveReservoirBiomes(reservoir);
+
+            return Map.of(
+                    "type", "neoforge:and",
+                    "values", List.of(
+                            positiveBiomes,
+                            Map.of(
+                                    "type", "neoforge:none",
+                                    "values", reservoir.biomeBlacklist()
+                            )
+                    )
+            );
+        }
+
+        return extractPositiveReservoirBiomes(reservoir);
+    }
+
+    private static @NonNull Object extractPositiveReservoirBiomes(ReservoirConfig reservoir) {
+        var values = new ArrayList<String>();
+        values.addAll(reservoir.biomeTags());
+        values.addAll(reservoir.biomes());
+
+        if (values.isEmpty()) {
+            if (reservoir.dimensions().contains("minecraft:the_nether")) {
+                return "#minecraft:is_nether";
+            }
+
+            if (reservoir.dimensions().contains("minecraft:the_end")) {
                 return "#minecraft:is_end";
             }
 
