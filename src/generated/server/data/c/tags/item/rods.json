@@ -19,6 +19,7 @@
     "#c:rods/electrum",
     "#c:rods/constantan",
     "#c:rods/wood",
-    "#c:rods/bone"
+    "#c:rods/bone",
+    "#c:rods/rose_gold"
   ]
 }

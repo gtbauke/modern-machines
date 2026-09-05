@@ -4,6 +4,10 @@
     "modernmachines:basic_alloy_smelter_heater",
     "modernmachines:copper_pipe",
     "modernmachines:steel_pipe",
+    "modernmachines:drill_casing",
+    "modernmachines:oil_shale",
+    "modernmachines:capstone",
+    "modernmachines:wellhead",
     "modernmachines:netherrack_iron_ore",
     "modernmachines:end_stone_iron_ore",
     "modernmachines:end_stone_gold_ore",
@@ -61,6 +65,7 @@
     "modernmachines:steel_block",
     "modernmachines:invar_block",
     "modernmachines:electrum_block",
-    "modernmachines:constantan_block"
+    "modernmachines:constantan_block",
+    "modernmachines:rose_gold_block"
   ]
 }

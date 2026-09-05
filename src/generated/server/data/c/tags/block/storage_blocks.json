@@ -29,6 +29,7 @@
     "#c:storage_blocks/steel",
     "#c:storage_blocks/invar",
     "#c:storage_blocks/electrum",
-    "#c:storage_blocks/constantan"
+    "#c:storage_blocks/constantan",
+    "#c:storage_blocks/rose_gold"
   ]
 }

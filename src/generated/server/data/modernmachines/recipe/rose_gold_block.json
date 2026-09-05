@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "modernmachines:rose_gold_ingot",
+    "modernmachines:rose_gold_ingot",
+    "modernmachines:rose_gold_ingot",
+    "modernmachines:rose_gold_ingot",
+    "modernmachines:rose_gold_ingot",
+    "modernmachines:rose_gold_ingot",
+    "modernmachines:rose_gold_ingot",
+    "modernmachines:rose_gold_ingot",
+    "modernmachines:rose_gold_ingot"
+  ],
+  "result": {
+    "id": "modernmachines:rose_gold_block"
+  }
+}

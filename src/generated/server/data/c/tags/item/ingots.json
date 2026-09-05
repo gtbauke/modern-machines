@@ -19,6 +19,7 @@
     "#c:ingots/wood",
     "#c:ingots/stone",
     "#c:ingots/flint",
-    "#c:ingots/bone"
+    "#c:ingots/bone",
+    "#c:ingots/rose_gold"
   ]
 }

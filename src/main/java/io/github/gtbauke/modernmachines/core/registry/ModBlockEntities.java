@@ -23,6 +23,12 @@ public class ModBlockEntities {
                     java.util.Set.of(ModBlocks.ALLOY_SMELTER.get())
             ));
 
+    public static final Supplier<BlockEntityType<io.github.gtbauke.modernmachines.reservoir.blockentity.WellheadBlockEntity>> WELLHEAD =
+            BLOCK_ENTITIES.register("wellhead", () -> new BlockEntityType<>(
+                    io.github.gtbauke.modernmachines.reservoir.blockentity.WellheadBlockEntity::new,
+                    java.util.Set.of(ModBlocks.WELLHEAD.get())
+            ));
+
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
     }
@@ -42,6 +48,13 @@ public class ModBlockEntities {
                     return level.getCapability(Capabilities.Item.BLOCK, controllerPos, side);
                 },
                 ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get()
+        );
+
+        // Wellhead Fluid Capability
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                WELLHEAD.get(),
+                (be, side) -> be
         );
     }
 }

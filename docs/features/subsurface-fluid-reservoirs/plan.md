@@ -127,11 +127,11 @@ public record HazardConfig(
   - *Verification*: Run `./gradlew test` to verify spatial indexing and serialization logic.
 
 ### Phase 2: Blocks & Capabilities
-- [ ] **Task 2.1**: Implement and register `DrillCasingBlock`, `WellheadBlock`, `OilShaleBlock`, and `CapstoneBlock` in `ModBlocks`.
+- [x] **Task 2.1**: Implement and register `DrillCasingBlock`, `WellheadBlock`, `OilShaleBlock`, and `CapstoneBlock` in `ModBlocks`.
   - *Verification*: Run `./gradlew runData` to generate blockstates and models.
-- [ ] **Task 2.2**: Implement `WellheadBlockEntity` with pressure formulas and tick throttling.
+- [x] **Task 2.2**: Implement `WellheadBlockEntity` with pressure formulas and tick throttling.
   - *Verification*: Run `./gradlew compileJava`.
-- [ ] **Task 2.3**: Register NeoForge `IFluidHandler` capability for `WellheadBlockEntity`.
+- [x] **Task 2.3**: Register NeoForge `IFluidHandler` capability for `WellheadBlockEntity`.
   - *Verification*: Run `./gradlew build` to ensure capability registration is correct.
 
 ### Phase 3: WorldGen & VirtualDataPack

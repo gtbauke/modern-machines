@@ -28,6 +28,10 @@ public class ModLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.ADOBE_BRICK, "Adobe Brick");
         addBlock(ModBlocks.COPPER_PIPE, "Copper Pipe");
         addBlock(ModBlocks.STEEL_PIPE, "Steel Pipe");
+        addBlock(ModBlocks.DRILL_CASING, "Drill Casing");
+        addBlock(ModBlocks.OIL_SHALE, "Oil Shale");
+        addBlock(ModBlocks.CAPSTONE, "Capstone");
+        addBlock(ModBlocks.WELLHEAD, "Wellhead");
         addItem(ModItems.ADOBE_BRICKS, "Adobe Bricks");
         addItem(ModItems.ADOBE_MIXTURE, "Adobe Mixture");
 

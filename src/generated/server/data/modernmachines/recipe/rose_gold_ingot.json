@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "modernmachines:rose_gold_nugget",
+    "modernmachines:rose_gold_nugget",
+    "modernmachines:rose_gold_nugget",
+    "modernmachines:rose_gold_nugget",
+    "modernmachines:rose_gold_nugget",
+    "modernmachines:rose_gold_nugget",
+    "modernmachines:rose_gold_nugget",
+    "modernmachines:rose_gold_nugget",
+    "modernmachines:rose_gold_nugget"
+  ],
+  "result": {
+    "id": "modernmachines:rose_gold_ingot"
+  }
+}

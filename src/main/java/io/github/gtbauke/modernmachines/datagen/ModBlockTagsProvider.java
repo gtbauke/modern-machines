@@ -37,7 +37,11 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
                 BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get()).orElseThrow(),
                 BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get()).orElseThrow(),
                 BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.COPPER_PIPE.get()).orElseThrow(),
-                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.STEEL_PIPE.get()).orElseThrow()
+                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.STEEL_PIPE.get()).orElseThrow(),
+                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.DRILL_CASING.get()).orElseThrow(),
+                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.OIL_SHALE.get()).orElseThrow(),
+                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.CAPSTONE.get()).orElseThrow(),
+                BuiltInRegistries.BLOCK.getResourceKey(ModBlocks.WELLHEAD.get()).orElseThrow()
         );
 
         tag(io.github.gtbauke.modernmachines.worldgen.feature.LargeOreVeinFeature.LARGE_VEIN_REPLACEABLE)

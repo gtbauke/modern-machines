@@ -19,6 +19,7 @@
     "#c:plates/steel",
     "#c:plates/invar",
     "#c:plates/electrum",
-    "#c:plates/constantan"
+    "#c:plates/constantan",
+    "#c:plates/rose_gold"
   ]
 }

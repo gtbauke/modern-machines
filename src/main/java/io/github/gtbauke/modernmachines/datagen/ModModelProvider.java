@@ -57,6 +57,26 @@ public class ModModelProvider extends ModelProvider {
                 BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ALL.create(ModBlocks.ADOBE_BRICK.get(), TextureMapping.cube(ModBlocks.ADOBE_BRICK.get()), blockModels.modelOutput))
         ));
 
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
+                ModBlocks.DRILL_CASING.get(),
+                BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ALL.create(ModBlocks.DRILL_CASING.get(), TextureMapping.cube(ModBlocks.DRILL_CASING.get()), blockModels.modelOutput))
+        ));
+
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
+                ModBlocks.OIL_SHALE.get(),
+                BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ALL.create(ModBlocks.OIL_SHALE.get(), TextureMapping.cube(ModBlocks.OIL_SHALE.get()), blockModels.modelOutput))
+        ));
+
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
+                ModBlocks.CAPSTONE.get(),
+                BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ALL.create(ModBlocks.CAPSTONE.get(), TextureMapping.cube(ModBlocks.CAPSTONE.get()), blockModels.modelOutput))
+        ));
+
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
+                ModBlocks.WELLHEAD.get(),
+                BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ALL.create(ModBlocks.WELLHEAD.get(), TextureMapping.cube(ModBlocks.WELLHEAD.get()), blockModels.modelOutput))
+        ));
+
         // Copper Pipe Model & Blockstate (Multipart: Center + 6 Directional Arms)
         Identifier pipeCenterId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/pipe_center");
         Identifier pipeArmId = Identifier.fromNamespaceAndPath(ModernMachines.MOD_ID, "block/pipe/pipe_arm");

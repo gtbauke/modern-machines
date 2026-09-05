@@ -48,6 +48,23 @@ public class ModBlocks {
             io.github.gtbauke.modernmachines.machine.block.SteelPipeBlock::new,
             () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0f, 4.0f).sound(SoundType.METAL).noOcclusion());
 
+    // Subsurface Reservoir Blocks
+    public static final DeferredBlock<io.github.gtbauke.modernmachines.reservoir.block.DrillCasingBlock> DRILL_CASING =
+            BLOCKS.registerBlock("drill_casing", io.github.gtbauke.modernmachines.reservoir.block.DrillCasingBlock::new,
+                    () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0f, 6.0f).sound(SoundType.NETHERITE_BLOCK));
+
+    public static final DeferredBlock<io.github.gtbauke.modernmachines.reservoir.block.OilShaleBlock> OIL_SHALE =
+            BLOCKS.registerBlock("oil_shale", io.github.gtbauke.modernmachines.reservoir.block.OilShaleBlock::new,
+                    () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(3.0f, 4.0f).sound(SoundType.STONE));
+
+    public static final DeferredBlock<io.github.gtbauke.modernmachines.reservoir.block.CapstoneBlock> CAPSTONE =
+            BLOCKS.registerBlock("capstone", io.github.gtbauke.modernmachines.reservoir.block.CapstoneBlock::new,
+                    () -> BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5f, 6.0f).sound(SoundType.DEEPSLATE));
+
+    public static final DeferredBlock<io.github.gtbauke.modernmachines.reservoir.block.WellheadBlock> WELLHEAD =
+            BLOCKS.registerBlock("wellhead", io.github.gtbauke.modernmachines.reservoir.block.WellheadBlock::new,
+                    () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.5f, 6.0f).sound(SoundType.METAL));
+
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
     }

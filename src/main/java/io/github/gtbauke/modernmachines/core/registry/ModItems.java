@@ -36,6 +36,12 @@ public class ModItems {
     public static final DeferredItem<BlockItem> COPPER_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.COPPER_PIPE);
     public static final DeferredItem<BlockItem> STEEL_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.STEEL_PIPE);
 
+    // Subsurface Reservoir Block Items
+    public static final DeferredItem<BlockItem> DRILL_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.DRILL_CASING);
+    public static final DeferredItem<BlockItem> OIL_SHALE = ITEMS.registerSimpleBlockItem(ModBlocks.OIL_SHALE);
+    public static final DeferredItem<BlockItem> CAPSTONE = ITEMS.registerSimpleBlockItem(ModBlocks.CAPSTONE);
+    public static final DeferredItem<BlockItem> WELLHEAD = ITEMS.registerSimpleBlockItem(ModBlocks.WELLHEAD);
+
     // Steam Era Components
     public static final DeferredItem<Item> ADOBE_MIXTURE = ITEMS.registerItem("adobe_mixture", Item::new);
     public static final DeferredItem<Item> ADOBE_BRICKS = ITEMS.registerItem("adobe_bricks", Item::new);

@@ -32,6 +32,12 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.ADOBE_BRICK.get());
                         output.accept(ModBlocks.COPPER_PIPE.get());
                         output.accept(ModBlocks.STEEL_PIPE.get());
+
+                        // Subsurface Reservoir Blocks
+                        output.accept(ModBlocks.DRILL_CASING.get());
+                        output.accept(ModBlocks.OIL_SHALE.get());
+                        output.accept(ModBlocks.CAPSTONE.get());
+                        output.accept(ModBlocks.WELLHEAD.get());
                     })
                     .build());
 

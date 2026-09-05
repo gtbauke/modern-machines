@@ -33,6 +33,7 @@
     "modernmachines:steel_block",
     "modernmachines:invar_block",
     "modernmachines:electrum_block",
-    "modernmachines:constantan_block"
+    "modernmachines:constantan_block",
+    "modernmachines:rose_gold_block"
   ]
 }

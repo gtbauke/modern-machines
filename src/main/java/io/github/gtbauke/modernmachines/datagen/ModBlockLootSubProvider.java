@@ -30,6 +30,10 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
         dropSelf(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
         dropSelf(ModBlocks.ADOBE_BRICK.get());
+        dropSelf(ModBlocks.DRILL_CASING.get());
+        dropSelf(ModBlocks.OIL_SHALE.get());
+        dropSelf(ModBlocks.CAPSTONE.get());
+        dropSelf(ModBlocks.WELLHEAD.get());
 
         for (Material material : ModMaterials.getAllMaterials()) {
             if (material.isRegisteredLocally(ResourceForm.STORAGE_BLOCK)) {
@@ -103,6 +107,10 @@ public class ModBlockLootSubProvider extends BlockLootSubProvider {
         knownBlocks.add(ModBlocks.BASIC_ALLOY_SMELTER_CONTROLLER.get());
         knownBlocks.add(ModBlocks.BASIC_ALLOY_SMELTER_HEATER.get());
         knownBlocks.add(ModBlocks.ADOBE_BRICK.get());
+        knownBlocks.add(ModBlocks.DRILL_CASING.get());
+        knownBlocks.add(ModBlocks.OIL_SHALE.get());
+        knownBlocks.add(ModBlocks.CAPSTONE.get());
+        knownBlocks.add(ModBlocks.WELLHEAD.get());
 
         for (Material material : ModMaterials.getAllMaterials()) {
             for (ResourceForm form : material.supportedForms()) {

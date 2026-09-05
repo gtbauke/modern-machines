@@ -19,6 +19,7 @@
     "#c:fluids/molten_steel",
     "#c:fluids/molten_invar",
     "#c:fluids/molten_electrum",
-    "#c:fluids/molten_constantan"
+    "#c:fluids/molten_constantan",
+    "#c:fluids/molten_rose_gold"
   ]
 }

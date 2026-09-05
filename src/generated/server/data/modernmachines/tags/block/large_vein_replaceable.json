@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#minecraft:base_stone_overworld",
+    "#minecraft:base_stone_nether",
+    "#minecraft:stone_ore_replaceables",
+    "#minecraft:deepslate_ore_replaceables",
+    "minecraft:end_stone",
+    "minecraft:netherrack"
+  ]
+}
