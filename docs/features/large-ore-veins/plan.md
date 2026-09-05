@@ -105,11 +105,11 @@ public record LargeOreVeinConfig(
   - *Verification*: `./gradlew test` (or ensure it compiles with `./gradlew compileJava`)
 
 ### Phase 2: Core Feature & Registry
-- [ ] **Task 2.1**: Implement `LargeOreVeinConfiguration` with a proper `Codec` and `MapCodec`.
+- [x] **Task 2.1**: Implement `LargeOreVeinConfiguration` with a proper `Codec` and `MapCodec`.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 2.2**: Implement `LargeOreVeinFeature` adhering strictly to chunk-bounded noise intersection logic, probability cascading, and safe block replacement.
+- [x] **Task 2.2**: Implement `LargeOreVeinFeature` adhering strictly to chunk-bounded noise intersection logic, probability cascading, and safe block replacement.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 2.3**: Register `LargeOreVeinFeature` in `ModFeatures`.
+- [x] **Task 2.3**: Register `LargeOreVeinFeature` in `ModFeatures`.
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 3: Virtual DataPack Synthesis
