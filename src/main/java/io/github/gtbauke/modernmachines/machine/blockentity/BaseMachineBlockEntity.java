@@ -3,6 +3,8 @@ package io.github.gtbauke.modernmachines.machine.blockentity;
 import java.util.EnumSet;
 import java.util.Set;
 
+import io.github.gtbauke.modernmachines.api.animation.AnimationParameterContainer;
+import io.github.gtbauke.modernmachines.api.animation.IAnimatedMachine;
 import io.github.gtbauke.modernmachines.api.machine.capability.MachineCapabilityType;
 import io.github.gtbauke.modernmachines.api.machine.side.ISideConfigurable;
 import io.github.gtbauke.modernmachines.api.machine.side.MachineSideConfig;
@@ -11,6 +13,7 @@ import io.github.gtbauke.modernmachines.api.machine.side.SideIoMode;
 import io.github.gtbauke.modernmachines.api.machine.stat.MachineStats;
 import io.github.gtbauke.modernmachines.api.machine.upgrade.IUpgradableMachine;
 import io.github.gtbauke.modernmachines.machine.upgrade.UpgradeContainer;
+import io.github.gtbauke.modernmachines.network.ClientBoundAnimationTriggerPayload;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -18,9 +21,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
@@ -29,15 +34,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jspecify.annotations.NonNull;
 
-public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer, IUpgradableMachine, ISideConfigurable {
+public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer, IUpgradableMachine, ISideConfigurable, IAnimatedMachine {
     protected final MachineStats stats = new MachineStats();
     protected final UpgradeContainer upgradeContainer = new UpgradeContainer(this);
     protected final MachineSideConfig sideConfig = new MachineSideConfig();
+    protected final AnimationParameterContainer animationParameters = new AnimationParameterContainer();
 
     protected int transferCooldown = 0;
 
@@ -58,6 +66,20 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
     @Override
     public MachineSideConfig getSideConfig() {
         return sideConfig;
+    }
+
+    @Override
+    public @NonNull AnimationParameterContainer getAnimationParameters() {
+        return animationParameters;
+    }
+
+    @Override
+    public void triggerAnimation(int triggerId) {
+        if (this.level != null && !this.level.isClientSide() && this.level instanceof ServerLevel serverLevel) {
+            var payload = new ClientBoundAnimationTriggerPayload(this.worldPosition, triggerId);
+            var chunkPos = new ChunkPos(this.worldPosition.getX() >> 4, this.worldPosition.getZ() >> 4);
+            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, chunkPos, payload);
+        }
     }
 
     @Override
@@ -210,12 +232,14 @@ public abstract class BaseMachineBlockEntity extends BaseContainerBlockEntity im
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         this.sideConfig.load(input);
+        this.animationParameters.load(input);
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         this.sideConfig.save(output);
+        this.animationParameters.save(output);
     }
 
     @Override

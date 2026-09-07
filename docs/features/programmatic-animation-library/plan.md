@@ -181,9 +181,9 @@ public abstract class AnimatedBlockEntityRenderer<T extends BaseMachineBlockEnti
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 3: BlockEntity & Networking Hooks
-- [ ] **Task 3.1**: Create `IAnimatedMachine` and `AnimationParameterContainer`. Integrate into `BaseMachineBlockEntity` with NBT `"AnimationData"`.
+- [x] **Task 3.1**: Create `IAnimatedMachine` and `AnimationParameterContainer`. Integrate into `BaseMachineBlockEntity` with NBT `"AnimationData"`.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 3.2**: Create `S2CAnimationParameterSyncPacket` and `S2CAnimationTriggerPacket`. Register in `ModNetworking`. Ensure `context.enqueueWork` is used.
+- [x] **Task 3.2**: Create `S2CAnimationParameterSyncPacket` and `S2CAnimationTriggerPacket`. Register in `ModNetworking`. Ensure `context.enqueueWork` is used.
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 4: Render Pipeline & Client Integration

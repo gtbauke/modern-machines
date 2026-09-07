@@ -24,6 +24,18 @@ public class ModNetworking {
                 ClientBoundSyncMaterialStatsPayload::handle
         );
 
+        registrar.playToClient(
+                ClientBoundAnimationTriggerPayload.TYPE,
+                ClientBoundAnimationTriggerPayload.STREAM_CODEC,
+                ClientBoundAnimationTriggerPayload::handle
+        );
+
+        registrar.playToClient(
+                ClientBoundAnimationSyncPayload.TYPE,
+                ClientBoundAnimationSyncPayload.STREAM_CODEC,
+                ClientBoundAnimationSyncPayload::handle
+        );
+
         registrar.playToServer(
                 ServerboundSideConfigPayload.TYPE,
                 ServerboundSideConfigPayload.STREAM_CODEC,

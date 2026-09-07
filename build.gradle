@@ -92,6 +92,11 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+configurations {
+    testImplementation.extendsFrom compileClasspath
+    testRuntimeOnly.extendsFrom runtimeClasspath
+}
+
 test {
     useJUnitPlatform()
 }
