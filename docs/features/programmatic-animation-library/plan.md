@@ -169,9 +169,9 @@ public abstract class AnimatedBlockEntityRenderer<T extends BaseMachineBlockEnti
 ## 7. Step-by-Step Implementation Task List
 
 ### Phase 1: Math & Easing Engine Core
-- [ ] **Task 1.1**: Implement `Easing` functional interface and Penner implementations (Linear, Quad, Sine, Cubic).
+- [x] **Task 1.1**: Implement `Easing` functional interface and Penner implementations (Linear, Quad, Sine, Cubic).
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 1.2**: Implement `Transform3D` and `Pivot` classes with pooling/mutability.
+- [x] **Task 1.2**: Implement `Transform3D` and `Pivot` classes with pooling/mutability.
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 2: Hierarchy & Animation Controllers
