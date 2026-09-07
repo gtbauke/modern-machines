@@ -187,9 +187,9 @@ public abstract class AnimatedBlockEntityRenderer<T extends BaseMachineBlockEnti
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 4: Render Pipeline & Client Integration
-- [ ] **Task 4.1**: Implement `AnimatedBlockEntityRenderer` with `try-finally` safety and distance/frustum culling by overriding custom render bounds.
+- [x] **Task 4.1**: Implement `AnimatedBlockEntityRenderer` with `try-finally` safety and distance/frustum culling by overriding custom render bounds.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 4.2**: Set up an example implementation using `AlloySmelterBlockEntity` (or a mock machine) configuring `AnimationController` tracks.
+- [x] **Task 4.2**: Set up an example implementation using `AlloySmelterBlockEntity` (or a mock machine) configuring `AnimationController` tracks.
   - *Verification*: `./gradlew runClient` and visual verification.
 
 ### Phase 5: Final Polish & Testing

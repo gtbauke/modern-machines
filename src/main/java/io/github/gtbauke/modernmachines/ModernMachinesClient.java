@@ -21,6 +21,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -41,6 +42,14 @@ public class ModernMachinesClient {
         modEventBus.addListener(this::registerBlockColors);
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::registerFluidModels);
+        modEventBus.addListener(this::registerRenderers);
+    }
+
+    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(
+                io.github.gtbauke.modernmachines.core.registry.ModBlockEntities.ALLOY_SMELTER.get(),
+                io.github.gtbauke.modernmachines.machine.client.AlloySmelterRenderer::new
+        );
     }
 
     private void registerFluidModels(RegisterFluidModelsEvent event) {
