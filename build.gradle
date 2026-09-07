@@ -86,6 +86,7 @@ dependencies {
     localRuntime "mezz.jei:jei-26.2-neoforge:30.24.0.165"
 
     testImplementation 'com.google.code.gson:gson:2.11.0'
+    testImplementation 'org.joml:joml:1.10.8'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

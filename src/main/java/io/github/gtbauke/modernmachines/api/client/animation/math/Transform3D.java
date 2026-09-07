@@ -2,7 +2,6 @@ package io.github.gtbauke.modernmachines.api.client.animation.math;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.util.Mth;
 import org.joml.Vector3f;
 
 public class Transform3D {
@@ -44,24 +43,24 @@ public class Transform3D {
 
     public void lerp(Transform3D target, float delta, Transform3D dest) {
         dest.translation.set(
-                Mth.lerp(delta, this.translation.x, target.translation.x),
-                Mth.lerp(delta, this.translation.y, target.translation.y),
-                Mth.lerp(delta, this.translation.z, target.translation.z)
+                AnimationMath.lerp(delta, this.translation.x, target.translation.x),
+                AnimationMath.lerp(delta, this.translation.y, target.translation.y),
+                AnimationMath.lerp(delta, this.translation.z, target.translation.z)
         );
 
         dest.rotation.set(
-                Mth.rotLerp(delta, this.rotation.x, target.rotation.x),
-                Mth.rotLerp(delta, this.rotation.y, target.rotation.y),
-                Mth.rotLerp(delta, this.rotation.z, target.rotation.z)
+                AnimationMath.rotLerp(delta, this.rotation.x, target.rotation.x),
+                AnimationMath.rotLerp(delta, this.rotation.y, target.rotation.y),
+                AnimationMath.rotLerp(delta, this.rotation.z, target.rotation.z)
         );
 
         dest.scale.set(
-                Mth.lerp(delta, this.scale.x, target.scale.x),
-                Mth.lerp(delta, this.scale.y, target.scale.y),
-                Mth.lerp(delta, this.scale.z, target.scale.z)
+                AnimationMath.lerp(delta, this.scale.x, target.scale.x),
+                AnimationMath.lerp(delta, this.scale.y, target.scale.y),
+                AnimationMath.lerp(delta, this.scale.z, target.scale.z)
         );
 
-        dest.alpha = Mth.lerp(delta, this.alpha, target.alpha);
+        dest.alpha = AnimationMath.lerp(delta, this.alpha, target.alpha);
         dest.emissiveLight = target.emissiveLight >= 0 ? target.emissiveLight : this.emissiveLight;
     }
 

@@ -175,9 +175,9 @@ public abstract class AnimatedBlockEntityRenderer<T extends BaseMachineBlockEnti
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 2: Hierarchy & Animation Controllers
-- [ ] **Task 2.1**: Implement `ModelPartNode` structure and cached `BakedModel` resolver.
+- [x] **Task 2.1**: Implement `ModelPartNode` structure and cached `BakedModel` resolver.
   - *Verification*: `./gradlew compileJava`
-- [ ] **Task 2.2**: Implement `KinematicDriver`, `TimelineAction`, and the `AnimationController` DSL. Apply `Mth.rotLerp` for angle safety.
+- [x] **Task 2.2**: Implement `KinematicDriver`, `TimelineAction`, and the `AnimationController` DSL. Apply `Mth.rotLerp` for angle safety.
   - *Verification*: `./gradlew compileJava`
 
 ### Phase 3: BlockEntity & Networking Hooks
