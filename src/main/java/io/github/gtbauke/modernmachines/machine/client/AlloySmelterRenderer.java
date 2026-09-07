@@ -22,10 +22,13 @@ public class AlloySmelterRenderer extends AnimatedBlockEntityRenderer<AlloySmelt
 
         this.rootNode = new ModelPartNode("root", Pivot.CENTER);
         var rotorNode = new ModelPartNode("rotor", Pivot.CENTER);
+        rotorNode.setBlockState(io.github.gtbauke.modernmachines.core.registry.ModBlocks.COPPER_PIPE.get().defaultBlockState());
+        rotorNode.transform.scale.set(0.6f, 0.6f, 0.6f);
+        rotorNode.transform.translation.set(0.0f, 0.4f, 0.0f);
         this.rootNode.addChild(rotorNode);
 
         this.controller = new AnimationController();
-        this.controller.registerDriver("rotor", KinematicDriver.continuousRotation(AnimationAxis.Y, () -> 4.0f, 1.0f));
+        this.controller.registerDriver("rotor", KinematicDriver.continuousRotation(AnimationAxis.Y, () -> 5.0f, 1.0f));
         this.controller.timeline("smelt_burst", timeline -> {
             timeline.track("rotor", track -> {
                 track.scale(1.0f, 1.2f, 5, Easing.EASE_OUT_BOUNCE)

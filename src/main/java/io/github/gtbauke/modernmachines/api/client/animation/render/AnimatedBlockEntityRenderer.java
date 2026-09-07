@@ -47,6 +47,7 @@ public abstract class AnimatedBlockEntityRenderer<T extends BlockEntity, S exten
 
         if (root != null) {
             if (controller != null) {
+                controller.tick(root);
                 controller.apply(partialTicks, root);
             } else {
                 root.interpolate(partialTicks);
