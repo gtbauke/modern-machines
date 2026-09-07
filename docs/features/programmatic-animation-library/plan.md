@@ -193,7 +193,7 @@ public abstract class AnimatedBlockEntityRenderer<T extends BaseMachineBlockEnti
   - *Verification*: `./gradlew runClient` and visual verification.
 
 ### Phase 5: Final Polish & Testing
-- [ ] **Task 5.1**: Ensure all files comply with `AGENTS.md` (braces, blank lines, `var` usage).
+- [x] **Task 5.1**: Ensure all files comply with `AGENTS.md` (braces, blank lines, `var` usage).
   - *Verification*: Code review or static analysis tools.
-- [ ] **Task 5.2**: Run full test suite to guarantee no network regressions or build failures.
+- [x] **Task 5.2**: Run full test suite to guarantee no network regressions or build failures.
   - *Verification*: `./gradlew build`
