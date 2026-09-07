@@ -26,6 +26,10 @@ public class AnimationTrack {
         return this;
     }
 
+    public AnimationTrack then() {
+        return this;
+    }
+
     public AnimationTrack translateY(float fromY, float toY, int duration, @NonNull Easing easing) {
         var from = new Transform3D();
         from.translation.y = fromY;
